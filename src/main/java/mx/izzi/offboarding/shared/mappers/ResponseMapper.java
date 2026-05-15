@@ -12,8 +12,8 @@ public class ResponseMapper {
     public static <T> ResponseEntity<OBResponse<T>> map(OBResponseCodes codes, T data, HttpStatus httpStatus) {
         OBResponse<T> response = OBResponse.<T>builder()
                 .timestamp(LocalDateTime.now())
-                .httpStatus(httpStatus.value())
-                .httpCode(httpStatus.getReasonPhrase())
+                .httpStatus(codes.getHttpStatus())
+                .httpCode(codes.getHttpCode())
                 .message(codes.getMessage())
                 .data(data)
                 .build();
@@ -23,8 +23,8 @@ public class ResponseMapper {
     public static <T> ResponseEntity<OBResponse<T>> toError(OBErrorCodes codes, HttpStatus httpStatus) {
         OBResponse<T> response = OBResponse.<T>builder()
                 .timestamp(LocalDateTime.now())
-                .httpStatus(httpStatus.value())
-                .httpCode(httpStatus.getReasonPhrase())
+                .httpStatus(codes.getHttpStatus())
+                .httpCode(codes.getHttpCode())
                 .message(codes.getMessage())
                 .build();
         return new ResponseEntity<>(response, httpStatus);

@@ -67,8 +67,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(idssff);
 
-            LOG.info("[INFO]: UserDetails '{}'", userDetails);
-
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
@@ -88,8 +86,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-
-
 
             OBErrorResponse error = OBErrorResponse.builder()
                     .httpStatus(HttpServletResponse.SC_UNAUTHORIZED)

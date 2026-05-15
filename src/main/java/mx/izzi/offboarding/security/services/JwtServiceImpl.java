@@ -32,9 +32,9 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class JwtImpl implements JwtService {
+public class JwtServiceImpl implements JwtService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JwtImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JwtServiceImpl.class);
 
     private final Resource privateKeyResource = new ClassPathResource("keys/private.pem");
 

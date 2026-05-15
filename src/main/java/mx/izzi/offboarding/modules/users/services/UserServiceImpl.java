@@ -8,15 +8,20 @@ import mx.izzi.offboarding.modules.users.repositories.RoleRepository;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.shared.exceptions.ResourceAlreadyExistsException;
 import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserImpl implements UserService {
+public class UserServiceImpl implements UserService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class.getName());
 
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
@@ -27,9 +32,11 @@ public class UserImpl implements UserService {
         return Optional.of(this.userRepository.findOneByIdssff(idssff));
     }
 
+    @Transactional
     @Override
     public Optional<UserEntity> create(CreateUserDto createUserDto) {
         UserEntity userEntityFound = this.userRepository.findOneByIdssff(createUserDto.getIdssff());
+
 
         if (userEntityFound != null) {
             throw new ResourceAlreadyExistsException("User already exists");
@@ -64,10 +71,11 @@ public class UserImpl implements UserService {
                 .updatedAt(now)
                 .createdBy("System")
                 .updatedBy("System")
-                .roleEntity(role.get())
+                .role(role.get())
                 .build();
 
+        UserEntity userSaved = this.userRepository.saveAndFlush(userEntity);
 
-        return Optional.of(this.userRepository.saveAndFlush(userEntity));
+        return Optional.of(userSaved);
     }
 }

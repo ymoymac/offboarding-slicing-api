@@ -1,6 +1,7 @@
 package mx.izzi.offboarding.shared.models;
 
 import lombok.*;
+import mx.izzi.offboarding.shared.enums.OBErrorCodes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,4 +19,19 @@ public class OBErrorResponse {
     private String errorCode; // Application code: PB-USR-001
     private String path; // /api/v1/users/1
     private List<?> errors;
+
+    public OBErrorResponse(OBErrorCodes codes) {
+        this.timestamp = LocalDateTime.now();
+        this.httpStatus = codes.getHttpStatus();
+        this.httpCode = codes.getHttpCode();
+        this.message = codes.getMessage();
+    }
+
+    public OBErrorResponse(OBErrorCodes codes, List<?> errors) {
+        this.timestamp = LocalDateTime.now();
+        this.httpStatus = codes.getHttpStatus();
+        this.httpCode = codes.getHttpCode();
+        this.message = codes.getMessage();
+        this.errors = errors;
+    }
 }

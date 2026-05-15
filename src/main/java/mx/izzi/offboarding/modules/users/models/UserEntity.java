@@ -2,28 +2,25 @@ package mx.izzi.offboarding.modules.users.models;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "offboarding", schema = "t_offboarding_users")
+@Table(name = "t_offboarding_users", schema = "offboarding")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", unique = true, nullable = false)
     private Long userId;
 
-    @Column(name = "user_idssff", nullable = false)
+    @Column(name = "usr_idssff", nullable = false)
     private Long idssff;
 
     @Column(name = "usr_tx_name", nullable = false)
@@ -59,13 +56,15 @@ public class UserEntity {
     @Column(name = "usr_tx_updated_by", nullable = false, length = 80)
     private String updatedBy;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
             name = "usr_fk_role_id",
             referencedColumnName = "role_id",
             nullable = false
     )
-    private RoleEntity roleEntity;
+    private RoleEntity role;
 
     @PrePersist
     private void prePersist() {
@@ -78,6 +77,5 @@ public class UserEntity {
     private void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
 
 }

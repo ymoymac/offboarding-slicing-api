@@ -2,22 +2,19 @@ package mx.izzi.offboarding.modules.users.models;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "offboarding", schema = "t_offboarding_roles")
+@Table(name = "t_offboarding_roles", schema = "offboarding")
 public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +42,8 @@ public class RoleEntity {
     @Column(name = "role_tx_updated_by", nullable = false, length = 80)
     private String updatedBy;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(
             mappedBy = "role",
             cascade = CascadeType.ALL,

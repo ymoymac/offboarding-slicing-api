@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    @Query("SELECT u FROM UserEntity u JOIN FETCH u.roleEntity WHERE u.idssff = :idssff")
+    @Query("SELECT u FROM UserEntity u JOIN FETCH u.role WHERE u.idssff = :idssff")
     UserEntity findOneByIdssff(Long idssff);
     boolean existsById(@NonNull Long idssff);
     boolean existsByEmail(String email);
