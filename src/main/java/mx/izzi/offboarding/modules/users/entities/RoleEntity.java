@@ -1,8 +1,24 @@
-package mx.izzi.offboarding.modules.users.models;
+package mx.izzi.offboarding.modules.users.entities;
 
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import mx.izzi.offboarding.modules.users.models.Role;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -61,5 +77,18 @@ public class RoleEntity {
     @PreUpdate
     private void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public Role  toDomain() {
+        return Role.builder()
+                .roleId(this.roleId)
+                .name(this.name)
+                .description(this.description)
+                .isActive(this.isActive)
+                .createdAt(this.createdAt)
+                .updatedAt(this.updatedAt)
+                .createdBy(this.createdBy)
+                .updatedBy(this.updatedBy)
+                .build();
     }
 }

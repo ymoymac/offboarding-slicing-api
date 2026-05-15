@@ -2,7 +2,7 @@ package mx.izzi.offboarding.modules.auth.services;
 
 import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.auth.models.SecurityUser;
-import mx.izzi.offboarding.modules.users.models.UserEntity;
+import mx.izzi.offboarding.modules.users.entities.UserEntity;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if  (user == null) {
             throw new BadCredentialsException(idssff);
         }
-        SecurityUser securityUser = new SecurityUser(user);
+        SecurityUser securityUser = new SecurityUser(user.toDomain());
 
         return org.springframework.security.core.userdetails.User
                 .builder()

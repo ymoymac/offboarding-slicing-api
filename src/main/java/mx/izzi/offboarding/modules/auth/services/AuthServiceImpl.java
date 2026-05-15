@@ -3,9 +3,9 @@ package mx.izzi.offboarding.modules.auth.services;
 import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.auth.dtos.LoginDto;
 import mx.izzi.offboarding.modules.auth.dtos.SignUpDto;
-import mx.izzi.offboarding.modules.auth.mappers.AuthMapper;
+import mx.izzi.offboarding.modules.auth.models.AuthMapper;
 import mx.izzi.offboarding.modules.auth.models.AuthUser;
-import mx.izzi.offboarding.modules.users.models.UserEntity;
+import mx.izzi.offboarding.modules.users.models.User;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.security.services.JwtService;
@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
         String token = this.jwtService.generateToken(userDetails);
 
-        UserEntity user = this.userJpaRepository.findOneByIdssff(loginDto.getIdssff());
+        User user = this.userJpaRepository.findOneByIdssff(loginDto.getIdssff()).toDomain();
 
         return Optional.of(
                 AuthUser.builder()
@@ -57,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
     public Optional<AuthUser> signUp(SignUpDto signUpDto) {
         LOG.info("[INFO]: SignUp {}", signUpDto);
 
-        Optional<UserEntity> user = this.userService.create(AuthMapper.from(signUpDto));
+        Optional<User> user = this.userService.create(AuthMapper.from(signUpDto));
 
         if (user.isEmpty()) {
             throw new RuntimeException("Error creating user");
@@ -77,6 +77,8 @@ public class AuthServiceImpl implements AuthService {
         LOG.info("[INFO]: User {}", userDetails);
 
         String token = this.jwtService.generateToken(userDetails);
+
+        LOG.info("[INFO]: Token {}", token);
 
         return Optional.of(
                 AuthUser.builder()

@@ -1,17 +1,20 @@
 package mx.izzi.offboarding.modules.auth.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.auth.dtos.AuthUserDto;
 import mx.izzi.offboarding.modules.auth.dtos.LoginDto;
 import mx.izzi.offboarding.modules.auth.dtos.SignUpDto;
-import mx.izzi.offboarding.modules.auth.mappers.AuthMapper;
+import mx.izzi.offboarding.modules.auth.models.AuthMapper;
 import mx.izzi.offboarding.modules.auth.services.AuthService;
 import mx.izzi.offboarding.shared.enums.OBErrorCodes;
 import mx.izzi.offboarding.shared.enums.OBResponseCodes;
 import mx.izzi.offboarding.shared.mappers.ResponseMapper;
 import mx.izzi.offboarding.shared.models.OBResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +24,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
+    private ObjectMapper objectMapper;
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginDto) {
+    public ResponseEntity<OBResponse<AuthUserDto>> login(@RequestBody @Valid  LoginDto loginDto) {
         return this.authService.login(loginDto)
                 .map(AuthMapper::from)
                 .map(userDto -> ResponseMapper.map(OBResponseCodes.USER_LOGIN, userDto, HttpStatus.OK))
@@ -36,7 +41,7 @@ public class AuthController {
         return this.authService.signUp(signUpDto)
                 .map(AuthMapper::from)
                 .map(userDto -> ResponseMapper.map(OBResponseCodes.USER_CREATED, userDto, HttpStatus.OK))
-                .get();
+                .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @GetMapping("/debug")

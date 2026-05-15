@@ -1,7 +1,7 @@
 package mx.izzi.offboarding.modules.auth.models;
 
 import lombok.*;
-import mx.izzi.offboarding.modules.users.models.UserEntity;
+import mx.izzi.offboarding.modules.users.models.User;
 
 @Getter
 @Setter
@@ -10,6 +10,6 @@ import mx.izzi.offboarding.modules.users.models.UserEntity;
 @NoArgsConstructor
 @ToString
 public class AuthUser {
-    private UserEntity user;
+    private User user;
     private String token;
 }

@@ -1,6 +1,6 @@
 package mx.izzi.offboarding.modules.auth.models;
 
-import mx.izzi.offboarding.modules.users.models.UserEntity;
+import mx.izzi.offboarding.modules.users.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-public record SecurityUser(UserEntity user) implements UserDetails {
+public record SecurityUser(User user) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

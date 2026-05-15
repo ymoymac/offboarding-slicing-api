@@ -1,18 +1,15 @@
-package mx.izzi.offboarding.modules.auth.mappers;
+package mx.izzi.offboarding.modules.auth.models;
 
 import mx.izzi.offboarding.modules.auth.dtos.AuthUserDto;
 import mx.izzi.offboarding.modules.auth.dtos.SignUpDto;
-import mx.izzi.offboarding.modules.auth.models.AuthUser;
 import mx.izzi.offboarding.modules.users.dtos.CreateUserDto;
-import mx.izzi.offboarding.modules.users.dtos.DetailUserDto;
-import mx.izzi.offboarding.modules.users.mappers.UserMapper;
+import mx.izzi.offboarding.modules.users.models.UserMapper;
 
 public class AuthMapper {
 
     public static AuthUserDto from(AuthUser authUser) {
-        DetailUserDto user = UserMapper.from(authUser.getUser());
         return AuthUserDto.builder()
-                .user(user)
+                .user(UserMapper.from(authUser.getUser()))
                 .token(authUser.getToken())
                 .build();
     }

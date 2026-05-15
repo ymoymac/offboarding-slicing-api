@@ -1,12 +1,11 @@
 package mx.izzi.offboarding.modules.users.controller;
 
 
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.users.dtos.CreateUserDto;
 import mx.izzi.offboarding.modules.users.dtos.DetailUserDto;
-import mx.izzi.offboarding.modules.users.mappers.UserMapper;
+import mx.izzi.offboarding.modules.users.models.UserMapper;
 import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.shared.enums.OBErrorCodes;
 import mx.izzi.offboarding.shared.enums.OBResponseCodes;
