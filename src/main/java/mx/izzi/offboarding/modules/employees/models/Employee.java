@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import mx.izzi.offboarding.modules.users.models.User;
+import mx.izzi.offboarding.modules.workcenter.models.WorkCenter;
 
 import java.time.LocalDateTime;
 
@@ -35,5 +36,6 @@ public class Employee {
     private String createdBy;
     private String updatedBy;
     private User immediateBoos;
+    private WorkCenter  workCenter;
 }
 

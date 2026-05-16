@@ -1,7 +1,22 @@
 package mx.izzi.offboarding.modules.workcenter.entities;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import mx.izzi.offboarding.modules.employees.entities.EmployeeEntity;
 import mx.izzi.offboarding.modules.users.entities.UserEntity;
 import mx.izzi.offboarding.modules.workcenter.models.WorkCenter;
@@ -114,27 +129,27 @@ public class WorkCenterEntity {
 
     public WorkCenter toDomain() {
         return WorkCenter.builder()
-                .id(id)
-                .regionId(regionId)
-                .region(region)
-                .localityId(localityId)
-                .locality(locality)
-                .businessId(businessId)
-                .business(business)
-                .divisionId(divisionId)
-                .division(division)
-                .companyId(companyId)
-                .company(company)
-                .workCenterId(workCenterId)
-                .workCenter(workCenter)
-                .departmentId(departmentId)
-                .department(department)
-                .dependents(dependents)
-                .isActive(isActive)
-                .createdAt(createdAt)
-                .updatedAt(updatedAt)
-                .createdBy(createdBy)
-                .updatedBy(updatedBy)
+                .id(this.id)
+                .regionId(this.regionId)
+                .region(this.region)
+                .localityId(this.localityId)
+                .locality(this.locality)
+                .businessId(this.businessId)
+                .business(this.business)
+                .divisionId(this.divisionId)
+                .division(this.division)
+                .companyId(this.companyId)
+                .company(this.company)
+                .workCenterId(this.workCenterId)
+                .workCenter(this.workCenter)
+                .departmentId(this.departmentId)
+                .department(this.department)
+                .dependents(this.dependents)
+                .isActive(this.isActive)
+                .createdAt(this.createdAt)
+                .updatedAt(this.updatedAt)
+                .createdBy(this.createdBy)
+                .updatedBy(this.updatedBy)
                 .build();
     }
 }

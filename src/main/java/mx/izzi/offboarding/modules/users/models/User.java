@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import mx.izzi.offboarding.modules.workcenter.models.WorkCenter;
 
 import java.time.LocalDateTime;
 
@@ -28,4 +29,5 @@ public class User {
     private String createdBy;
     private String updatedBy;
     private Role role;
+    private WorkCenter workCenter;
 }

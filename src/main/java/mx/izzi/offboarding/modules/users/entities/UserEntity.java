@@ -121,6 +121,7 @@ public class UserEntity {
                 .createdBy(this.createdBy)
                 .updatedBy(this.updatedBy)
                 .role(this.role.toDomain())
+                .workCenter(this.workCenter.toDomain())
                 .build();
     }
 

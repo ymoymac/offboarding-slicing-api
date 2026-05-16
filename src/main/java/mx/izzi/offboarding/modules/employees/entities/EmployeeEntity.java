@@ -132,6 +132,7 @@ public class EmployeeEntity {
                 .createdBy(this.createdBy)
                 .updatedBy(this.updatedBy)
                 .immediateBoos(this.immediateBoss.toDomain())
+                .workCenter(this.workCenter.toDomain())
                 .build();
     }
 
