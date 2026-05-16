@@ -1,6 +1,6 @@
 package mx.izzi.offboarding.modules.auth.models;
 
-import mx.izzi.offboarding.modules.users.models.User;
+import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.shared.enums.Roles;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

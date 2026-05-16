@@ -1,6 +1,6 @@
-package mx.izzi.offboarding.modules.users.models;
+package mx.izzi.offboarding.modules.users.domain.models;
 
-import mx.izzi.offboarding.modules.users.entities.RoleEntity;
+import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
 
 public class RoleMapper {
     public static RoleEntity toEntity(Role role) {

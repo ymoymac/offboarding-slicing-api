@@ -3,6 +3,7 @@ package mx.izzi.offboarding.shared.errors;
 import mx.izzi.offboarding.shared.enums.OBErrorCodes;
 import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
 import mx.izzi.offboarding.shared.exceptions.ResourceAlreadyExistsException;
+import mx.izzi.offboarding.shared.exceptions.ResourceNotAvailableException;
 import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
 import mx.izzi.offboarding.shared.models.OBErrorResponse;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -145,13 +146,45 @@ public class GlobalExceptionHandler {
         List<Map<String, Object>> errors = new ArrayList<>();
 
         Map<String, Object> err = new HashMap<>();
-        err.put("errorCode", "PB-AUTH-ERR001");
+        err.put("errorCode", "PB-AUTH-ERR003");
         err.put("message", "Authorization denied");
         errors.add(err);
 
         return new ResponseEntity<>(
                 new OBErrorResponse(OBErrorCodes.ACCESS_DENIED, errors),
                 HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(ResourceNotAvailableException.class)
+    public ResponseEntity<OBErrorResponse> handleResourceNotAvailable(ResourceNotAvailableException ex) {
+
+        List<Map<String, Object>> errors = new ArrayList<>();
+
+        Map<String, Object> err = new HashMap<>();
+        err.put("errorCode", "PB-AUTH-ERR002");
+        err.put("message", "Resource not available");
+        errors.add(err);
+
+        return new ResponseEntity<>(
+                new OBErrorResponse(OBErrorCodes.NOT_AVAILABLE, errors),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(NumberFormatException.class)
+    public ResponseEntity<OBErrorResponse> handleNumberFormat(NumberFormatException ex) {
+
+        List<Map<String, Object>> errors = new ArrayList<>();
+
+        Map<String, Object> err = new HashMap<>();
+        err.put("errorCode", "PB-AUTH-ERR004");
+        err.put("message", "This is not a number");
+        errors.add(err);
+
+        return new ResponseEntity<>(
+                new OBErrorResponse(OBErrorCodes.NAN, errors),
+                HttpStatus.BAD_REQUEST
         );
     }
 

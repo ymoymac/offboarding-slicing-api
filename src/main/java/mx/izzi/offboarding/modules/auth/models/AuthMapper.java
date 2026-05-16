@@ -2,8 +2,8 @@ package mx.izzi.offboarding.modules.auth.models;
 
 import mx.izzi.offboarding.modules.auth.dtos.AuthUserDto;
 import mx.izzi.offboarding.modules.auth.dtos.SignUpDto;
-import mx.izzi.offboarding.modules.users.dtos.CreateUserDto;
-import mx.izzi.offboarding.modules.users.models.UserMapper;
+import mx.izzi.offboarding.modules.users.domain.dtos.CreateUserDto;
+import mx.izzi.offboarding.modules.users.domain.models.UserMapper;
 
 public class AuthMapper {
 

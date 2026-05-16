@@ -13,9 +13,11 @@ public enum OBErrorCodes {
     USER_ERROR_TO_CREATE(500, "Internal server error", "User could not be created"),
     USER_ERROR_PARAMS(400, "Bad request", "User could not be created. Some values are not valid"),
     USER_UNIQUENESS_RULE(400, "Bad Request", "Insertion error. This element already exists"),
+    NOT_AVAILABLE(400, "Bad Request", "Resource not available"),
     DATA_INTEGRITY_ERROR(409, "Bad Request", "Data integrity error"),
     LOGIN_ERROR_CREDENTIALS(401, "Unauthorized", "Invalid credentials"),
     ACCESS_DENIED(403, "Forbidden", "Access denied"),
+    NAN(400, "Bad Request", "Not a number"),
     ;
 
     private final Integer httpStatus;

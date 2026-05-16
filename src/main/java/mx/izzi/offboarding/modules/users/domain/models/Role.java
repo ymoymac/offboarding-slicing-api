@@ -1,11 +1,10 @@
-package mx.izzi.offboarding.modules.users.models;
+package mx.izzi.offboarding.modules.users.domain.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import mx.izzi.offboarding.modules.workcenter.models.WorkCenter;
 
 import java.time.LocalDateTime;
 
@@ -14,20 +13,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class User {
-    private Long userId;
-    private Long idssff;
+public class Role {
+    private Long roleId;
     private String name;
-    private String firstSurname;
-    private String secondSurname;
-    private String username;
-    private String email;
-    private String password;
+    private String description;
     private Boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String createdBy;
     private String updatedBy;
-    private Role role;
-    private WorkCenter workCenter;
 }

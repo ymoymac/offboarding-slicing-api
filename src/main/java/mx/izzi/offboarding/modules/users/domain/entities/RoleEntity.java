@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.users.entities;
+package mx.izzi.offboarding.modules.users.domain.entities;
 
 
 import jakarta.persistence.Entity;
@@ -18,7 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import mx.izzi.offboarding.modules.users.models.Role;
+import mx.izzi.offboarding.modules.users.domain.models.Role;
 
 import java.time.LocalDateTime;
 import java.util.Set;

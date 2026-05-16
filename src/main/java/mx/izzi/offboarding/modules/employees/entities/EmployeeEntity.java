@@ -13,7 +13,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.*;
 import mx.izzi.offboarding.modules.employees.models.Employee;
-import mx.izzi.offboarding.modules.users.entities.UserEntity;
+import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
 import mx.izzi.offboarding.modules.workcenter.entities.WorkCenterEntity;
 
 import java.time.LocalDateTime;

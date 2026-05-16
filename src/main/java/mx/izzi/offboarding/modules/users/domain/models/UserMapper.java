@@ -1,7 +1,7 @@
-package mx.izzi.offboarding.modules.users.models;
+package mx.izzi.offboarding.modules.users.domain.models;
 
-import mx.izzi.offboarding.modules.users.dtos.DetailUserDto;
-import mx.izzi.offboarding.modules.users.entities.UserEntity;
+import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserDto;
+import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
 import mx.izzi.offboarding.modules.workcenter.WorkCenterMapper;
 
 public class UserMapper {

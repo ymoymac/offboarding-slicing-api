@@ -1,7 +1,7 @@
 package mx.izzi.offboarding.modules.auth.models;
 
 import lombok.*;
-import mx.izzi.offboarding.modules.users.models.User;
+import mx.izzi.offboarding.modules.users.domain.models.User;
 
 @Getter
 @Setter

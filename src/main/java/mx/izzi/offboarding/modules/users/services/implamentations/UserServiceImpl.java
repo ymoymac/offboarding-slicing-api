@@ -1,23 +1,29 @@
-package mx.izzi.offboarding.modules.users.services;
+package mx.izzi.offboarding.modules.users.services.implamentations;
 
 import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.auth.models.AuthenticatedUser;
-import mx.izzi.offboarding.modules.users.dtos.CreateUserDto;
-import mx.izzi.offboarding.modules.users.entities.RoleEntity;
-import mx.izzi.offboarding.modules.users.entities.UserEntity;
-import mx.izzi.offboarding.modules.users.models.UserMapper;
-import mx.izzi.offboarding.modules.users.models.Role;
-import mx.izzi.offboarding.modules.users.models.User;
+import mx.izzi.offboarding.modules.users.domain.dtos.CreateUserDto;
+import mx.izzi.offboarding.modules.users.domain.dtos.UpdateUserDto;
+import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
+import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
+import mx.izzi.offboarding.modules.users.domain.models.UserMapper;
+import mx.izzi.offboarding.modules.users.domain.models.Role;
+import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.repositories.RoleRepository;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
+import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.modules.workcenter.entities.WorkCenterEntity;
 import mx.izzi.offboarding.modules.workcenter.models.WorkCenter;
 import mx.izzi.offboarding.modules.workcenter.repositories.WorkCenterRepository;
 import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
 import mx.izzi.offboarding.shared.exceptions.ResourceAlreadyExistsException;
+import mx.izzi.offboarding.shared.exceptions.ResourceNotAvailableException;
 import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -122,5 +129,94 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         return Optional.of(this.userRepository.saveAndFlush(UserMapper.toEntity(user)).toDomain());
+    }
+
+    @Override
+    public Page<User> findAll(int page, int size) {
+        if (!List.of(5, 10, 20).contains(size)) {
+            throw new IllegalArgumentException("Size must be between 5 and 20");
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        return this.userRepository.findAllActiveUserBy(pageable).map(UserEntity::toDomain);
+    }
+
+    @Override
+    public Optional<User> update(Long idssff, UpdateUserDto updateUserDto) {
+
+        WorkCenter workCenter = null;
+
+        UserEntity userFound = this.userRepository.findOneByIdssff(idssff);
+
+        if (userFound == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+
+        if (userFound.getIsActive().equals(false)) {
+            throw new ResourceNotAvailableException("User not active");
+        }
+
+        String password = updateUserDto.getPassword() != null
+                ? passwordEncoder.encode(updateUserDto.getPassword())
+                : userFound.getPassword();
+
+        if (updateUserDto.getWorkCenterId() != null) {
+            workCenter = this.workCenterRepository
+                    .findById(updateUserDto.getWorkCenterId())
+                    .map(WorkCenterEntity::toDomain)
+                    .orElse(null);
+
+            if (workCenter == null) {
+                throw new ResourceNotFoundException("Work center not found");
+            }
+        }
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        User user = User.builder()
+                .idssff(userFound.getIdssff())
+                .name(userFound.getName())
+                .firstSurname(userFound.getFirstSurname())
+                .secondSurname(userFound.getSecondSurname())
+                .email(userFound.getEmail())
+                .username(userFound.getUsername())
+                .password(password)
+                .isActive(true)
+                .createdAt(userFound.getCreatedAt())
+                .updatedAt(LocalDateTime.now())
+                .createdBy(userFound.getCreatedBy())
+                .updatedBy(userDetails.getUsername())
+                .role(userFound.getRole().toDomain())
+                .workCenter(workCenter)
+                .build();
+
+
+        return Optional.of(this.userRepository.saveAndFlush(UserMapper.toEntity(user)).toDomain());
+    }
+
+    @Override
+    public Optional<User> delete(Long idssff) {
+        UserEntity userFound = this.userRepository.findOneByIdssff(idssff);
+
+        if (userFound == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+
+        if (userFound.getIsActive().equals(false)) {
+            throw new ResourceNotAvailableException("User not active");
+        }
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        userFound.setIsActive(false);
+        userFound.setUpdatedBy(userDetails.getUsername());
+        return Optional.of(this.userRepository.saveAndFlush(userFound).toDomain());
+
     }
 }

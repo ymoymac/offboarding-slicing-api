@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.users.dtos;
+package mx.izzi.offboarding.modules.users.domain.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;

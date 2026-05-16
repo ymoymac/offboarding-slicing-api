@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import mx.izzi.offboarding.modules.users.models.User;
+import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.workcenter.models.WorkCenter;
 
 import java.time.LocalDateTime;

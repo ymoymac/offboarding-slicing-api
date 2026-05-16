@@ -2,7 +2,7 @@ package mx.izzi.offboarding.modules.auth.services;
 
 import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.auth.models.AuthenticatedUser;
-import mx.izzi.offboarding.modules.users.entities.UserEntity;
+import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

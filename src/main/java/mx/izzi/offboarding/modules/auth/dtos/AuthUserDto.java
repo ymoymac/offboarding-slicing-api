@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import mx.izzi.offboarding.modules.users.dtos.DetailUserDto;
+import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserDto;
 
 @Data
 @Builder

@@ -10,6 +10,7 @@ public enum OBResponseCodes {
     USER_CREATED(201, "Created", "User created successfully"),
     USER_LOGIN(201, "Success", "Successful login"),
     GET_USER(200, "Get user", "User retrieved successfully"),
+    LIST_ACTIVE_USER(200, "Get all active users", "All active users were obtained"),
 
     // ============================================
     // TERMINATION RESPONSE CODES
