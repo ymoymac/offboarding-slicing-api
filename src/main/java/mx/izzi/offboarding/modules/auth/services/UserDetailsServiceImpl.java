@@ -1,7 +1,7 @@
 package mx.izzi.offboarding.modules.auth.services;
 
 import lombok.RequiredArgsConstructor;
-import mx.izzi.offboarding.modules.auth.models.SecurityUser;
+import mx.izzi.offboarding.modules.auth.models.AuthenticatedUser;
 import mx.izzi.offboarding.modules.users.entities.UserEntity;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import org.slf4j.Logger;
@@ -32,17 +32,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if  (user == null) {
             throw new BadCredentialsException(idssff);
         }
-        SecurityUser securityUser = new SecurityUser(user.toDomain());
+        AuthenticatedUser authenticatedUser = new AuthenticatedUser(user.toDomain());
 
         return org.springframework.security.core.userdetails.User
                 .builder()
-                .username(securityUser.user().getIdssff().toString())
-                .password(securityUser.user().getPassword())
-                .authorities(List.of(new SimpleGrantedAuthority(securityUser.user().getRole().getName())))
-                .accountExpired(!securityUser.isAccountNonExpired())
-                .accountLocked(!securityUser.isAccountNonLocked())
-                .credentialsExpired(!securityUser.isCredentialsNonExpired())
-                .disabled(!securityUser.user().getIsActive())
+                .username(authenticatedUser.user().getIdssff().toString())
+                .password(authenticatedUser.user().getPassword())
+                .authorities(List.of(new SimpleGrantedAuthority(authenticatedUser.user().getRole().getName())))
+                .accountExpired(!authenticatedUser.isAccountNonExpired())
+                .accountLocked(!authenticatedUser.isAccountNonLocked())
+                .credentialsExpired(!authenticatedUser.isCredentialsNonExpired())
+                .disabled(!authenticatedUser.user().getIsActive())
                 .build();
     }
 }

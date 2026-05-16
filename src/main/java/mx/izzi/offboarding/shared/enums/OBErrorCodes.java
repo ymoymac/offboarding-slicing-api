@@ -15,7 +15,8 @@ public enum OBErrorCodes {
     USER_UNIQUENESS_RULE(400, "Bad Request", "Insertion error. This element already exists"),
     DATA_INTEGRITY_ERROR(409, "Bad Request", "Data integrity error"),
     LOGIN_ERROR_CREDENTIALS(401, "Unauthorized", "Invalid credentials"),
-            ;
+    ACCESS_DENIED(403, "Forbidden", "Access denied"),
+    ;
 
     private final Integer httpStatus;
     private final String httpCode;

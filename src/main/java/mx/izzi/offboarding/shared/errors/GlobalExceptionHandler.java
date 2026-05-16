@@ -1,8 +1,7 @@
 package mx.izzi.offboarding.shared.errors;
 
-import mx.izzi.offboarding.modules.auth.controllers.AuthController;
-import mx.izzi.offboarding.modules.users.controller.UserController;
 import mx.izzi.offboarding.shared.enums.OBErrorCodes;
+import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
 import mx.izzi.offboarding.shared.exceptions.ResourceAlreadyExistsException;
 import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
 import mx.izzi.offboarding.shared.models.OBErrorResponse;
@@ -10,7 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -121,6 +120,38 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new OBErrorResponse(OBErrorCodes.LOGIN_ERROR_CREDENTIALS, errors),
                 HttpStatus.UNAUTHORIZED
+        );
+    }
+
+    @ExceptionHandler(ResourceAccessDeniedException.class)
+    public ResponseEntity<OBErrorResponse> handleAccessDenied(ResourceAccessDeniedException ex) {
+
+        List<Map<String, Object>> errors = new ArrayList<>();
+
+        Map<String, Object> err = new HashMap<>();
+        err.put("errorCode", "PB-AUTH-ERR001");
+        err.put("message", "Access denied");
+        errors.add(err);
+
+        return new ResponseEntity<>(
+                new OBErrorResponse(OBErrorCodes.ACCESS_DENIED, errors),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<OBErrorResponse> handleAuthorizationDenied(AuthorizationDeniedException ex) {
+
+        List<Map<String, Object>> errors = new ArrayList<>();
+
+        Map<String, Object> err = new HashMap<>();
+        err.put("errorCode", "PB-AUTH-ERR001");
+        err.put("message", "Authorization denied");
+        errors.add(err);
+
+        return new ResponseEntity<>(
+                new OBErrorResponse(OBErrorCodes.ACCESS_DENIED, errors),
+                HttpStatus.FORBIDDEN
         );
     }
 

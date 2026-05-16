@@ -2,6 +2,7 @@ package mx.izzi.offboarding.modules.users.models;
 
 import mx.izzi.offboarding.modules.users.dtos.DetailUserDto;
 import mx.izzi.offboarding.modules.users.entities.UserEntity;
+import mx.izzi.offboarding.modules.workcenter.WorkCenterMapper;
 
 public class UserMapper {
     public static DetailUserDto from(User user) {
@@ -28,6 +29,7 @@ public class UserMapper {
                 .password(user.getPassword())
                 .isActive(user.getIsActive())
                 .role(RoleMapper.toEntity(user.getRole()))
+                .workCenter(WorkCenterMapper.toEntity(user.getWorkCenter()))
                 .build();
     }
 }

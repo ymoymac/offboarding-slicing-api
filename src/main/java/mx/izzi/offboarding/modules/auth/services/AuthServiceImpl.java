@@ -5,6 +5,7 @@ import mx.izzi.offboarding.modules.auth.dtos.LoginDto;
 import mx.izzi.offboarding.modules.auth.dtos.SignUpDto;
 import mx.izzi.offboarding.modules.auth.models.AuthMapper;
 import mx.izzi.offboarding.modules.auth.models.AuthUser;
+import mx.izzi.offboarding.modules.auth.models.AuthenticatedUser;
 import mx.izzi.offboarding.modules.users.models.User;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.modules.users.services.UserService;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -91,5 +93,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean validateToken(String token) {
         return false;
+    }
+
+    @Override
+    public AuthenticatedUser getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (AuthenticatedUser) authentication.getPrincipal();
     }
 }

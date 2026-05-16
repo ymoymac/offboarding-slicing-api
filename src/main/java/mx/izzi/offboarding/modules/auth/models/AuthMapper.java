@@ -22,6 +22,7 @@ public class AuthMapper {
                 .secondSurname(signUpDto.getSecondSurname())
                 .password(signUpDto.getPassword())
                 .email(signUpDto.getEmail())
+                .workCenterId(signUpDto.getWorkCenterId())
                 .build();
     }
 }

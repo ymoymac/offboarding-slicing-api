@@ -49,5 +49,8 @@ public class CreateUserDto {
     @Size(min = 5, message = "Password must be at least 8 characters long")
     @JsonProperty
     private String password;
+
+    @JsonProperty
+    private Long workCenterId;
 }
 

@@ -50,9 +50,6 @@ public class SignUpDto {
     private String password;
 
     @JsonProperty
-    private String location;
-
-    @JsonProperty
-    private String position;
+    private Long workCenterId;
 
 }

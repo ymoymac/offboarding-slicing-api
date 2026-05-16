@@ -1,6 +1,7 @@
 package mx.izzi.offboarding.modules.users.controller;
 
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.users.dtos.CreateUserDto;
@@ -23,6 +24,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{idssff}")
+    @RolesAllowed({"ADMIN"})
     public ResponseEntity<OBResponse<DetailUserDto>> getById(@PathVariable String idssff) {
         return this.userService.findOneBy(Long.parseLong(idssff))
                 .map(UserMapper::from)
@@ -31,7 +33,18 @@ public class UserController {
 
     }
 
+    @GetMapping("/profile/{idssff}")
+    @RolesAllowed({"IMMEDIATE_BOSS", "RRHH"})
+    public ResponseEntity<OBResponse<DetailUserDto>> getUserProfileById(@PathVariable String idssff) {
+        return this.userService.findOneProfileBy(Long.parseLong(idssff))
+                .map(UserMapper::from)
+                .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_USER, userDto, HttpStatus.OK))
+                .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
+
+    }
+
     @PostMapping
+    @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS"})
     public ResponseEntity<OBResponse<DetailUserDto>> create(@RequestBody @Valid CreateUserDto createUserDto) {
         return this.userService.create(createUserDto)
                 .map(UserMapper::from)
