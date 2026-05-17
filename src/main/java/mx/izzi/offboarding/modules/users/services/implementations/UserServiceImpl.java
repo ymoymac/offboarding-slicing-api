@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.users.services.implamentations;
+package mx.izzi.offboarding.modules.users.services.implementations;
 
 import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.auth.domain.models.AuthenticatedUser;
@@ -12,13 +12,10 @@ import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.repositories.RoleRepository;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.modules.users.services.UserService;
-import mx.izzi.offboarding.modules.workcenter.domain.WorkCenterEntity;
+import mx.izzi.offboarding.modules.workcenter.domain.entities.WorkCenterEntity;
 import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenter;
 import mx.izzi.offboarding.modules.workcenter.repositories.WorkCenterRepository;
-import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
-import mx.izzi.offboarding.shared.exceptions.ResourceAlreadyExistsException;
-import mx.izzi.offboarding.shared.exceptions.ResourceNotAvailableException;
-import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
+import mx.izzi.offboarding.shared.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -43,18 +40,31 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final WorkCenterRepository workCenterRepository;
+    private final WorkCenterRepository workCenterRepository; // Cambiar por service
 
     @Override
     public Optional<User> findOneBy(Long idssff) {
-        return Optional.of(this.userRepository.findOneByIdssff(idssff).toDomain());
+        Optional<User> user = this.userRepository
+                .findOneByIdssff(idssff)
+                .map(UserEntity::toDomain);
+
+        if (user.isEmpty()) {
+            throw new ResourceNotFoundException("User not found");
+        }
+
+        if (user.get().getIsActive().equals(false)) {
+            throw new ResourceNotAvailableException("User not available");
+        }
+
+        return user;
     }
 
     @Override
     public Optional<User> findOneProfileBy(Long idssff) {
-        User user = this.userRepository.findOneByIdssff(idssff).toDomain();
+        Optional<User> user = this.userRepository.findOneByIdssff(idssff)
+                .map(UserEntity::toDomain);
 
-        if (user == null) {
+        if (user.isEmpty()) {
             throw new ResourceNotFoundException("User not found");
         }
 
@@ -63,7 +73,7 @@ public class UserServiceImpl implements UserService {
                 .getAuthentication()
                 .getPrincipal();
 
-        AuthenticatedUser authenticatedUser = new AuthenticatedUser(user);
+        AuthenticatedUser authenticatedUser = new AuthenticatedUser(user.get());
 
         boolean isAdmin = authenticatedUser.isAdmin();
 
@@ -73,15 +83,15 @@ public class UserServiceImpl implements UserService {
             throw new ResourceAccessDeniedException("Access denied");
         }
 
-        return Optional.of(user);
+        return user;
     }
 
     @Transactional
     @Override
     public Optional<User> create(CreateUserDto createUserDto) {
-        UserEntity userFound = this.userRepository.findOneByIdssff(createUserDto.getIdssff());
+        Optional<UserEntity> userFound = this.userRepository.findOneByIdssff(createUserDto.getIdssff());
 
-        if (userFound != null) {
+        if (userFound.isPresent()) {
             throw new ResourceAlreadyExistsException("User already exists");
         }
 
@@ -146,19 +156,15 @@ public class UserServiceImpl implements UserService {
 
         WorkCenter workCenter = null;
 
-        UserEntity userFound = this.userRepository.findOneByIdssff(idssff);
+        Optional<User> userFound = this.findOneBy(idssff);
 
-        if (userFound == null) {
-            throw new ResourceNotFoundException("User not found");
-        }
-
-        if (userFound.getIsActive().equals(false)) {
-            throw new ResourceNotAvailableException("User not active");
+        if  (userFound.isEmpty()) {
+            throw new ServerException("Something went wrong");
         }
 
         String password = updateUserDto.getPassword() != null
                 ? passwordEncoder.encode(updateUserDto.getPassword())
-                : userFound.getPassword();
+                : userFound.get().getPassword();
 
         if (updateUserDto.getWorkCenterId() != null) {
             workCenter = this.workCenterRepository
@@ -177,36 +183,31 @@ public class UserServiceImpl implements UserService {
                 .getPrincipal();
 
         User user = User.builder()
-                .idssff(userFound.getIdssff())
-                .name(userFound.getName())
-                .firstSurname(userFound.getFirstSurname())
-                .secondSurname(userFound.getSecondSurname())
-                .email(userFound.getEmail())
-                .username(userFound.getUsername())
+                .idssff(userFound.get().getIdssff())
+                .name(userFound.get().getName())
+                .firstSurname(userFound.get().getFirstSurname())
+                .secondSurname(userFound.get().getSecondSurname())
+                .email(userFound.get().getEmail())
+                .username(userFound.get().getUsername())
                 .password(password)
                 .isActive(true)
-                .createdAt(userFound.getCreatedAt())
+                .createdAt(userFound.get().getCreatedAt())
                 .updatedAt(LocalDateTime.now())
-                .createdBy(userFound.getCreatedBy())
+                .createdBy(userFound.get().getCreatedBy())
                 .updatedBy(userDetails.getUsername())
-                .role(userFound.getRole().toDomain())
+                .role(userFound.get().getRole())
                 .workCenter(workCenter)
                 .build();
-
 
         return Optional.of(this.userRepository.saveAndFlush(UserMapper.toEntity(user)).toDomain());
     }
 
     @Override
     public Optional<User> delete(Long idssff) {
-        UserEntity userFound = this.userRepository.findOneByIdssff(idssff);
+        Optional<User> userFound = this.findOneBy(idssff);
 
-        if (userFound == null) {
-            throw new ResourceNotFoundException("User not found");
-        }
-
-        if (userFound.getIsActive().equals(false)) {
-            throw new ResourceNotAvailableException("User not active");
+        if  (userFound.isEmpty()) {
+            throw new ServerException("Something went wrong");
         }
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder
@@ -214,9 +215,9 @@ public class UserServiceImpl implements UserService {
                 .getAuthentication()
                 .getPrincipal();
 
-        userFound.setIsActive(false);
-        userFound.setUpdatedBy(userDetails.getUsername());
-        return Optional.of(this.userRepository.saveAndFlush(userFound).toDomain());
+        userFound.get().setIsActive(false);
+        userFound.get().setUpdatedBy(userDetails.getUsername());
+        return Optional.of(this.userRepository.saveAndFlush(UserMapper.toEntity(userFound.get())).toDomain());
 
     }
 }

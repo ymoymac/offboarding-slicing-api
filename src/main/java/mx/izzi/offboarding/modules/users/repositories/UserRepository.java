@@ -8,9 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u FROM UserEntity u JOIN FETCH u.role JOIN FETCH u.workCenter WHERE u.idssff = :idssff")
-    UserEntity findOneByIdssff(@Param("idssff") Long idssff);
+    Optional<UserEntity> findOneByIdssff(@Param("idssff") Long idssff);
     @Query("SELECT u FROM UserEntity u JOIN FETCH u.role JOIN FETCH u.workCenter WHERE u.isActive = true")
     Page<UserEntity> findAllActiveUserBy(Pageable pageable);
     boolean existsById(@NonNull Long idssff);

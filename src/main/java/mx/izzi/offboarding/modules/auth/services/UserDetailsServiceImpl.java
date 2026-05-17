@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,12 +28,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         LOG.info("[INFO]: Executing UserDetailsService for user '{}'", idssff);
 
-        UserEntity user = userRepository.findOneByIdssff(Long.parseLong(idssff));
+        Optional<UserEntity> user = this.userRepository.findOneByIdssff(Long.parseLong(idssff));
 
-        if  (user == null) {
+        if  (user.isEmpty()) {
             throw new BadCredentialsException(idssff);
         }
-        AuthenticatedUser authenticatedUser = new AuthenticatedUser(user.toDomain());
+        AuthenticatedUser authenticatedUser = new AuthenticatedUser(user.get().toDomain());
 
         return org.springframework.security.core.userdetails.User
                 .builder()

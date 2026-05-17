@@ -3,8 +3,13 @@ package mx.izzi.offboarding.modules.users.controller;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import mx.izzi.offboarding.modules.employees.domain.dtos.DetailEmployeeDto;
+import mx.izzi.offboarding.modules.employees.domain.models.Employee;
+import mx.izzi.offboarding.modules.employees.domain.models.EmployeeMapper;
+import mx.izzi.offboarding.modules.employees.services.EmployeeService;
 import mx.izzi.offboarding.modules.users.domain.dtos.CreateUserDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserDto;
+import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserWithRoleDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.UpdateUserDto;
 import mx.izzi.offboarding.modules.users.domain.models.UserMapper;
 import mx.izzi.offboarding.modules.users.services.UserService;
@@ -17,18 +22,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final EmployeeService employeeService;
 
     @GetMapping("/{idssff}")
     @RolesAllowed({"ADMIN"})
-    public ResponseEntity<OBResponse<DetailUserDto>> getById(@PathVariable String idssff) {
+    public ResponseEntity<OBResponse<DetailUserWithRoleDto>> getById(@PathVariable String idssff) {
         return this.userService.findOneBy(Long.parseLong(idssff))
-                .map(UserMapper::from)
+                .map(UserMapper::toDto)
                 .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_USER, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
@@ -55,12 +63,12 @@ public class UserController {
 
     @GetMapping
     @RolesAllowed({"ADMIN"})
-    public ResponseEntity<OBResponse<Page<DetailUserDto>>> getAllUsers(
+    public ResponseEntity<OBResponse<Page<DetailUserWithRoleDto>>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<DetailUserDto> users = this.userService.findAll(page, size)
-                .map(UserMapper::from);
+        Page<DetailUserWithRoleDto> users = this.userService.findAll(page, size)
+                .map(UserMapper::toDto);
 
         return ResponseMapper.map(OBResponseCodes.LIST_ACTIVE_USER, users, HttpStatus.OK);
     }
@@ -86,6 +94,17 @@ public class UserController {
                 .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_USER, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
+    }
+
+    @GetMapping("/{idssff}/employees")
+    @RolesAllowed({"IMMEDIATE_BOSS"})
+    public ResponseEntity<OBResponse<List<DetailEmployeeDto>>> getAllEmployees(@PathVariable String idssff) {
+        List<DetailEmployeeDto> employees = this.employeeService.findAllEmployeesByImmediateBoss(Long.parseLong(idssff))
+                .stream()
+                .map(EmployeeMapper::from)
+                .toList();
+
+        return ResponseMapper.map(OBResponseCodes.LIST_ACTIVE_USER, employees, HttpStatus.OK);
     }
 }
 

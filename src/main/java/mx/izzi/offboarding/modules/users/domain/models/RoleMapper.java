@@ -1,8 +1,16 @@
 package mx.izzi.offboarding.modules.users.domain.models;
 
+import mx.izzi.offboarding.modules.users.domain.dtos.DetailRoleDto;
 import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
 
 public class RoleMapper {
+    public static DetailRoleDto from(Role role) {
+        return DetailRoleDto.builder()
+                .name(role.getName())
+                .description(role.getDescription())
+                .build();
+    }
+
     public static RoleEntity toEntity(Role role) {
         return RoleEntity.builder()
                 .roleId(role.getRoleId())

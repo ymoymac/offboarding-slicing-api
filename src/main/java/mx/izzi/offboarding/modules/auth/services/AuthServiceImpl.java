@@ -6,6 +6,7 @@ import mx.izzi.offboarding.modules.auth.domain.dtos.SignUpDto;
 import mx.izzi.offboarding.modules.auth.domain.models.AuthMapper;
 import mx.izzi.offboarding.modules.auth.domain.models.AuthUser;
 import mx.izzi.offboarding.modules.auth.domain.models.AuthenticatedUser;
+import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.modules.users.services.UserService;
@@ -45,7 +46,10 @@ public class AuthServiceImpl implements AuthService {
 
         String token = this.jwtService.generateToken(userDetails);
 
-        User user = this.userJpaRepository.findOneByIdssff(loginDto.getIdssff()).toDomain();
+        User user = this.userJpaRepository
+                .findOneByIdssff(loginDto.getIdssff())
+                .map(UserEntity::toDomain)
+                .orElse(null);
 
         return Optional.of(
                 AuthUser.builder()

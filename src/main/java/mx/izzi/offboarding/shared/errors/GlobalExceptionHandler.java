@@ -1,10 +1,7 @@
 package mx.izzi.offboarding.shared.errors;
 
 import mx.izzi.offboarding.shared.enums.OBErrorCodes;
-import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
-import mx.izzi.offboarding.shared.exceptions.ResourceAlreadyExistsException;
-import mx.izzi.offboarding.shared.exceptions.ResourceNotAvailableException;
-import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
+import mx.izzi.offboarding.shared.exceptions.*;
 import mx.izzi.offboarding.shared.models.OBErrorResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -185,6 +182,22 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new OBErrorResponse(OBErrorCodes.NAN, errors),
                 HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(ServerException.class)
+    public ResponseEntity<OBErrorResponse> handleServerException(ServerException ex) {
+
+        List<Map<String, Object>> errors = new ArrayList<>();
+
+        Map<String, Object> err = new HashMap<>();
+        err.put("errorCode", "PB-AUTH-ERR001");
+        err.put("message", "Internal server error");
+        errors.add(err);
+
+        return new ResponseEntity<>(
+                new OBErrorResponse(OBErrorCodes.INTERNAL_SERVER_ERROR, errors),
+                HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
