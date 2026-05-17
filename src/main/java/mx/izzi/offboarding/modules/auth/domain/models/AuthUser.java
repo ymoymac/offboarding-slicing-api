@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.auth.models;
+package mx.izzi.offboarding.modules.auth.domain.models;
 
 import lombok.*;
 import mx.izzi.offboarding.modules.users.domain.models.User;

@@ -1,6 +1,6 @@
 package mx.izzi.offboarding.modules.employees.services;
 
-import mx.izzi.offboarding.modules.employees.models.Employee;
+import mx.izzi.offboarding.modules.employees.domain.models.Employee;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

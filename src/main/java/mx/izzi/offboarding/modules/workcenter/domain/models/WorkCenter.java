@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.workcenter.models;
+package mx.izzi.offboarding.modules.workcenter.domain.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

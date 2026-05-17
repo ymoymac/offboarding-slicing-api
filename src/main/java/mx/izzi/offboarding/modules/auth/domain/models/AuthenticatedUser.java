@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.auth.models;
+package mx.izzi.offboarding.modules.auth.domain.models;
 
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.shared.enums.Roles;

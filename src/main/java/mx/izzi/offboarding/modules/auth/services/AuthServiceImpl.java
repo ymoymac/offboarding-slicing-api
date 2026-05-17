@@ -1,11 +1,11 @@
 package mx.izzi.offboarding.modules.auth.services;
 
 import lombok.RequiredArgsConstructor;
-import mx.izzi.offboarding.modules.auth.dtos.LoginDto;
-import mx.izzi.offboarding.modules.auth.dtos.SignUpDto;
-import mx.izzi.offboarding.modules.auth.models.AuthMapper;
-import mx.izzi.offboarding.modules.auth.models.AuthUser;
-import mx.izzi.offboarding.modules.auth.models.AuthenticatedUser;
+import mx.izzi.offboarding.modules.auth.domain.dtos.LoginDto;
+import mx.izzi.offboarding.modules.auth.domain.dtos.SignUpDto;
+import mx.izzi.offboarding.modules.auth.domain.models.AuthMapper;
+import mx.izzi.offboarding.modules.auth.domain.models.AuthUser;
+import mx.izzi.offboarding.modules.auth.domain.models.AuthenticatedUser;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.modules.users.services.UserService;

@@ -19,7 +19,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import mx.izzi.offboarding.modules.users.domain.models.User;
-import mx.izzi.offboarding.modules.workcenter.entities.WorkCenterEntity;
+import mx.izzi.offboarding.modules.workcenter.domain.WorkCenterEntity;
 
 import java.time.LocalDateTime;
 

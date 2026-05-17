@@ -1,15 +1,12 @@
-package mx.izzi.offboarding.modules.employees.models;
+package mx.izzi.offboarding.modules.employees.domain.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import mx.izzi.offboarding.modules.users.domain.models.User;
-import mx.izzi.offboarding.modules.workcenter.models.WorkCenter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -17,25 +14,38 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Employee {
-    private Long employeeId;
-    private Long idssff;
-    private Long number;
-    private String name;
-    private String firstSurname;
-    private String secondSurname;
-    private String email;
-    private String status;
-    private String jobPositionId;
-    private String jobPosition;
-    private String positionId;
-    private String position;
-    private Boolean isActive;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private String createdBy;
-    private String updatedBy;
-    private User immediateBoos;
-    private WorkCenter  workCenter;
-}
+public class DetailEmployeeDto {
 
+    @JsonProperty
+    private Long idssff;
+
+    @JsonProperty
+    private Long number;
+
+    @JsonProperty
+    private String name;
+
+    @JsonProperty
+    private String firstSurname;
+
+    @JsonProperty
+    private String secondSurname;
+
+    @JsonProperty
+    private String email;
+
+    @JsonProperty
+    private String status;
+
+    @JsonProperty
+    private String jobPositionId;
+
+    @JsonProperty
+    private String jobPosition;
+
+    @JsonProperty
+    private String positionId;
+
+    @JsonProperty
+    private String position;
+}

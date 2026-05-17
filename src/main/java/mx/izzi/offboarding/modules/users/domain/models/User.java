@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import mx.izzi.offboarding.modules.workcenter.models.WorkCenter;
+import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenter;
 
 import java.time.LocalDateTime;
 

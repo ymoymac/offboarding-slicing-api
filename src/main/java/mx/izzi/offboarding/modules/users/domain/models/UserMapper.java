@@ -2,7 +2,7 @@ package mx.izzi.offboarding.modules.users.domain.models;
 
 import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserDto;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
-import mx.izzi.offboarding.modules.workcenter.WorkCenterMapper;
+import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenterMapper;
 
 public class UserMapper {
     public static DetailUserDto from(User user) {

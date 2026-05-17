@@ -1,12 +1,15 @@
-package mx.izzi.offboarding.modules.employees.dtos;
+package mx.izzi.offboarding.modules.employees.domain.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import mx.izzi.offboarding.modules.users.domain.models.User;
+import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,38 +17,25 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class DetailEmployeeDto {
-
-    @JsonProperty
+public class Employee {
+    private Long employeeId;
     private Long idssff;
-
-    @JsonProperty
     private Long number;
-
-    @JsonProperty
     private String name;
-
-    @JsonProperty
     private String firstSurname;
-
-    @JsonProperty
     private String secondSurname;
-
-    @JsonProperty
     private String email;
-
-    @JsonProperty
     private String status;
-
-    @JsonProperty
     private String jobPositionId;
-
-    @JsonProperty
     private String jobPosition;
-
-    @JsonProperty
     private String positionId;
-
-    @JsonProperty
     private String position;
+    private Boolean isActive;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private String createdBy;
+    private String updatedBy;
+    private User immediateBoos;
+    private WorkCenter  workCenter;
 }
+

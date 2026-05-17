@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import mx.izzi.offboarding.modules.auth.dtos.AuthUserDto;
-import mx.izzi.offboarding.modules.auth.dtos.LoginDto;
-import mx.izzi.offboarding.modules.auth.dtos.SignUpDto;
-import mx.izzi.offboarding.modules.auth.models.AuthMapper;
+import mx.izzi.offboarding.modules.auth.domain.AuthUserDto;
+import mx.izzi.offboarding.modules.auth.domain.LoginDto;
+import mx.izzi.offboarding.modules.auth.domain.SignUpDto;
+import mx.izzi.offboarding.modules.auth.domain.models.AuthMapper;
 import mx.izzi.offboarding.modules.auth.services.AuthService;
 import mx.izzi.offboarding.shared.enums.OBErrorCodes;
 import mx.izzi.offboarding.shared.enums.OBResponseCodes;
@@ -29,7 +29,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<OBResponse<AuthUserDto>> login(@RequestBody @Valid  LoginDto loginDto) {
+    public ResponseEntity<OBResponse<AuthUserDto>> login(@RequestBody @Valid LoginDto loginDto) {
         return this.authService.login(loginDto)
                 .map(AuthMapper::from)
                 .map(userDto -> ResponseMapper.map(OBResponseCodes.USER_LOGIN, userDto, HttpStatus.OK))

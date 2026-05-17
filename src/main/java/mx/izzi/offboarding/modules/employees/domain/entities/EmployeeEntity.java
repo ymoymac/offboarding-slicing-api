@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.employees.entities;
+package mx.izzi.offboarding.modules.employees.domain.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -12,9 +12,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.*;
-import mx.izzi.offboarding.modules.employees.models.Employee;
+import mx.izzi.offboarding.modules.employees.domain.models.Employee;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
-import mx.izzi.offboarding.modules.workcenter.entities.WorkCenterEntity;
+import mx.izzi.offboarding.modules.workcenter.domain.WorkCenterEntity;
 
 import java.time.LocalDateTime;
 

@@ -1,7 +1,7 @@
-package mx.izzi.offboarding.modules.auth.models;
+package mx.izzi.offboarding.modules.auth.domain.models;
 
-import mx.izzi.offboarding.modules.auth.dtos.AuthUserDto;
-import mx.izzi.offboarding.modules.auth.dtos.SignUpDto;
+import mx.izzi.offboarding.modules.auth.domain.dtos.AuthUserDto;
+import mx.izzi.offboarding.modules.auth.domain.dtos.SignUpDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.CreateUserDto;
 import mx.izzi.offboarding.modules.users.domain.models.UserMapper;
 

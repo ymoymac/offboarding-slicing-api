@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.workcenter.entities;
+package mx.izzi.offboarding.modules.workcenter.domain.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -17,9 +17,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import mx.izzi.offboarding.modules.employees.entities.EmployeeEntity;
+import mx.izzi.offboarding.modules.employees.domain.entities.EmployeeEntity;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
-import mx.izzi.offboarding.modules.workcenter.models.WorkCenter;
+import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenter;
 
 import java.time.LocalDateTime;
 import java.util.Set;

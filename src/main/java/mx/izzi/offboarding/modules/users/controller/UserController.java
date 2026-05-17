@@ -1,6 +1,5 @@
 package mx.izzi.offboarding.modules.users.controller;
 
-
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

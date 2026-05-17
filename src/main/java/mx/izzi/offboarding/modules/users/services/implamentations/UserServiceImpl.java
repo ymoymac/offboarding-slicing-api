@@ -1,7 +1,7 @@
 package mx.izzi.offboarding.modules.users.services.implamentations;
 
 import lombok.RequiredArgsConstructor;
-import mx.izzi.offboarding.modules.auth.models.AuthenticatedUser;
+import mx.izzi.offboarding.modules.auth.domain.models.AuthenticatedUser;
 import mx.izzi.offboarding.modules.users.domain.dtos.CreateUserDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.UpdateUserDto;
 import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
@@ -12,8 +12,8 @@ import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.repositories.RoleRepository;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.modules.users.services.UserService;
-import mx.izzi.offboarding.modules.workcenter.entities.WorkCenterEntity;
-import mx.izzi.offboarding.modules.workcenter.models.WorkCenter;
+import mx.izzi.offboarding.modules.workcenter.domain.WorkCenterEntity;
+import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenter;
 import mx.izzi.offboarding.modules.workcenter.repositories.WorkCenterRepository;
 import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
 import mx.izzi.offboarding.shared.exceptions.ResourceAlreadyExistsException;

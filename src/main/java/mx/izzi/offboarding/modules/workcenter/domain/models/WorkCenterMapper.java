@@ -1,10 +1,9 @@
-package mx.izzi.offboarding.modules.workcenter;
+package mx.izzi.offboarding.modules.workcenter.domain.models;
 
-import mx.izzi.offboarding.modules.workcenter.entities.WorkCenterEntity;
-import mx.izzi.offboarding.modules.workcenter.models.WorkCenter;
+import mx.izzi.offboarding.modules.workcenter.domain.entities.WorkCenterEntity;
 
 public class WorkCenterMapper {
-    public static WorkCenterEntity toEntity(WorkCenter workCenter) {
+    public static mx.izzi.offboarding.modules.workcenter.domain.entities.WorkCenterEntity toEntity(WorkCenter workCenter) {
         return WorkCenterEntity.builder()
                 .id(workCenter.getId())
                 .regionId(workCenter.getRegionId())

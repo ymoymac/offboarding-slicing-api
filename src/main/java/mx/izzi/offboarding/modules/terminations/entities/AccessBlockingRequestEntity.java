@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import mx.izzi.offboarding.modules.employees.entities.EmployeeEntity;
+import mx.izzi.offboarding.modules.employees.domain.entities.EmployeeEntity;
 import mx.izzi.offboarding.modules.terminations.models.AccessBlockingRequest;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
 
