@@ -4,7 +4,6 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.employees.domain.dtos.DetailEmployeeDto;
-import mx.izzi.offboarding.modules.employees.domain.models.Employee;
 import mx.izzi.offboarding.modules.employees.domain.models.EmployeeMapper;
 import mx.izzi.offboarding.modules.employees.services.EmployeeService;
 import mx.izzi.offboarding.modules.users.domain.dtos.CreateUserDto;
@@ -37,7 +36,7 @@ public class UserController {
     public ResponseEntity<OBResponse<DetailUserWithRoleDto>> getById(@PathVariable String idssff) {
         return this.userService.findOneBy(Long.parseLong(idssff))
                 .map(UserMapper::toDto)
-                .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_USER, userDto, HttpStatus.OK))
+                .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_RESOURCE, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
     }
@@ -47,7 +46,7 @@ public class UserController {
     public ResponseEntity<OBResponse<DetailUserDto>> getUserProfileById(@PathVariable String idssff) {
         return this.userService.findOneProfileBy(Long.parseLong(idssff))
                 .map(UserMapper::from)
-                .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_USER, userDto, HttpStatus.OK))
+                .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_RESOURCE, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
     }
@@ -57,7 +56,7 @@ public class UserController {
     public ResponseEntity<OBResponse<DetailUserDto>> create(@RequestBody @Valid CreateUserDto createUserDto) {
         return this.userService.create(createUserDto)
                 .map(UserMapper::from)
-                .map(userDto -> ResponseMapper.map(OBResponseCodes.USER_CREATED, userDto, HttpStatus.CREATED))
+                .map(userDto -> ResponseMapper.map(OBResponseCodes.CREATED, userDto, HttpStatus.CREATED))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
@@ -70,7 +69,7 @@ public class UserController {
         Page<DetailUserWithRoleDto> users = this.userService.findAll(page, size)
                 .map(UserMapper::toDto);
 
-        return ResponseMapper.map(OBResponseCodes.LIST_ACTIVE_USER, users, HttpStatus.OK);
+        return ResponseMapper.map(OBResponseCodes.LIST_ACTIVE_RESOURCES, users, HttpStatus.OK);
     }
 
     @PatchMapping("/{idssff}")
@@ -81,7 +80,7 @@ public class UserController {
     ) {
         return this.userService.update(Long.parseLong(idssff), updateUserDto)
                 .map(UserMapper::from)
-                .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_USER, userDto, HttpStatus.OK))
+                .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_RESOURCE, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
     }
@@ -91,7 +90,7 @@ public class UserController {
     public ResponseEntity<OBResponse<DetailUserDto>> delete(@PathVariable String idssff) {
         return this.userService.delete(Long.parseLong(idssff))
                 .map(UserMapper::from)
-                .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_USER, userDto, HttpStatus.OK))
+                .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_RESOURCE, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
     }
@@ -104,7 +103,7 @@ public class UserController {
                 .map(EmployeeMapper::from)
                 .toList();
 
-        return ResponseMapper.map(OBResponseCodes.LIST_ACTIVE_USER, employees, HttpStatus.OK);
+        return ResponseMapper.map(OBResponseCodes.LIST_ACTIVE_RESOURCES, employees, HttpStatus.OK);
     }
 }
 

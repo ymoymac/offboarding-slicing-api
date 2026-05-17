@@ -32,7 +32,7 @@ public class AuthController {
     public ResponseEntity<OBResponse<AuthUserDto>> login(@RequestBody @Valid LoginDto loginDto) {
         return this.authService.login(loginDto)
                 .map(AuthMapper::from)
-                .map(userDto -> ResponseMapper.map(OBResponseCodes.USER_LOGIN, userDto, HttpStatus.OK))
+                .map(userDto -> ResponseMapper.map(OBResponseCodes.LOGIN, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
@@ -40,7 +40,7 @@ public class AuthController {
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpDto signUpDto) {
         return this.authService.signUp(signUpDto)
                 .map(AuthMapper::from)
-                .map(userDto -> ResponseMapper.map(OBResponseCodes.USER_CREATED, userDto, HttpStatus.OK))
+                .map(userDto -> ResponseMapper.map(OBResponseCodes.CREATED, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 

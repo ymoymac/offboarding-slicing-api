@@ -7,16 +7,10 @@ public enum OBResponseCodes {
     // ============================================
     // USER RESPONSE CODES
     // ============================================
-    USER_CREATED(201, "Created", "User created successfully"),
-    USER_LOGIN(201, "Success", "Successful login"),
-    GET_USER(200, "Get user", "User retrieved successfully"),
-    LIST_ACTIVE_USER(200, "Get all active users", "All active users were obtained"),
-
-    // ============================================
-    // TERMINATION RESPONSE CODES
-    // ============================================
-    TERMINATION_CREATED(200, "Created", "Block request successfully created"),
-
+    CREATED(201, "Created", "Resource created successfully"),
+    LOGIN(201, "Success", "Successful login"),
+    GET_RESOURCE(200, "Get resource", "Resource retrieved successfully"),
+    LIST_ACTIVE_RESOURCES(200, "Get all active resources", "All active resources were obtained"),
     ;
 
     private final Integer httpStatus;

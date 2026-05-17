@@ -12,9 +12,8 @@ import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.repositories.RoleRepository;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.modules.users.services.UserService;
-import mx.izzi.offboarding.modules.workcenter.domain.entities.WorkCenterEntity;
 import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenter;
-import mx.izzi.offboarding.modules.workcenter.repositories.WorkCenterRepository;
+import mx.izzi.offboarding.modules.workcenter.services.WorkCenterService;
 import mx.izzi.offboarding.shared.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +41,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final WorkCenterRepository workCenterRepository; // Cambiar por service
+    private final WorkCenterService workCenterService;
 
     @Override
     public Optional<User> findOneBy(Long idssff) {
@@ -51,11 +50,11 @@ public class UserServiceImpl implements UserService {
                 .map(UserEntity::toDomain);
 
         if (user.isEmpty()) {
-            throw new ResourceNotFoundException(PATH + "/" +idssff);
+            throw new ResourceNotFoundException(PATH + "/" + idssff);
         }
 
         if (user.get().getIsActive().equals(false)) {
-            throw new ResourceNotAvailableException(PATH + "/" +idssff);
+            throw new ResourceNotAvailableException(PATH + "/" + idssff);
         }
 
         return user;
@@ -113,9 +112,7 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException(PATH);
         }
 
-        Optional<WorkCenter> workCenter = this.workCenterRepository
-                .findById(createUserDto.getWorkCenterId())
-                .map(WorkCenterEntity::toDomain);
+        Optional<WorkCenter> workCenter = this.workCenterService.findOneBy(createUserDto.getWorkCenterId());
 
         if (workCenter.isEmpty() || workCenter.get().getIsActive().equals(false)) {
             throw new ResourceNotFoundException(PATH);
@@ -146,11 +143,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> findAll(int page, int size) {
         if (!List.of(5, 10, 20).contains(size)) {
-            throw new ValueNotValidException(PATH);
+            throw new ValueNotValidException(PATH + "?page=" + page + "&size=" + size);
         }
 
         Pageable pageable = PageRequest.of(page, size);
-        return this.userRepository.findAllActiveUserBy(pageable).map(UserEntity::toDomain);
+        return this.userRepository
+                .findAllActiveUsersBy(pageable)
+                .map(UserEntity::toDomain);
     }
 
     @Override
@@ -169,14 +168,13 @@ public class UserServiceImpl implements UserService {
                 : userFound.get().getPassword();
 
         if (updateUserDto.getWorkCenterId() != null) {
-            workCenter = this.workCenterRepository
-                    .findById(updateUserDto.getWorkCenterId())
-                    .map(WorkCenterEntity::toDomain)
-                    .orElse(null);
+            Optional<WorkCenter> workCenterFound = this.workCenterService.findOneBy(updateUserDto.getWorkCenterId());
 
-            if (workCenter == null) {
+            if (workCenterFound.isEmpty()) {
                 throw new ResourceNotFoundException(PATH + "/" + idssff);
             }
+
+            workCenter = workCenterFound.get();
         }
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder

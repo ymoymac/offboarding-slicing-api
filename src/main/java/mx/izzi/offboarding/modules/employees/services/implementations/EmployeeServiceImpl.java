@@ -74,10 +74,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Page<Employee> findAll(int page, int size) {
         if (!List.of(5, 10, 20).contains(size)) {
-            throw new ValueNotValidException(PATH);
+            throw new ValueNotValidException(PATH + "?page=" + page + "&size=" + size);
         }
 
         Pageable pageable = PageRequest.of(page, size);
-        return this.employeeRepository.findAllActiveEmployees(pageable).map(EmployeeEntity::toDomain);
+        return this.employeeRepository
+                .findAllActiveEmployees(pageable)
+                .map(EmployeeEntity::toDomain);
     }
 }

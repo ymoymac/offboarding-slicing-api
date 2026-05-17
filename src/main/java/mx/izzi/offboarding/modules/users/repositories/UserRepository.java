@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u FROM UserEntity u JOIN FETCH u.role JOIN FETCH u.workCenter WHERE u.idssff = :idssff")
     Optional<UserEntity> findOneByIdssff(@Param("idssff") Long idssff);
     @Query("SELECT u FROM UserEntity u JOIN FETCH u.role JOIN FETCH u.workCenter WHERE u.isActive = true")
-    Page<UserEntity> findAllActiveUserBy(Pageable pageable);
+    Page<UserEntity> findAllActiveUsersBy(Pageable pageable);
     boolean existsById(@NonNull Long idssff);
     boolean existsByEmail(String email);
     boolean existsByUsername(String username);
