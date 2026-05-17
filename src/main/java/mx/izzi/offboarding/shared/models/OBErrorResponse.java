@@ -16,7 +16,6 @@ public class OBErrorResponse {
     private int httpStatus; // -> 200, 201, 404
     private String httpCode; // OK, Created, Unauthorized
     private String message; // Generic message
-    private String errorCode; // Application code: PB-USR-001
     private String path; // /api/v1/users/1
     private List<?> errors;
 
@@ -32,6 +31,15 @@ public class OBErrorResponse {
         this.httpStatus = codes.getHttpStatus();
         this.httpCode = codes.getHttpCode();
         this.message = codes.getMessage();
+        this.errors = errors;
+    }
+
+    public OBErrorResponse(OBErrorCodes codes, String path, List<?> errors) {
+        this.timestamp = LocalDateTime.now();
+        this.httpStatus = codes.getHttpStatus();
+        this.httpCode = codes.getHttpCode();
+        this.message = codes.getMessage();
+        this.path = path;
         this.errors = errors;
     }
 }

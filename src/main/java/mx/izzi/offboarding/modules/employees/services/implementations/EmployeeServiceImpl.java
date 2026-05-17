@@ -8,10 +8,7 @@ import mx.izzi.offboarding.modules.employees.services.EmployeeService;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.domain.models.UserMapper;
 import mx.izzi.offboarding.modules.users.services.UserService;
-import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
-import mx.izzi.offboarding.shared.exceptions.ResourceNotAvailableException;
-import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
-import mx.izzi.offboarding.shared.exceptions.ServerException;
+import mx.izzi.offboarding.shared.exceptions.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +23,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
+    private final String PATH = "/api/v1/employees";
+
     private final EmployeeRepository employeeRepository;
     private final UserService userService;
 
@@ -35,7 +34,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Optional<User> immediateBoss = this.userService.findOneBy(immediateBossIdssff);
 
         if  (immediateBoss.isEmpty()) {
-            throw new ServerException("Something went wrong");
+            throw new ServerException("/api/v1/users" + "/" + immediateBossIdssff + "/employees");
         }
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder
@@ -46,7 +45,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         boolean isSameUser = userDetails.getUsername().equals(immediateBossIdssff.toString());
 
         if  (!isSameUser) {
-            throw new ResourceAccessDeniedException("Access denied");
+            throw new ResourceAccessDeniedException("/api/v1/users" + "/" + immediateBossIdssff + "/employees");
         }
 
         return this.employeeRepository.findByImmediateBoss(UserMapper.toEntity(immediateBoss.get()))
@@ -62,11 +61,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .map(EmployeeEntity::toDomain);
 
         if (employee.isEmpty()) {
-            throw new ResourceNotFoundException("Employee not found");
+            throw new ResourceNotFoundException(PATH + "/" + idssff);
         }
 
         if (employee.get().getIsActive().equals(false)) {
-            throw new ResourceNotAvailableException("Employee not available");
+            throw new ResourceNotAvailableException(PATH + "/" + idssff);
         }
 
         return employee;
@@ -75,7 +74,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Page<Employee> findAll(int page, int size) {
         if (!List.of(5, 10, 20).contains(size)) {
-            throw new IllegalArgumentException("Size must be between 5, 10 and 20 options");
+            throw new ValueNotValidException(PATH);
         }
 
         Pageable pageable = PageRequest.of(page, size);

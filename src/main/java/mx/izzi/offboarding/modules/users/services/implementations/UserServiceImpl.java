@@ -37,6 +37,8 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class.getName());
 
+    private final String PATH = "/api/v1/users";
+
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
@@ -49,11 +51,11 @@ public class UserServiceImpl implements UserService {
                 .map(UserEntity::toDomain);
 
         if (user.isEmpty()) {
-            throw new ResourceNotFoundException("User not found");
+            throw new ResourceNotFoundException(PATH + "/" +idssff);
         }
 
         if (user.get().getIsActive().equals(false)) {
-            throw new ResourceNotAvailableException("User not available");
+            throw new ResourceNotAvailableException(PATH + "/" +idssff);
         }
 
         return user;
@@ -65,7 +67,7 @@ public class UserServiceImpl implements UserService {
                 .map(UserEntity::toDomain);
 
         if (user.isEmpty()) {
-            throw new ResourceNotFoundException("User not found");
+            throw new ResourceNotFoundException(PATH + "/" +idssff);
         }
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder
@@ -80,7 +82,7 @@ public class UserServiceImpl implements UserService {
         boolean isSameUser = userDetails.getUsername().equals(idssff.toString());
 
         if  (!isAdmin && !isSameUser) {
-            throw new ResourceAccessDeniedException("Access denied");
+            throw new ResourceAccessDeniedException(PATH + "/profile/" +idssff);
         }
 
         return user;
@@ -92,15 +94,15 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> userFound = this.userRepository.findOneByIdssff(createUserDto.getIdssff());
 
         if (userFound.isPresent()) {
-            throw new ResourceAlreadyExistsException("User already exists");
+            throw new ResourceAlreadyExistsException(PATH);
         }
 
         if (this.userRepository.existsByEmail(createUserDto.getEmail())) {
-            throw new ResourceAlreadyExistsException("Email already exists");
+            throw new ResourceAlreadyExistsException(PATH);
         }
 
         if (this.userRepository.existsByUsername(createUserDto.getEmail().split("@")[0])) {
-            throw new ResourceAlreadyExistsException("Username already exists");
+            throw new ResourceAlreadyExistsException(PATH);
         }
 
         Optional<Role> role = this.roleRepository
@@ -108,7 +110,7 @@ public class UserServiceImpl implements UserService {
                 .map(RoleEntity::toDomain);
 
         if (role.isEmpty() || role.get().getIsActive().equals(false)) {
-            throw new ResourceNotFoundException("Role not found");
+            throw new ResourceNotFoundException(PATH);
         }
 
         Optional<WorkCenter> workCenter = this.workCenterRepository
@@ -116,7 +118,7 @@ public class UserServiceImpl implements UserService {
                 .map(WorkCenterEntity::toDomain);
 
         if (workCenter.isEmpty() || workCenter.get().getIsActive().equals(false)) {
-            throw new ResourceNotFoundException("Work center not found");
+            throw new ResourceNotFoundException(PATH);
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -144,7 +146,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> findAll(int page, int size) {
         if (!List.of(5, 10, 20).contains(size)) {
-            throw new IllegalArgumentException("Size must be between 5 and 20");
+            throw new ValueNotValidException(PATH);
         }
 
         Pageable pageable = PageRequest.of(page, size);
@@ -159,7 +161,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userFound = this.findOneBy(idssff);
 
         if  (userFound.isEmpty()) {
-            throw new ServerException("Something went wrong");
+            throw new ServerException(PATH);
         }
 
         String password = updateUserDto.getPassword() != null
@@ -173,7 +175,7 @@ public class UserServiceImpl implements UserService {
                     .orElse(null);
 
             if (workCenter == null) {
-                throw new ResourceNotFoundException("Work center not found");
+                throw new ResourceNotFoundException(PATH + "/" + idssff);
             }
         }
 
@@ -207,7 +209,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userFound = this.findOneBy(idssff);
 
         if  (userFound.isEmpty()) {
-            throw new ServerException("Something went wrong");
+            throw new ServerException(PATH);
         }
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder

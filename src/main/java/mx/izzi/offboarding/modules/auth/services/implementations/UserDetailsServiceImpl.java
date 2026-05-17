@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.auth.services;
+package mx.izzi.offboarding.modules.auth.services.implementations;
 
 import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.auth.domain.models.AuthenticatedUser;
@@ -31,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<UserEntity> user = this.userRepository.findOneByIdssff(Long.parseLong(idssff));
 
         if  (user.isEmpty()) {
-            throw new BadCredentialsException(idssff);
+            throw new BadCredentialsException("/api/v1/auth/login");
         }
         AuthenticatedUser authenticatedUser = new AuthenticatedUser(user.get().toDomain());
 

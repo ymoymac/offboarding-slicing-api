@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.auth.services;
+package mx.izzi.offboarding.modules.auth.services.implementations;
 
 import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.auth.domain.dtos.LoginDto;
@@ -6,11 +6,13 @@ import mx.izzi.offboarding.modules.auth.domain.dtos.SignUpDto;
 import mx.izzi.offboarding.modules.auth.domain.models.AuthMapper;
 import mx.izzi.offboarding.modules.auth.domain.models.AuthUser;
 import mx.izzi.offboarding.modules.auth.domain.models.AuthenticatedUser;
+import mx.izzi.offboarding.modules.auth.services.AuthService;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.security.services.JwtService;
+import mx.izzi.offboarding.shared.exceptions.ServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +30,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private static final Logger LOG = LoggerFactory.getLogger(AuthServiceImpl.class);
+
+    private final String PATH = "/api/v1/auth";
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -66,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
         Optional<User> user = this.userService.create(AuthMapper.from(signUpDto));
 
         if (user.isEmpty()) {
-            throw new RuntimeException("Error creating user");
+            throw new ServerException(PATH + "/" + "signup");
         }
 
         UserDetails userDetails = org.springframework.security.core.userdetails.User
