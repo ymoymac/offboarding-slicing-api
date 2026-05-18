@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.terminations.models;
+package mx.izzi.offboarding.modules.terminations.domain.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

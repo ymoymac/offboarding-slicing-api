@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.terminations.entities;
+package mx.izzi.offboarding.modules.terminations.domain.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import mx.izzi.offboarding.modules.terminations.models.TerminationReason;
+import mx.izzi.offboarding.modules.terminations.domain.models.TerminationReason;
 
 import java.time.LocalDateTime;
 

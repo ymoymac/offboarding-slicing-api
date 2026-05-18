@@ -28,7 +28,7 @@ public enum OBErrorCodes {
 
     LOGIN_ERROR_CREDENTIALS("PB-AUTH-ERR001", 401, "Unauthorized", "Invalid credentials", "Usuario o contraseña incorrectos"),
     ACCESS_DENIED("PB-AUTH-ERR002", 403, "Forbidden", "Access denied", "Acceso denegado"),
-    RESOURCE_ACCESS_DENIED("PB-AUTH-ERR002", 403, "Forbidden", "Access denied", "Acceso al recurso denegado"),
+    RESOURCE_ACCESS_DENIED("PB-AUTH-ERR003", 403, "Forbidden", "Access denied", "No tienes permiso para acceder a este recurso."),
     ;
 
     private final String code;
