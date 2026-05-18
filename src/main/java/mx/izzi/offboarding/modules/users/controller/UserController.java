@@ -18,6 +18,7 @@ import mx.izzi.offboarding.shared.mappers.ResponseMapper;
 import mx.izzi.offboarding.shared.models.OBResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class UserController {
     private final UserService userService;
     private final EmployeeService employeeService;
 
-    @GetMapping("/{idssff}")
+    @GetMapping(value = "/{idssff}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN"})
     public ResponseEntity<OBResponse<DetailUserWithRoleDto>> getById(@PathVariable String idssff) {
         return this.userService.findOneBy(Long.parseLong(idssff))
@@ -41,7 +42,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/profile/{idssff}")
+    @GetMapping(value = "/profile/{idssff}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"IMMEDIATE_BOSS", "RRHH"})
     public ResponseEntity<OBResponse<DetailUserDto>> getUserProfileById(@PathVariable String idssff) {
         return this.userService.findOneProfileBy(Long.parseLong(idssff))
@@ -51,7 +52,7 @@ public class UserController {
 
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS"})
     public ResponseEntity<OBResponse<DetailUserDto>> create(@RequestBody @Valid CreateUserDto createUserDto) {
         return this.userService.create(createUserDto)
@@ -60,7 +61,7 @@ public class UserController {
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN"})
     public ResponseEntity<OBResponse<Page<DetailUserWithRoleDto>>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
@@ -72,7 +73,7 @@ public class UserController {
         return ResponseMapper.map(OBResponseCodes.LIST_ACTIVE_RESOURCES, users, HttpStatus.OK);
     }
 
-    @PatchMapping("/{idssff}")
+    @PatchMapping(value = "/{idssff}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN"})
     public ResponseEntity<OBResponse<DetailUserDto>> update(
             @PathVariable String idssff,
@@ -85,7 +86,7 @@ public class UserController {
 
     }
 
-    @DeleteMapping("/{idssff}")
+    @DeleteMapping(value = "/{idssff}",  produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN"})
     public ResponseEntity<OBResponse<DetailUserDto>> delete(@PathVariable String idssff) {
         return this.userService.delete(Long.parseLong(idssff))

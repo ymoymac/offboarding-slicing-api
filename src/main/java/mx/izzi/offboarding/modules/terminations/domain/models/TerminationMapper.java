@@ -22,7 +22,7 @@ public class TerminationMapper {
     public static DetailTerminationReasonDto from(TerminationReason terminationReason) {
         return DetailTerminationReasonDto.builder()
                 .terminationReasonId(terminationReason.getTerminationReasonId())
-                .terminationReason(terminationReason.getTerminationReason())
+                .reason(terminationReason.getReason())
                 .description(terminationReason.getDescription())
                 .build();
     }
@@ -76,7 +76,7 @@ public class TerminationMapper {
     public static TerminationReasonEntity toEntity(TerminationReason terminationReason) {
         return TerminationReasonEntity.builder()
                 .terminationReasonId(terminationReason.getTerminationReasonId())
-                .terminationReason(terminationReason.getTerminationReason())
+                .reason(terminationReason.getReason())
                 .description(terminationReason.getDescription())
                 .isActive(terminationReason.getIsActive())
                 .createdAt(terminationReason.getCreatedAt())

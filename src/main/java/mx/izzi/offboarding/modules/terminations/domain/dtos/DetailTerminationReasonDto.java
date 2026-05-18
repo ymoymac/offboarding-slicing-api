@@ -18,7 +18,7 @@ public class DetailTerminationReasonDto {
     private Long terminationReasonId;
 
     @JsonProperty
-    private String terminationReason;
+    private String reason;
 
     @JsonProperty
     private String description;

@@ -16,6 +16,7 @@ import mx.izzi.offboarding.shared.models.OBResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class AuthController {
     private ObjectMapper objectMapper;
     private final AuthService authService;
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OBResponse<AuthUserDto>> login(@RequestBody @Valid LoginDto loginDto) {
         return this.authService.login(loginDto)
                 .map(AuthMapper::from)
@@ -36,7 +37,7 @@ public class AuthController {
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
-    @PostMapping("/signup")
+    @PostMapping(value = "/signup",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpDto signUpDto) {
         return this.authService.signUp(signUpDto)
                 .map(AuthMapper::from)

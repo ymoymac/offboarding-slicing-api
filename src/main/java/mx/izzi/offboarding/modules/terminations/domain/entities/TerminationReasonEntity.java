@@ -33,7 +33,7 @@ public class TerminationReasonEntity {
     private Long terminationReasonId;
 
     @Column(name = "rea_tx_termination_reason", nullable = false, length = 100)
-    private String terminationReason;
+    private String reason;
 
     @Column(name = "rea_tx_description", nullable = false,  length = 100)
     private String description;
@@ -68,7 +68,7 @@ public class TerminationReasonEntity {
     public TerminationReason toDomain() {
         return TerminationReason.builder()
                 .terminationReasonId(this.terminationReasonId)
-                .terminationReason(this.terminationReason)
+                .reason(this.reason)
                 .description(this.description)
                 .isActive(this.isActive)
                 .createdAt(this.createdAt)

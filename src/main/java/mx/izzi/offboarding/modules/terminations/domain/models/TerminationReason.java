@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 public class TerminationReason {
     private Long terminationReasonId;
-    private String terminationReason;
+    private String reason;
     private String description;
     private Boolean isActive;
     private LocalDateTime createdAt;

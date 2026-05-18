@@ -11,6 +11,7 @@ import mx.izzi.offboarding.shared.mappers.ResponseMapper;
 import mx.izzi.offboarding.shared.models.OBResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @GetMapping("/{idssff}")
+    @GetMapping(value = "/{idssff}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS", "RRHH"})
     public ResponseEntity<OBResponse<DetailEmployeeDto>> getById(@PathVariable String idssff) {
         return this.employeeService.findOneBy(Long.parseLong(idssff))
@@ -31,7 +32,7 @@ public class EmployeeController {
 
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN", "RRHH"})
     public ResponseEntity<OBResponse<Page<DetailEmployeeDto>>> getAllEmployees(
             @RequestParam(defaultValue = "0") int page,

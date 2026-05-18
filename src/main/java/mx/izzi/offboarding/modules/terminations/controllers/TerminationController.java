@@ -13,6 +13,7 @@ import mx.izzi.offboarding.shared.enums.OBResponseCodes;
 import mx.izzi.offboarding.shared.mappers.ResponseMapper;
 import mx.izzi.offboarding.shared.models.OBResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,20 +24,20 @@ public class TerminationController {
 
     private final TerminationService terminationService;
 
-    @PostMapping
+    @GetMapping(value = "/{folio}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS", "RRHH"})
-    public ResponseEntity<OBResponse<DetailAccessBlockingRequestDto>> create(@RequestBody @Valid CreateAccessBlockingRequestDto createAccessBlockingRequestDto) {
-        return this.terminationService.create(createAccessBlockingRequestDto)
+    public ResponseEntity<OBResponse<DetailAccessBlockingRequestDto>> getById(@PathVariable String folio) {
+        return this.terminationService.findOneBy(folio)
                 .map(TerminationMapper::from)
                 .map(userDto -> ResponseMapper.map(OBResponseCodes.CREATED, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
     }
 
-    @GetMapping("/{folio}")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS", "RRHH"})
-    public ResponseEntity<OBResponse<DetailAccessBlockingRequestDto>> getById(@PathVariable String folio) {
-        return this.terminationService.findOneBy(folio)
+    public ResponseEntity<OBResponse<DetailAccessBlockingRequestDto>> create(@RequestBody @Valid CreateAccessBlockingRequestDto createAccessBlockingRequestDto) {
+        return this.terminationService.create(createAccessBlockingRequestDto)
                 .map(TerminationMapper::from)
                 .map(userDto -> ResponseMapper.map(OBResponseCodes.CREATED, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
