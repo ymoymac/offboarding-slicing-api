@@ -1,5 +1,6 @@
 package mx.izzi.offboarding.modules.employees.services;
 
+import mx.izzi.offboarding.modules.employees.domain.dtos.UpdateEmployeeDto;
 import mx.izzi.offboarding.modules.employees.domain.models.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,4 +12,5 @@ public interface EmployeeService {
     List<Employee> findAllEmployeesByImmediateBoss(Long idssff);
     Optional<Employee> findOneBy(Long idssff);
     Page<Employee> findAll(int page, int size);
+    Optional<Employee> update(Long idssff, UpdateEmployeeDto updateEmployeeDto);
 }

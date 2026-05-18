@@ -1,7 +1,6 @@
 package mx.izzi.offboarding.modules.terminations.domain.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -18,9 +18,10 @@ public enum OBErrorCodes {
     // ============================================
     NOT_FOUND("PB-ERR001", 404, "Not Found", "Resource not found", "Recurso no encontrado"),
     ERROR_TO_CREATE("PB-ERR002", 500, "Internal server error", "Resource could not be created", "Error al crear el recurso. Intenta más tarde, si el error persiste contacta un administrador"),
-    UNIQUENESS_RULE("PB-ERR003", 400, "Bad Request", "Insertion error. This element already exists", "Esté recurso ya existe"),
+    UNIQUENESS_RULE("PB-ERR003", 409, "Conflict", "Insertion error. This element already exists", "Esté recurso ya existe"),
     INVALID_BODY_PARAMS("PB-ERR004", 400, "Bad request", "Invalid params", "Parámetros inválidos"),
     NOT_AVAILABLE("PB-ERR005", 400, "Bad Request", "Resource not available", "Recurso no disponible"),
+    EMPLOYEE_TERMINATED("PB-ERR006", 400, "Bad Request", "This employee has already been fired", "Esté empleado ya paso por un proceso de bloqueo. No esta activo"),
 
     // ============================================
     // AUTH ERROR CODES

@@ -82,9 +82,10 @@ public class GlobalExceptionHandler {
                 Map<String, String> err = new HashMap<>();
                 String message = switch (column) {
                     case ""  -> "This email is already registered";
-                    case "UserMySQLQueries.IDSSFF" -> "This SuccessFactor ID is already registered.";
+                    case "t_offboarding_employees.employee_idssff" -> "This SuccessFactor ID is already registered.";
                     default -> "Integrity restriction violated: " + constraint;
                 };
+                err.put("code", OBErrorCodes.UNIQUENESS_RULE.getCode());
                 err.put("message", message);
                 errors.add(err);
 
@@ -171,7 +172,21 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(ResourceAlreadyTerminatedException.class)
+    public ResponseEntity<OBErrorResponse> handleResourceAlreadyTerminated(ResourceAlreadyTerminatedException e) {
 
+        List<Map<String, Object>> errors = new ArrayList<>();
+
+        Map<String, Object> err = new HashMap<>();
+        err.put("code", OBErrorCodes.EMPLOYEE_TERMINATED.getCode());
+        err.put("display", OBErrorCodes.EMPLOYEE_TERMINATED.getDisplay());
+        errors.add(err);
+
+        return new ResponseEntity<>(
+                new OBErrorResponse(OBErrorCodes.EMPLOYEE_TERMINATED, e.getMessage(), errors),
+                HttpStatus.BAD_REQUEST
+        );
+    }
 
 
 }

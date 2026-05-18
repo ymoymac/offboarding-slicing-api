@@ -120,6 +120,11 @@ public class UserServiceImpl implements UserService {
 
         LocalDateTime now = LocalDateTime.now();
 
+        UserDetails userDetails = (UserDetails) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
         User user = User.builder()
                 .idssff(createUserDto.getIdssff())
                 .name(createUserDto.getName())
@@ -131,8 +136,8 @@ public class UserServiceImpl implements UserService {
                 .isActive(true)
                 .createdAt(now)
                 .updatedAt(now)
-                .createdBy("System")
-                .updatedBy("System")
+                .createdBy(userDetails.getUsername())
+                .updatedBy(userDetails.getUsername())
                 .role(role.get())
                 .workCenter(workCenter.get())
                 .build();
