@@ -5,6 +5,7 @@ import mx.izzi.offboarding.modules.employees.domain.models.Employee;
 import mx.izzi.offboarding.modules.employees.domain.models.EmployeeMapper;
 import mx.izzi.offboarding.modules.employees.services.EmployeeService;
 import mx.izzi.offboarding.modules.terminations.domain.dtos.CreateAccessBlockingRequestDto;
+import mx.izzi.offboarding.modules.terminations.domain.entities.AccessBlockingRequestEntity;
 import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockingRequest;
 import mx.izzi.offboarding.modules.terminations.domain.models.TerminationMapper;
 import mx.izzi.offboarding.modules.terminations.domain.models.TerminationReason;
@@ -18,6 +19,7 @@ import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.shared.enums.EmployeeStatus;
 import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
 import mx.izzi.offboarding.shared.exceptions.ResourceAlreadyTerminatedException;
+import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
 import mx.izzi.offboarding.shared.utils.DynFolio;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,6 +41,34 @@ public class TerminationServiceImp implements TerminationService {
     private final EmployeeService employeeService;
     private final TerminationTypeService terminationTypeService;
     private final TerminationReasonService terminationReasonService;
+
+    @Override
+    public Optional<AccessBlockingRequest> findOneBy(String folio) {
+        Optional<AccessBlockingRequest> request = this.accessBlockingRequestRepository
+                .findByFolio(folio)
+                .map(AccessBlockingRequestEntity::toDomain);
+
+        if  (request.isEmpty()) {
+            throw new ResourceNotFoundException(PATH + "/" + folio);
+        }
+
+        if (request.get().getIsActive().equals(false)) {
+            throw new ResourceNotFoundException(PATH + "/" + folio);
+        }
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        boolean isSameUser = userDetails.getUsername().equals(request.get().getUser().getIdssff().toString());
+
+        if  (!isSameUser) {
+            throw new ResourceAccessDeniedException(PATH + "/" + folio);
+        }
+
+        return request;
+    }
 
     @Transactional
     @Override
@@ -63,8 +93,6 @@ public class TerminationServiceImp implements TerminationService {
         if (!employee.get().getImmediateBoos().getIdssff().equals(user.get().getIdssff())) {
             throw new ResourceAccessDeniedException(PATH);
         }
-
-        //verificar que el usuario tenga relacion con el empleado
 
         Optional<TerminationType> type = this.terminationTypeService.findOneBy(dto.getTerminationTypeId());
 

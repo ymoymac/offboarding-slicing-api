@@ -52,6 +52,11 @@ public class TerminationMapper {
                 .employee(EmployeeMapper.toEntity(accessBlockingRequest.getEmployee()))
                 .terminationType(TerminationMapper.toEntity(accessBlockingRequest.getTerminationType()))
                 .terminationReason(TerminationMapper.toEntity(accessBlockingRequest.getTerminationReason()))
+                .isActive(accessBlockingRequest.getIsActive())
+                .createdAt(accessBlockingRequest.getCreatedAt())
+                .updatedAt(accessBlockingRequest.getUpdatedAt())
+                .createdBy(accessBlockingRequest.getCreatedBy())
+                .updatedBy(accessBlockingRequest.getUpdatedBy())
                 .build();
     }
 

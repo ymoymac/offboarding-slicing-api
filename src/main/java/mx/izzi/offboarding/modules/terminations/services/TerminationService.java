@@ -6,5 +6,6 @@ import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockingRequ
 import java.util.Optional;
 
 public interface TerminationService {
+    Optional<AccessBlockingRequest> findOneBy(String folio);
     Optional<AccessBlockingRequest> create(CreateAccessBlockingRequestDto dto);
 }

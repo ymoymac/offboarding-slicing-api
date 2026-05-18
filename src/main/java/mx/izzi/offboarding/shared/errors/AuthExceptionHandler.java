@@ -1,6 +1,5 @@
 package mx.izzi.offboarding.shared.errors;
 
-import mx.izzi.offboarding.modules.auth.controllers.AuthController;
 import mx.izzi.offboarding.shared.enums.OBErrorCodes;
 import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
 import mx.izzi.offboarding.shared.models.OBErrorResponse;
@@ -48,24 +47,8 @@ public class AuthExceptionHandler {
         );
     }
 
-    @ExceptionHandler(ResourceAccessDeniedException.class)
+    @ExceptionHandler({ResourceAccessDeniedException.class, AuthorizationDeniedException.class})
     public ResponseEntity<OBErrorResponse> handleAccessDenied(ResourceAccessDeniedException e) {
-
-        List<Map<String, Object>> errors = new ArrayList<>();
-
-        Map<String, Object> err = new HashMap<>();
-        err.put("code", OBErrorCodes.ACCESS_DENIED.getCode());
-        err.put("display", OBErrorCodes.ACCESS_DENIED.getDisplay());
-        errors.add(err);
-
-        return new ResponseEntity<>(
-                new OBErrorResponse(OBErrorCodes.ACCESS_DENIED, e.getMessage(), errors),
-                HttpStatus.FORBIDDEN
-        );
-    }
-
-    @ExceptionHandler(AuthorizationDeniedException.class)
-    public ResponseEntity<OBErrorResponse> handleAuthorizationDenied(AuthorizationDeniedException e) {
 
         List<Map<String, Object>> errors = new ArrayList<>();
 
@@ -75,8 +58,9 @@ public class AuthExceptionHandler {
         errors.add(err);
 
         return new ResponseEntity<>(
-                new OBErrorResponse(OBErrorCodes.RESOURCE_ACCESS_DENIED, errors),
+                new OBErrorResponse(OBErrorCodes.RESOURCE_ACCESS_DENIED, e.getMessage(), errors),
                 HttpStatus.FORBIDDEN
         );
     }
+
 }
