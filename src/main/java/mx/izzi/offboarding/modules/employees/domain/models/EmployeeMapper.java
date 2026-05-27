@@ -3,7 +3,7 @@ package mx.izzi.offboarding.modules.employees.domain.models;
 import mx.izzi.offboarding.modules.employees.domain.dtos.DetailEmployeeDto;
 import mx.izzi.offboarding.modules.employees.domain.dtos.UpdateEmployeeDto;
 import mx.izzi.offboarding.modules.employees.domain.entities.EmployeeEntity;
-import mx.izzi.offboarding.modules.users.domain.models.UserMapper;
+import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
 import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenterMapper;
 
 public class EmployeeMapper {

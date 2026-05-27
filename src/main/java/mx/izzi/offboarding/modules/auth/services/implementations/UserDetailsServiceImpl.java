@@ -3,6 +3,7 @@ package mx.izzi.offboarding.modules.auth.services.implementations;
 import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.auth.domain.models.AuthenticatedUser;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
+import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,18 +28,28 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         LOG.info("[INFO]: Executing UserDetailsService for user '{}'", idssff);
 
-        Optional<UserEntity> user = this.userRepository.findOneByIdssff(Long.parseLong(idssff));
+        Optional<User> user = this.userRepository
+                .findOneByIdssff(Long.parseLong(idssff))
+                .map(UserEntity::toDomain);
+
+        LOG.info("[INFO]: User '{}' found", idssff);
 
         if  (user.isEmpty()) {
             throw new BadCredentialsException("/api/v1/auth/login");
         }
-        AuthenticatedUser authenticatedUser = new AuthenticatedUser(user.get().toDomain());
+
+        AuthenticatedUser authenticatedUser = new AuthenticatedUser(user.get());
 
         return org.springframework.security.core.userdetails.User
                 .builder()
                 .username(authenticatedUser.user().getIdssff().toString())
                 .password(authenticatedUser.user().getPassword())
-                .authorities(List.of(new SimpleGrantedAuthority(authenticatedUser.user().getRole().getName())))
+                .authorities(
+                        authenticatedUser.user().getRoles()
+                                .stream()
+                                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                                .toList()
+                )
                 .accountExpired(!authenticatedUser.isAccountNonExpired())
                 .accountLocked(!authenticatedUser.isAccountNonLocked())
                 .credentialsExpired(!authenticatedUser.isCredentialsNonExpired())

@@ -1,8 +1,10 @@
-package mx.izzi.offboarding.modules.users.domain.models;
+package mx.izzi.offboarding.modules.users.domain.mappers;
 
 import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserWithRoleDto;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
+import mx.izzi.offboarding.modules.users.domain.models.RoleUserUnion;
+import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenterMapper;
 
 public class UserMapper {
@@ -28,7 +30,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .nickname(user.getUsername())
                 .isActive(user.getIsActive())
-                .role(RoleMapper.from(user.getRole()))
+                .roles(user.getRoles().stream().map(RoleMapper::from).toList())
                 .workCenter(WorkCenterMapper.from(user.getWorkCenter()))
                 .build();
     }
@@ -44,6 +46,10 @@ public class UserMapper {
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .isActive(user.getIsActive())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .createdBy(user.getCreatedBy())
+                .updatedBy(user.getUpdatedBy())
                 .workCenter(WorkCenterMapper.toEntity(user.getWorkCenter()))
                 .build();
     }

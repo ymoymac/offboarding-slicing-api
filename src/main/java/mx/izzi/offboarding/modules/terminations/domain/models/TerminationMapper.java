@@ -7,7 +7,7 @@ import mx.izzi.offboarding.modules.terminations.domain.dtos.DetailTerminationTyp
 import mx.izzi.offboarding.modules.terminations.domain.entities.AccessBlockRequestEntity;
 import mx.izzi.offboarding.modules.terminations.domain.entities.TerminationReasonEntity;
 import mx.izzi.offboarding.modules.terminations.domain.entities.TerminationTypeEntity;
-import mx.izzi.offboarding.modules.users.domain.models.UserMapper;
+import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
 
 public class TerminationMapper {
 

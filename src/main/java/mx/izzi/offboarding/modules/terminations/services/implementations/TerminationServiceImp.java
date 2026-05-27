@@ -15,7 +15,7 @@ import mx.izzi.offboarding.modules.terminations.services.TerminationReasonServic
 import mx.izzi.offboarding.modules.terminations.services.TerminationService;
 import mx.izzi.offboarding.modules.terminations.services.TerminationTypeService;
 import mx.izzi.offboarding.modules.users.domain.models.User;
-import mx.izzi.offboarding.modules.users.domain.models.UserMapper;
+import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
 import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.shared.enums.EmployeeStatus;
 import mx.izzi.offboarding.shared.exceptions.*;

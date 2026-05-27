@@ -69,6 +69,8 @@ public class AuthServiceImpl implements AuthService {
 
         Optional<User> user = this.userService.create(AuthMapper.from(signUpDto));
 
+        LOG.info("[INFO]: User created {}", user);
+
         if (user.isEmpty()) {
             throw new ServerException(PATH + "/" + "signup");
         }
@@ -77,7 +79,9 @@ public class AuthServiceImpl implements AuthService {
                 .builder()
                 .username(user.get().getIdssff().toString())
                 .password(user.get().getPassword())
-                .authorities(List.of(new SimpleGrantedAuthority(user.get().getRole().getName())))
+                .authorities(
+                        user.get().getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).toList()
+                )
                 .accountLocked(!user.get().getIsActive())
                 .accountLocked(!user.get().getIsActive())
                 .credentialsExpired(!user.get().getIsActive())

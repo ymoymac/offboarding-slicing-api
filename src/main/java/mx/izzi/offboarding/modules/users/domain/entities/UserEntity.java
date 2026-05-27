@@ -20,6 +20,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
+import mx.izzi.offboarding.modules.users.domain.models.RoleUserUnion;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.workcenter.domain.entities.WorkCenterEntity;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -29,7 +30,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -97,7 +100,7 @@ public class UserEntity implements Serializable {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private Set<RoleUserUnionEntity> roles;
+    private Set<RoleUserUnionEntity> roleUserUnion;
 
     @ManyToOne(
             fetch = FetchType.LAZY,
@@ -138,6 +141,12 @@ public class UserEntity implements Serializable {
                 .updatedAt(this.updatedAt)
                 .createdBy(this.createdBy)
                 .updatedBy(this.updatedBy)
+                .roles(
+                        this.roleUserUnion == null ? new ArrayList<>() : this.roleUserUnion.stream()
+                                .map(RoleUserUnionEntity::toDomain)
+                                .map(RoleUserUnion::getRole)
+                                .toList()
+                )
                 .workCenter(this.workCenter.toDomain())
                 .build();
     }
@@ -162,7 +171,7 @@ public class UserEntity implements Serializable {
                 .append(updatedAt, that.updatedAt)
                 .append(createdBy, that.createdBy)
                 .append(updatedBy, that.updatedBy)
-                .append(roles, that.roles)
+                .append(roleUserUnion, that.roleUserUnion)
                 .append(workCenter, that.workCenter)
                 .isEquals();
     }
@@ -183,7 +192,7 @@ public class UserEntity implements Serializable {
                 .append(updatedAt)
                 .append(createdBy)
                 .append(updatedBy)
-                .append(roles)
+                .append(roleUserUnion)
                 .append(workCenter)
                 .toHashCode();
     }
@@ -204,7 +213,7 @@ public class UserEntity implements Serializable {
                 .append("updatedAt", updatedAt)
                 .append("createdBy", createdBy)
                 .append("updatedBy", updatedBy)
-                .append("roles", roles)
+                .append("roleUserUnion", roleUserUnion)
                 .append("workCenter", workCenter)
                 .toString();
     }

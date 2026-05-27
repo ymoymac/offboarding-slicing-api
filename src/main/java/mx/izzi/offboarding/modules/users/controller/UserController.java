@@ -13,7 +13,7 @@ import mx.izzi.offboarding.modules.users.domain.dtos.CreateUserDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserWithRoleDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.UpdateUserDto;
-import mx.izzi.offboarding.modules.users.domain.models.UserMapper;
+import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
 import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.shared.enums.OBErrorCodes;
 import mx.izzi.offboarding.shared.enums.OBResponseCodes;
@@ -37,7 +37,6 @@ public class UserController {
     private final TerminationService terminationService;
 
     @GetMapping(value = "/{idssff}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({"ADMIN"})
     public ResponseEntity<OBResponse<DetailUserWithRoleDto>> getById(@PathVariable String idssff) {
         return this.userService.findOneBy(Long.parseLong(idssff))
                 .map(UserMapper::fromToDto)
@@ -47,7 +46,6 @@ public class UserController {
     }
 
     @GetMapping(value = "/profile/{idssff}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({"IMMEDIATE_BOSS", "RRHH"})
     public ResponseEntity<OBResponse<DetailUserDto>> getUserProfileById(@PathVariable String idssff) {
         return this.userService.findOneProfileBy(Long.parseLong(idssff))
                 .map(UserMapper::from)
@@ -57,7 +55,6 @@ public class UserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({"ADMIN"})
     public ResponseEntity<OBResponse<DetailUserDto>> create(@RequestBody @Valid CreateUserDto createUserDto) {
         return this.userService.create(createUserDto)
                 .map(UserMapper::from)
@@ -66,7 +63,6 @@ public class UserController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({"ADMIN"})
     public ResponseEntity<OBResponse<Page<DetailUserWithRoleDto>>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -78,7 +74,6 @@ public class UserController {
     }
 
     @PatchMapping(value = "/{idssff}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({"ADMIN"})
     public ResponseEntity<OBResponse<DetailUserDto>> update(
             @PathVariable String idssff,
             @RequestBody @Valid UpdateUserDto updateUserDto
@@ -91,7 +86,6 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{idssff}",  produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({"ADMIN"})
     public ResponseEntity<OBResponse<DetailUserDto>> delete(@PathVariable String idssff) {
         return this.userService.delete(Long.parseLong(idssff))
                 .map(UserMapper::from)
@@ -101,7 +95,6 @@ public class UserController {
     }
 
     @GetMapping("/{idssff}/employees")
-    @RolesAllowed({"IMMEDIATE_BOSS"})
     public ResponseEntity<OBResponse<List<DetailEmployeeDto>>> getAllEmployees(@PathVariable String idssff) {
         List<DetailEmployeeDto> employees = this.employeeService.findAllEmployeesByImmediateBoss(Long.parseLong(idssff))
                 .stream()
@@ -112,7 +105,6 @@ public class UserController {
     }
 
     @GetMapping("/{idssff}/employees/{employeeIdssff}")
-    @RolesAllowed({"IMMEDIATE_BOSS"})
     public ResponseEntity<OBResponse<DetailEmployeeDto>> getEmployeeById(
             @PathVariable Long idssff,
             @PathVariable Long employeeIdssff
@@ -125,7 +117,6 @@ public class UserController {
     }
 
     @GetMapping("/{idssff}/terminations")
-    @RolesAllowed({"IMMEDIATE_BOSS", "RRHH"})
     public ResponseEntity<OBResponse<Page<DetailAccessBlockRequestDto>>> getAllTerminationsByUserId(
             @PathVariable Long idssff,
             @RequestParam(defaultValue = "0") int page,

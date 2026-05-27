@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import mx.izzi.offboarding.modules.workcenter.domain.dtos.WorkCenterDto;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -33,7 +35,7 @@ public class DetailUserWithRoleDto {
     private Boolean isActive;
 
     @JsonProperty
-    private DetailRoleDto role;
+    private List<DetailRoleDto> roles;
 
     @JsonProperty
     private WorkCenterDto  workCenter;

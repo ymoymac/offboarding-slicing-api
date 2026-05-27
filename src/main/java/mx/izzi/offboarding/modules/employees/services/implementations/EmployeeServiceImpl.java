@@ -8,7 +8,7 @@ import mx.izzi.offboarding.modules.employees.domain.models.EmployeeMapper;
 import mx.izzi.offboarding.modules.employees.repositories.EmployeeRepository;
 import mx.izzi.offboarding.modules.employees.services.EmployeeService;
 import mx.izzi.offboarding.modules.users.domain.models.User;
-import mx.izzi.offboarding.modules.users.domain.models.UserMapper;
+import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
 import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenter;
 import mx.izzi.offboarding.modules.workcenter.services.WorkCenterService;

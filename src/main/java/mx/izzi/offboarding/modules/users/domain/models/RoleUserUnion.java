@@ -14,12 +14,14 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
-    private Long roleId;
-    private String name;
-    private String description;
+public class RoleUserUnion {
+
+    private Long id;
+    private Role role;
+    private User user;
+    private LocalDateTime assignmentDate;
+    private String assignedBy;
     private Boolean isActive;
-    private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String createdBy;
     private String updatedBy;
@@ -28,28 +30,30 @@ public class Role {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (!(o instanceof Role role)) return false;
+        if (!(o instanceof RoleUserUnion that)) return false;
 
         return new EqualsBuilder()
-                .append(roleId, role.roleId)
-                .append(name, role.name)
-                .append(description, role.description)
-                .append(isActive, role.isActive)
-                .append(createdAt, role.createdAt)
-                .append(updatedAt, role.updatedAt)
-                .append(createdBy, role.createdBy)
-                .append(updatedBy, role.updatedBy)
+                .append(id, that.id)
+                .append(role, that.role)
+                .append(user, that.user)
+                .append(assignmentDate, that.assignmentDate)
+                .append(assignedBy, that.assignedBy)
+                .append(isActive, that.isActive)
+                .append(updatedAt, that.updatedAt)
+                .append(createdBy, that.createdBy)
+                .append(updatedBy, that.updatedBy)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(roleId)
-                .append(name)
-                .append(description)
+                .append(id)
+                .append(role)
+                .append(user)
+                .append(assignmentDate)
+                .append(assignedBy)
                 .append(isActive)
-                .append(createdAt)
                 .append(updatedAt)
                 .append(createdBy)
                 .append(updatedBy)
@@ -59,11 +63,12 @@ public class Role {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("roleId", roleId)
-                .append("name", name)
-                .append("description", description)
+                .append("id", id)
+                .append("role", role)
+                .append("user", user)
+                .append("assignmentDate", assignmentDate)
+                .append("assignedBy", assignedBy)
                 .append("isActive", isActive)
-                .append("createdAt", createdAt)
                 .append("updatedAt", updatedAt)
                 .append("createdBy", createdBy)
                 .append("updatedBy", updatedBy)

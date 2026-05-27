@@ -14,8 +14,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("""
         SELECT DISTINCT u
         FROM UserEntity u
-        JOIN FETCH u.roles r
-            JOIN FETCH r.role
+        JOIN FETCH u.roleUserUnion ruu
+            JOIN FETCH ruu.role
         JOIN FETCH u.workCenter
         WHERE u.idssff = :idssff
     """)
@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("""
         SELECT DISTINCT u
         FROM UserEntity u
-        JOIN FETCH u.roles r
+        JOIN FETCH u.roleUserUnion r
             JOIN FETCH r.role
         JOIN FETCH u.workCenter
         WHERE u.isActive = true

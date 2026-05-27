@@ -19,6 +19,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
+import mx.izzi.offboarding.modules.users.domain.models.RoleUserUnion;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -100,5 +101,18 @@ public class RoleUserUnionEntity implements Serializable {
     @PreUpdate
     private void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public RoleUserUnion toDomain() {
+        return RoleUserUnion.builder()
+                .id(this.id)
+                .role(this.role.toDomain())
+                .assignmentDate(this.assignmentDate)
+                .assignedBy(this.assignedBy)
+                .isActive(this.isActive)
+                .updatedAt(this.updatedAt)
+                .createdBy(this.createdBy)
+                .updatedBy(this.updatedBy)
+                .build();
     }
 }

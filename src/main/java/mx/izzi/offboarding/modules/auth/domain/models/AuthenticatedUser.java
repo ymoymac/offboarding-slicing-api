@@ -12,12 +12,15 @@ import java.util.List;
 public record AuthenticatedUser(User user) implements UserDetails {
 
     public boolean isAdmin() {
-        return Roles.ADMIN.getName().equals(user.getRole().getName());
+        if (user.getRoles().size() > 1) {
+            return false;
+        }
+        return Roles.ADMIN.getName().equals(user.getRoles().getFirst().getName());
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(this.user.getRole().getName()));
+        return user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).toList();
     }
 
     @Override
