@@ -71,7 +71,7 @@ public class UserEntity {
     @Column(name = "usr_tx_password", nullable = false)
     private String password;
 
-    @Column(name = "usr_st_is_active")
+    @Column(name = "usr_st_is_active", nullable = false)
     private Boolean isActive;
 
     @Column(name = "usr_dt_created_at", nullable = false)

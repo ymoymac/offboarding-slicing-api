@@ -38,7 +38,7 @@ public class TerminationTypeEntity {
     @Column(name = "tty_tx_description", length = 100)
     private String description;
 
-    @Column(name = "tty_st_is_active")
+    @Column(name = "tty_st_is_active", nullable = false)
     private Boolean isActive;
 
     @Column(name = "tty_dt_created_at", nullable = false)

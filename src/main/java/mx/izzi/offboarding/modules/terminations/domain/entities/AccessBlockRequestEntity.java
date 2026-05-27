@@ -50,7 +50,7 @@ public class AccessBlockRequestEntity {
     @Column(name = "req_dt_application_date", nullable = false)
     private LocalDateTime applicationDate;
 
-    @Column(name = "req_st_is_active")
+    @Column(name = "req_st_is_active", nullable = false)
     private Boolean isActive;
 
     @Column(name = "req_dt_created_at", nullable = false)

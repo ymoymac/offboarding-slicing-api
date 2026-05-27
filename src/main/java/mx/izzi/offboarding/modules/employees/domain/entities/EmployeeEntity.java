@@ -67,7 +67,7 @@ public class EmployeeEntity {
     @Column(name = "emp_tx_position", length = 100)
     private String position;
 
-    @Column(name = "emp_st_is_active")
+    @Column(name = "emp_st_is_active", nullable = false)
     private Boolean isActive;
 
     @Column(name = "emp_dt_created_at", nullable = false)

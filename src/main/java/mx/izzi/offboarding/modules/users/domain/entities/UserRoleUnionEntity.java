@@ -77,7 +77,7 @@ public class UserRoleUnionEntity {
     @Column(name = "ruu_tx_assigned_by", nullable = false, length = 80)
     private String assignedBy;
 
-    @Column(name = "ruu_st_is_active")
+    @Column(name = "ruu_st_is_active", nullable = false)
     private Boolean isActive;
 
     @Column(name = "ruu_dt_updated_at", nullable = false)

@@ -84,7 +84,7 @@ public class WorkCenterEntity {
     @Column(name = "wce_no_dependents")
     private Integer dependents;
 
-    @Column(name = "wce_st_is_active")
+    @Column(name = "wce_st_is_active", nullable = false)
     private Boolean isActive;
 
     @Column(name = "wce_dt_created_at", nullable = false)

@@ -38,7 +38,7 @@ public class TerminationReasonEntity {
     @Column(name = "tre_tx_description", nullable = false,  length = 100)
     private String description;
 
-    @Column(name = "tre_st_is_active")
+    @Column(name = "tre_st_is_active", nullable = false)
     private Boolean isActive;
 
     @Column(name = "tre_dt_created_at", nullable = false)
