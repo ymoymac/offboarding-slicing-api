@@ -21,6 +21,7 @@ public class EmployeeMapper {
                 .jobPosition(employee.getJobPosition())
                 .positionId(employee.getPositionId())
                 .position(employee.getPosition())
+                .workCenter(WorkCenterMapper.from(employee.getWorkCenter()))
                 .build();
     }
 

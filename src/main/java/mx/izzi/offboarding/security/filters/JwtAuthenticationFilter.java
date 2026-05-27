@@ -42,6 +42,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+        if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (request.getRequestURI().startsWith("/api/v1/auth/login")) {
             LOG.info("[INFO]: JwtAuthenticationFilter Is login path '{}'", "/api/v1/auth/login");
             filterChain.doFilter(request, response);

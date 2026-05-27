@@ -16,18 +16,18 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class AccessBlockingRequest {
+public class AccessBlockRequest {
     private Long requestId;
     private String folio;
     private Date endDate;
     private LocalDateTime applicationDate;
-    private String laboraId;
     private Boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String createdBy;
     private String updatedBy;
     private User user;
+    private User immediateBoss;
     private Employee employee;
     private TerminationType terminationType;
     private TerminationReason terminationReason;

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.report.domain.mappers.TerminationCsvMapper;
 import mx.izzi.offboarding.modules.report.domain.models.TerminationCsv;
 import mx.izzi.offboarding.modules.report.services.CsvReportService;
-import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockingRequest;
+import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockRequest;
 import mx.izzi.offboarding.modules.terminations.services.TerminationService;
 import mx.izzi.offboarding.shared.exceptions.ServerException;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class CsvReportServiceImpl implements CsvReportService {
     @Override
     public byte[] generateCsvReport(String folio) throws IOException {
 
-        Optional<AccessBlockingRequest> termination = this.terminationService.findOneBy(folio);
+        Optional<AccessBlockRequest> termination = this.terminationService.findOneBy(folio);
 
         if (termination.isEmpty()) {
             throw new ServerException(PATH + "/" + folio);

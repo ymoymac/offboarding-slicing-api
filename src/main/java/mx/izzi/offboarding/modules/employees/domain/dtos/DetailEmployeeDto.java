@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import mx.izzi.offboarding.modules.workcenter.domain.dtos.WorkCenterDto;
 
 @Getter
 @Setter
@@ -48,4 +49,7 @@ public class DetailEmployeeDto {
 
     @JsonProperty
     private String position;
+
+    @JsonProperty
+    private WorkCenterDto workCenter;
 }

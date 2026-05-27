@@ -25,20 +25,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "t_offboarding_termination_types", schema = "offboarding")
+@Table(name = "t_ob_termination_types", schema = "offboarding")
 public class TerminationTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "termination_type_id", unique = true, nullable = false)
     private Long terminationTypeId;
 
-    @Column(name = "tty_tx_termination_type", nullable = false, length = 100)
-    private String terminationType;
+    @Column(name = "tty_tx_termination_type", unique = true, nullable = false, length = 100)
+    private String type;
 
-    @Column(name = "tty_tx_description", nullable = false, length = 100)
+    @Column(name = "tty_tx_description", length = 100)
     private String description;
 
-    @Column(name = "tty_st_is_active", nullable = false)
+    @Column(name = "tty_st_is_active")
     private Boolean isActive;
 
     @Column(name = "tty_dt_created_at", nullable = false)
@@ -47,10 +47,10 @@ public class TerminationTypeEntity {
     @Column(name = "tty_dt_updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "tty_tx_created_by", nullable = false, length = 80)
+    @Column(name = "tty_tx_created_by", length = 80)
     private String createdBy;
 
-    @Column(name = "tty_tx_updated_by", nullable = false, length = 80)
+    @Column(name = "tty_tx_updated_by", length = 80)
     private String updatedBy;
 
     @PrePersist
@@ -68,7 +68,7 @@ public class TerminationTypeEntity {
     public TerminationType toDomain() {
         return TerminationType.builder()
                 .terminationTypeId(this.terminationTypeId)
-                .terminationType(this.terminationType)
+                .type(this.type)
                 .description(this.description)
                 .isActive(this.isActive)
                 .createdAt(this.createdAt)

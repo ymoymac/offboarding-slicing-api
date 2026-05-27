@@ -25,4 +25,12 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
     Optional<EmployeeEntity> findOneByIdssff(@Param("idssff") Long idssff);
     @Query("SELECT e FROM EmployeeEntity e JOIN FETCH e.immediateBoss JOIN FETCH e.workCenter WHERE e.isActive = true")
     Page<EmployeeEntity> findAllActiveEmployees(Pageable pageable);
+    @Query("""
+        SELECT e FROM EmployeeEntity e
+        JOIN FETCH e.workCenter
+        WHERE e.idssff = :idssff
+        AND e.immediateBoss = :immediateBoss
+        AND e.isActive = true
+    """)
+    Optional<EmployeeEntity> findOneByImmediateBoss(Long idssff, UserEntity immediateBoss);
 }

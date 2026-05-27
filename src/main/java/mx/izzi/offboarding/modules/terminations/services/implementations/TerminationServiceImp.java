@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import mx.izzi.offboarding.modules.employees.domain.models.Employee;
 import mx.izzi.offboarding.modules.employees.domain.models.EmployeeMapper;
 import mx.izzi.offboarding.modules.employees.services.EmployeeService;
-import mx.izzi.offboarding.modules.terminations.domain.dtos.CreateAccessBlockingRequestDto;
-import mx.izzi.offboarding.modules.terminations.domain.entities.AccessBlockingRequestEntity;
-import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockingRequest;
+import mx.izzi.offboarding.modules.terminations.domain.dtos.CreateAccessBlockRequestDto;
+import mx.izzi.offboarding.modules.terminations.domain.entities.AccessBlockRequestEntity;
+import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockRequest;
 import mx.izzi.offboarding.modules.terminations.domain.models.TerminationMapper;
 import mx.izzi.offboarding.modules.terminations.domain.models.TerminationReason;
 import mx.izzi.offboarding.modules.terminations.domain.models.TerminationType;
@@ -15,19 +15,22 @@ import mx.izzi.offboarding.modules.terminations.services.TerminationReasonServic
 import mx.izzi.offboarding.modules.terminations.services.TerminationService;
 import mx.izzi.offboarding.modules.terminations.services.TerminationTypeService;
 import mx.izzi.offboarding.modules.users.domain.models.User;
+import mx.izzi.offboarding.modules.users.domain.models.UserMapper;
 import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.shared.enums.EmployeeStatus;
-import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
-import mx.izzi.offboarding.shared.exceptions.ResourceAlreadyTerminatedException;
-import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
+import mx.izzi.offboarding.shared.exceptions.*;
 import mx.izzi.offboarding.shared.utils.DynFolio;
 import org.hibernate.service.spi.ServiceException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,10 +46,10 @@ public class TerminationServiceImp implements TerminationService {
     private final TerminationReasonService terminationReasonService;
 
     @Override
-    public Optional<AccessBlockingRequest> findOneBy(String folio) {
-        Optional<AccessBlockingRequest> request = this.accessBlockingRequestRepository
+    public Optional<AccessBlockRequest> findOneBy(String folio) {
+        Optional<AccessBlockRequest> request = this.accessBlockingRequestRepository
                 .findByFolio(folio)
-                .map(AccessBlockingRequestEntity::toDomain);
+                .map(AccessBlockRequestEntity::toDomain);
 
         if  (request.isEmpty()) {
             throw new ResourceNotFoundException(PATH + "/" + folio);
@@ -70,9 +73,39 @@ public class TerminationServiceImp implements TerminationService {
         return request;
     }
 
+    @Override
+    public Page<AccessBlockRequest> findAllTerminationsByUserId(Long userIdssff, int page, int size) {
+        Optional<User> user = this.userService.findOneBy(userIdssff);
+
+        if (user.isEmpty()) {
+            throw new ServerException("/api/v1/users" + "/" + userIdssff + "/terminations");
+        }
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        boolean isSameUser = userDetails.getUsername().equals(userIdssff.toString());
+
+        if  (!isSameUser) {
+            throw new ResourceAccessDeniedException("/api/v1/users" + "/" + userIdssff + "/employees");
+        }
+
+        if (!List.of(5, 10, 20).contains(size)) {
+            throw new ValueNotValidException(PATH + "?page=" + page + "&size=" + size);
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return this.accessBlockingRequestRepository
+                .findByUser(pageable, UserMapper.toEntity(user.get()))
+                .map(AccessBlockRequestEntity::toDomain);
+    }
+
     @Transactional
     @Override
-    public Optional<AccessBlockingRequest> create(CreateAccessBlockingRequestDto dto) {
+    public Optional<AccessBlockRequest> create(CreateAccessBlockRequestDto dto) {
 
         Optional<User> user = this.userService.findOneBy(Long.parseLong(dto.getUserIdssff()));
 
@@ -112,11 +145,10 @@ public class TerminationServiceImp implements TerminationService {
                 .getAuthentication()
                 .getPrincipal();
 
-        AccessBlockingRequest accessBlockingRequest = AccessBlockingRequest.builder()
+        AccessBlockRequest accessBlockRequest = AccessBlockRequest.builder()
                 .folio(DynFolio.folio())
                 .endDate(dto.getEndDate())
                 .applicationDate(now)
-                .laboraId(dto.getLaboraId())
                 .isActive(true)
                 .createdAt(now)
                 .updatedAt(now)
@@ -139,7 +171,7 @@ public class TerminationServiceImp implements TerminationService {
 
         return Optional.of(
                 this.accessBlockingRequestRepository
-                        .saveAndFlush(TerminationMapper.toEntity(accessBlockingRequest))
+                        .saveAndFlush(TerminationMapper.toEntity(accessBlockRequest))
                         .toDomain()
         );
     }

@@ -2,13 +2,17 @@ package mx.izzi.offboarding.modules.users.domain.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.persistence.Index;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
@@ -22,6 +26,7 @@ import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.workcenter.domain.entities.WorkCenterEntity;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -30,8 +35,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "t_offboarding_users", schema = "offboarding")
+@Table(
+        name = "t_ob_users",
+        schema = "offboarding",
+        indexes = {
+                @Index(name = "i_user_idssff", columnList = "user_idssff", unique = true),
+                @Index(name = "i_user_email", columnList = "usr_tx_email", unique = true)
+        }
+)
 public class UserEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", unique = true, nullable = false)
@@ -46,19 +59,19 @@ public class UserEntity {
     @Column(name = "usr_tx_first_surname", nullable = false, length = 100)
     private String firstSurname;
 
-    @Column(name = "usr_tx_second_surname", nullable = false, length = 100)
+    @Column(name = "usr_tx_second_surname", length = 100)
     private String secondSurname;
 
     @Column(name = "usr_tx_username", nullable = false, length = 100)
     private String username;
 
-    @Column(name = "usr_tx_email", nullable = false)
+    @Column(name = "usr_tx_email", unique = true, nullable = false)
     private String email;
 
     @Column(name = "usr_tx_password", nullable = false)
     private String password;
 
-    @Column(name = "usr_st_is_active", nullable = false)
+    @Column(name = "usr_st_is_active")
     private Boolean isActive;
 
     @Column(name = "usr_dt_created_at", nullable = false)
@@ -67,29 +80,31 @@ public class UserEntity {
     @Column(name = "usr_dt_updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "usr_tx_created_by", nullable = false, length = 80)
+    @Column(name = "usr_tx_created_by", length = 80)
     private String createdBy;
 
-    @Column(name = "usr_tx_updated_by", nullable = false, length = 80)
+    @Column(name = "usr_tx_updated_by", length = 80)
     private String updatedBy;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(
-            name = "usr_fk_role_id",
-            referencedColumnName = "role_id",
-            nullable = false
+    @OneToMany(
+            mappedBy = "user",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
-    private RoleEntity role;
+    private Set<UserRoleUnionEntity> roles;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false,
+            cascade = CascadeType.MERGE
+    )
     @JoinColumn(
             name = "usr_fk_work_center_id",
             referencedColumnName = "id",
-            nullable = false
+            foreignKey = @ForeignKey(name = "fk_users_to_work_centers")
     )
     private WorkCenterEntity workCenter;
 
@@ -120,7 +135,6 @@ public class UserEntity {
                 .updatedAt(this.updatedAt)
                 .createdBy(this.createdBy)
                 .updatedBy(this.updatedBy)
-                .role(this.role.toDomain())
                 .workCenter(this.workCenter.toDomain())
                 .build();
     }

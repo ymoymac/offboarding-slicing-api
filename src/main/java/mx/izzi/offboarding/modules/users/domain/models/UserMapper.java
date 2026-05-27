@@ -13,12 +13,13 @@ public class UserMapper {
                 .firstSurname(user.getFirstSurname())
                 .secondSurname(user.getSecondSurname())
                 .email(user.getEmail())
-                .nickname(user.getUsername())
+                .username(user.getUsername())
                 .isActive(user.getIsActive())
+                .workCenter(WorkCenterMapper.from(user.getWorkCenter()))
                 .build();
     }
 
-    public static DetailUserWithRoleDto toDto(User user) {
+    public static DetailUserWithRoleDto fromToDto(User user) {
         return DetailUserWithRoleDto.builder()
                 .idssff(user.getIdssff())
                 .name(user.getName())
@@ -28,6 +29,7 @@ public class UserMapper {
                 .nickname(user.getUsername())
                 .isActive(user.getIsActive())
                 .role(RoleMapper.from(user.getRole()))
+                .workCenter(WorkCenterMapper.from(user.getWorkCenter()))
                 .build();
     }
 
@@ -42,7 +44,6 @@ public class UserMapper {
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .isActive(user.getIsActive())
-                .role(RoleMapper.toEntity(user.getRole()))
                 .workCenter(WorkCenterMapper.toEntity(user.getWorkCenter()))
                 .build();
     }

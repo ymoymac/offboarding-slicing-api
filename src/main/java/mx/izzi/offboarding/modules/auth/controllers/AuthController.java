@@ -38,7 +38,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/signup",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpDto signUpDto) {
+    public ResponseEntity<OBResponse<AuthUserDto>> signUp(@Valid @RequestBody SignUpDto signUpDto) {
         return this.authService.signUp(signUpDto)
                 .map(AuthMapper::from)
                 .map(userDto -> ResponseMapper.map(OBResponseCodes.CREATED, userDto, HttpStatus.OK))

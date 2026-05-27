@@ -1,10 +1,10 @@
 package mx.izzi.offboarding.modules.terminations.domain.models;
 
 import mx.izzi.offboarding.modules.employees.domain.models.EmployeeMapper;
-import mx.izzi.offboarding.modules.terminations.domain.dtos.DetailAccessBlockingRequestDto;
+import mx.izzi.offboarding.modules.terminations.domain.dtos.DetailAccessBlockRequestDto;
 import mx.izzi.offboarding.modules.terminations.domain.dtos.DetailTerminationReasonDto;
 import mx.izzi.offboarding.modules.terminations.domain.dtos.DetailTerminationTypeDto;
-import mx.izzi.offboarding.modules.terminations.domain.entities.AccessBlockingRequestEntity;
+import mx.izzi.offboarding.modules.terminations.domain.entities.AccessBlockRequestEntity;
 import mx.izzi.offboarding.modules.terminations.domain.entities.TerminationReasonEntity;
 import mx.izzi.offboarding.modules.terminations.domain.entities.TerminationTypeEntity;
 import mx.izzi.offboarding.modules.users.domain.models.UserMapper;
@@ -14,7 +14,7 @@ public class TerminationMapper {
     public static DetailTerminationTypeDto from(TerminationType terminationType) {
         return DetailTerminationTypeDto.builder()
                 .terminationTypeId(terminationType.getTerminationTypeId())
-                .terminationType(terminationType.getTerminationType())
+                .type(terminationType.getType())
                 .description(terminationType.getDescription())
                 .build();
     }
@@ -27,43 +27,43 @@ public class TerminationMapper {
                 .build();
     }
 
-    public static DetailAccessBlockingRequestDto from(AccessBlockingRequest accessBlockingRequest) {
-        return DetailAccessBlockingRequestDto.builder()
-                .requestId(accessBlockingRequest.getRequestId())
-                .folio(accessBlockingRequest.getFolio())
-                .endDate(accessBlockingRequest.getEndDate())
-                .applicationDate(accessBlockingRequest.getApplicationDate())
-                .laboraId(accessBlockingRequest.getLaboraId())
-                .user(UserMapper.from(accessBlockingRequest.getUser()))
-                .employee(EmployeeMapper.from(accessBlockingRequest.getEmployee()))
-                .terminationType(TerminationMapper.from(accessBlockingRequest.getTerminationType()))
-                .terminationReason(TerminationMapper.from(accessBlockingRequest.getTerminationReason()))
+    public static DetailAccessBlockRequestDto from(AccessBlockRequest accessBlockRequest) {
+        return DetailAccessBlockRequestDto.builder()
+                .requestId(accessBlockRequest.getRequestId())
+                .folio(accessBlockRequest.getFolio())
+                .endDate(accessBlockRequest.getEndDate())
+                .applicationDate(accessBlockRequest.getApplicationDate())
+                .user(UserMapper.from(accessBlockRequest.getUser()))
+                .immediateBoss(UserMapper.from(accessBlockRequest.getImmediateBoss()))
+                .employee(EmployeeMapper.from(accessBlockRequest.getEmployee()))
+                .terminationType(TerminationMapper.from(accessBlockRequest.getTerminationType()))
+                .terminationReason(TerminationMapper.from(accessBlockRequest.getTerminationReason()))
                 .build();
     }
 
-    public static AccessBlockingRequestEntity toEntity(AccessBlockingRequest accessBlockingRequest) {
-        return AccessBlockingRequestEntity.builder()
-                .requestId(accessBlockingRequest.getRequestId())
-                .folio(accessBlockingRequest.getFolio())
-                .endDate(accessBlockingRequest.getEndDate())
-                .applicationDate(accessBlockingRequest.getApplicationDate())
-                .laboraId(accessBlockingRequest.getLaboraId())
-                .user(UserMapper.toEntity(accessBlockingRequest.getUser()))
-                .employee(EmployeeMapper.toEntity(accessBlockingRequest.getEmployee()))
-                .terminationType(TerminationMapper.toEntity(accessBlockingRequest.getTerminationType()))
-                .terminationReason(TerminationMapper.toEntity(accessBlockingRequest.getTerminationReason()))
-                .isActive(accessBlockingRequest.getIsActive())
-                .createdAt(accessBlockingRequest.getCreatedAt())
-                .updatedAt(accessBlockingRequest.getUpdatedAt())
-                .createdBy(accessBlockingRequest.getCreatedBy())
-                .updatedBy(accessBlockingRequest.getUpdatedBy())
+    public static AccessBlockRequestEntity toEntity(AccessBlockRequest accessBlockRequest) {
+        return AccessBlockRequestEntity.builder()
+                .requestId(accessBlockRequest.getRequestId())
+                .folio(accessBlockRequest.getFolio())
+                .endDate(accessBlockRequest.getEndDate())
+                .applicationDate(accessBlockRequest.getApplicationDate())
+                .user(UserMapper.toEntity(accessBlockRequest.getUser()))
+                .immediateBoss(UserMapper.toEntity(accessBlockRequest.getImmediateBoss()))
+                .employee(EmployeeMapper.toEntity(accessBlockRequest.getEmployee()))
+                .terminationType(TerminationMapper.toEntity(accessBlockRequest.getTerminationType()))
+                .terminationReason(TerminationMapper.toEntity(accessBlockRequest.getTerminationReason()))
+                .isActive(accessBlockRequest.getIsActive())
+                .createdAt(accessBlockRequest.getCreatedAt())
+                .updatedAt(accessBlockRequest.getUpdatedAt())
+                .createdBy(accessBlockRequest.getCreatedBy())
+                .updatedBy(accessBlockRequest.getUpdatedBy())
                 .build();
     }
 
     public static TerminationTypeEntity toEntity(TerminationType terminationType) {
         return TerminationTypeEntity.builder()
                 .terminationTypeId(terminationType.getTerminationTypeId())
-                .terminationType(terminationType.getTerminationType())
+                .type(terminationType.getType())
                 .description(terminationType.getDescription())
                 .isActive(terminationType.getIsActive())
                 .createdAt(terminationType.getCreatedAt())

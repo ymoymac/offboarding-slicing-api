@@ -2,20 +2,20 @@ package mx.izzi.offboarding.modules.report.domain.mappers;
 
 import mx.izzi.offboarding.modules.employees.domain.models.Employee;
 import mx.izzi.offboarding.modules.report.domain.models.TerminationCsv;
-import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockingRequest;
+import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockRequest;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 
 public class TerminationCsvMapper {
 
-    public static TerminationCsv from(AccessBlockingRequest accessBlockingRequest) {
-        User user = accessBlockingRequest.getUser();
-        Employee employee = accessBlockingRequest.getEmployee();
+    public static TerminationCsv from(AccessBlockRequest accessBlockRequest) {
+        User user = accessBlockRequest.getUser();
+        Employee employee = accessBlockRequest.getEmployee();
 
         return TerminationCsv.builder()
-                .folio(accessBlockingRequest.getFolio())
-                .endDate(accessBlockingRequest.getEndDate())
-                .applicationDate(accessBlockingRequest.getApplicationDate())
-                .terminationReason(accessBlockingRequest.getTerminationReason().getDescription())
+                .folio(accessBlockRequest.getFolio())
+                .endDate(accessBlockRequest.getEndDate())
+                .applicationDate(accessBlockRequest.getApplicationDate())
+                .terminationReason(accessBlockRequest.getTerminationReason().getDescription())
                 .userIdssff(user.getIdssff().toString())
                 .userEmail(user.getEmail())
                 .userFullName(user.getName().toUpperCase() + "/" + user.getFirstSurname().toUpperCase() + "/"  + user.getSecondSurname().toUpperCase())

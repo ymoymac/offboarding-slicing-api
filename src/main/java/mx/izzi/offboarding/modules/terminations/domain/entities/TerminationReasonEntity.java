@@ -25,32 +25,32 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "t_offboarding_termination_reasons", schema = "offboarding")
+@Table(name = "t_ob_termination_reasons", schema = "offboarding")
 public class TerminationReasonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "termination_reason_id", unique = true, nullable = false)
     private Long terminationReasonId;
 
-    @Column(name = "rea_tx_termination_reason", nullable = false, length = 100)
+    @Column(name = "tre_tx_termination_reason", unique = true, nullable = false, length = 100)
     private String reason;
 
-    @Column(name = "rea_tx_description", nullable = false,  length = 100)
+    @Column(name = "tre_tx_description", nullable = false,  length = 100)
     private String description;
 
-    @Column(name = "rea_st_is_active", nullable = false)
+    @Column(name = "tre_st_is_active")
     private Boolean isActive;
 
-    @Column(name = "rea_dt_created_at", nullable = false)
+    @Column(name = "tre_dt_created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "rea_dt_updated_at", nullable = false)
+    @Column(name = "tre_dt_updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "rea_tx_created_by", nullable = false, length = 80)
+    @Column(name = "tre_tx_created_by", length = 80)
     private String createdBy;
 
-    @Column(name = "rea_tx_updated_by", nullable = false, length = 80)
+    @Column(name = "tre_tx_updated_by", length = 80)
     private String updatedBy;
 
     @PrePersist

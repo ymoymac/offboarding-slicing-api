@@ -17,7 +17,7 @@ import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserDto;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class DetailAccessBlockingRequestDto {
+public class DetailAccessBlockRequestDto {
 
     @JsonProperty
     private Long requestId;
@@ -36,6 +36,9 @@ public class DetailAccessBlockingRequestDto {
 
     @JsonProperty
     private DetailUserDto user;
+
+    @JsonProperty
+    private DetailUserDto immediateBoss;
 
     @JsonProperty
     private DetailEmployeeDto employee;

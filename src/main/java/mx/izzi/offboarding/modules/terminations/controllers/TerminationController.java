@@ -2,10 +2,9 @@ package mx.izzi.offboarding.modules.terminations.controllers;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
-import mx.izzi.offboarding.modules.terminations.domain.dtos.CreateAccessBlockingRequestDto;
-import mx.izzi.offboarding.modules.terminations.domain.dtos.DetailAccessBlockingRequestDto;
+import mx.izzi.offboarding.modules.terminations.domain.dtos.CreateAccessBlockRequestDto;
+import mx.izzi.offboarding.modules.terminations.domain.dtos.DetailAccessBlockRequestDto;
 import mx.izzi.offboarding.modules.terminations.domain.models.TerminationMapper;
 import mx.izzi.offboarding.modules.terminations.services.TerminationService;
 import mx.izzi.offboarding.shared.enums.OBErrorCodes;
@@ -26,7 +25,7 @@ public class TerminationController {
 
     @GetMapping(value = "/{folio}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS", "RRHH"})
-    public ResponseEntity<OBResponse<DetailAccessBlockingRequestDto>> getById(@PathVariable String folio) {
+    public ResponseEntity<OBResponse<DetailAccessBlockRequestDto>> getByFolio(@PathVariable String folio) {
         return this.terminationService.findOneBy(folio)
                 .map(TerminationMapper::from)
                 .map(userDto -> ResponseMapper.map(OBResponseCodes.CREATED, userDto, HttpStatus.OK))
@@ -36,8 +35,8 @@ public class TerminationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS", "RRHH"})
-    public ResponseEntity<OBResponse<DetailAccessBlockingRequestDto>> create(@RequestBody @Valid CreateAccessBlockingRequestDto createAccessBlockingRequestDto) {
-        return this.terminationService.create(createAccessBlockingRequestDto)
+    public ResponseEntity<OBResponse<DetailAccessBlockRequestDto>> create(@RequestBody @Valid CreateAccessBlockRequestDto createAccessBlockRequestDto) {
+        return this.terminationService.create(createAccessBlockRequestDto)
                 .map(TerminationMapper::from)
                 .map(userDto -> ResponseMapper.map(OBResponseCodes.CREATED, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));

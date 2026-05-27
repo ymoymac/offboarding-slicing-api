@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 public class TerminationType {
     private Long terminationTypeId;
-    private String terminationType;
+    private String type;
     private String description;
     private Boolean isActive;
     private LocalDateTime createdAt;

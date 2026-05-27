@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CreateAccessBlockingRequestDto {
+public class CreateAccessBlockRequestDto {
 
     @FutureOrPresent(message = "The end date must be from today onwards")
     @JsonProperty

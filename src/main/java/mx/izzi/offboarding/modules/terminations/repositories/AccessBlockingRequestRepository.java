@@ -1,10 +1,24 @@
 package mx.izzi.offboarding.modules.terminations.repositories;
 
-import mx.izzi.offboarding.modules.terminations.domain.entities.AccessBlockingRequestEntity;
+import mx.izzi.offboarding.modules.terminations.domain.entities.AccessBlockRequestEntity;
+import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface AccessBlockingRequestRepository extends JpaRepository<AccessBlockingRequestEntity, Long> {
-    Optional<AccessBlockingRequestEntity> findByFolio(String folio);
+public interface AccessBlockingRequestRepository extends JpaRepository<AccessBlockRequestEntity, Long> {
+    Optional<AccessBlockRequestEntity> findByFolio(String folio);
+
+    @Query("""
+        SELECT t FROM AccessBlockRequestEntity t
+        JOIN FETCH t.user
+        JOIN FETCH t.employee
+        JOIN FETCH t.terminationType
+        JOIN FETCH t.terminationReason
+        WHERE t.user = :user
+    """)
+    Page<AccessBlockRequestEntity> findByUser(Pageable pageable, UserEntity user);
 }

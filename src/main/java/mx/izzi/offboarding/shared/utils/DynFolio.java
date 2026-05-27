@@ -5,9 +5,10 @@ import java.util.UUID;
 public class DynFolio {
 
     public static String folio() {
-        return UUID.randomUUID()
+        return "PB-" + UUID.randomUUID()
                 .toString()
                 .replace("-", "")
-                .substring(0, 21);
+                .substring(0, 21)
+                .toUpperCase();
     }
 }

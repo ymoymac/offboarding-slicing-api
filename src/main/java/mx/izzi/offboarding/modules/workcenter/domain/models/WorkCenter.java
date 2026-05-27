@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 public class WorkCenter {
-    private String id;
+    private Long id;
     private String regionId;
     private String region;
     private String localityId;

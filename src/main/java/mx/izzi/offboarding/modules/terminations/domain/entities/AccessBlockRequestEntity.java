@@ -20,7 +20,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import mx.izzi.offboarding.modules.employees.domain.entities.EmployeeEntity;
-import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockingRequest;
+import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockRequest;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
 
 import java.time.LocalDateTime;
@@ -33,15 +33,15 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "t_offboarding_access_blocking_request", schema = "offboarding")
-public class AccessBlockingRequestEntity {
+@Table(name = "t_ob_access_block_requests", schema = "offboarding")
+public class AccessBlockRequestEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id", unique = true, nullable = false)
     private Long requestId;
 
-    @Column(name = "req_tx_folio", nullable = false)
+    @Column(name = "req_tx_folio", unique = true, nullable = false)
     private String folio;
 
     @Column(name = "req_dt_end_date", nullable = false)
@@ -50,10 +50,7 @@ public class AccessBlockingRequestEntity {
     @Column(name = "req_dt_application_date", nullable = false)
     private LocalDateTime applicationDate;
 
-    @Column(name = "req_tx_labora_id", nullable = false)
-    private String laboraId;
-
-    @Column(name = "req_st_is_active", nullable = false)
+    @Column(name = "req_st_is_active")
     private Boolean isActive;
 
     @Column(name = "req_dt_created_at", nullable = false)
@@ -62,10 +59,10 @@ public class AccessBlockingRequestEntity {
     @Column(name = "req_dt_updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "req_tx_created_by", nullable = false, length = 80)
+    @Column(name = "req_tx_created_by", length = 80)
     private String createdBy;
 
-    @Column(name = "req_tx_updated_by", nullable = false, length = 80)
+    @Column(name = "req_tx_updated_by", length = 80)
     private String updatedBy;
 
     @ToString.Exclude
@@ -77,6 +74,16 @@ public class AccessBlockingRequestEntity {
             nullable = false
     )
     private UserEntity user;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "req_fk_immediate_boss_id",
+            referencedColumnName = "user_id",
+            nullable = false
+    )
+    private UserEntity immediateBoss;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "req_fk_employee_id", nullable = false)
@@ -114,19 +121,19 @@ public class AccessBlockingRequestEntity {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public AccessBlockingRequest toDomain() {
-        return AccessBlockingRequest.builder()
+    public AccessBlockRequest toDomain() {
+        return AccessBlockRequest.builder()
                 .requestId(this.requestId)
                 .folio(this.folio)
                 .endDate(this.endDate)
                 .applicationDate(this.applicationDate)
-                .laboraId(this.laboraId)
                 .isActive(this.isActive)
                 .createdAt(this.createdAt)
                 .updatedAt(this.updatedAt)
                 .createdBy(this.createdBy)
                 .updatedBy(this.updatedBy)
                 .user(this.user.toDomain())
+                .immediateBoss(this.immediateBoss.toDomain())
                 .employee(this.employee.toDomain())
                 .terminationType(this.terminationType.toDomain())
                 .terminationReason(this.terminationReason.toDomain())

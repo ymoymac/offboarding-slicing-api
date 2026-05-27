@@ -136,8 +136,8 @@ public class UserServiceImpl implements UserService {
                 .isActive(true)
                 .createdAt(now)
                 .updatedAt(now)
-                .createdBy(userDetails.getUsername())
-                .updatedBy(userDetails.getUsername())
+                .createdBy(userDetails.getUsername() != null ? userDetails.getUsername(): "System")
+                .updatedBy(userDetails.getUsername() != null ? userDetails.getUsername(): "System")
                 .role(role.get())
                 .workCenter(workCenter.get())
                 .build();

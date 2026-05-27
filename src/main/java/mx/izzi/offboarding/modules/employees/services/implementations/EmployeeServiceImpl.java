@@ -62,6 +62,39 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Optional<Employee> findOneEmployeeByImmediateBoss(Long immediateBossIdssff, Long idssff) {
+        Optional<User> immediateBoss = this.userService.findOneBy(immediateBossIdssff);
+
+        if  (immediateBoss.isEmpty()) {
+            throw new ServerException("/api/v1/users" + "/" + immediateBossIdssff + "/employee/" + idssff);
+        }
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        boolean isSameUser = userDetails.getUsername().equals(immediateBossIdssff.toString());
+
+        if  (!isSameUser) {
+            throw new ResourceAccessDeniedException("/api/v1/users" + "/" + immediateBossIdssff + "/employee/" + idssff);
+        }
+        Optional<Employee> employeeFound = this.employeeRepository
+                .findOneByImmediateBoss(idssff, UserMapper.toEntity(immediateBoss.get()))
+                .map(EmployeeEntity::toDomain);
+
+        if (employeeFound.isEmpty()) {
+            throw new ResourceNotFoundException("/api/v1/users" + "/" + idssff + "/employee/" + idssff);
+        }
+
+        if (employeeFound.get().getIsActive().equals(false)) {
+            throw new ResourceNotAvailableException("/api/v1/users" + "/" + idssff + "/employee/" + idssff);
+        }
+
+        return employeeFound;
+    }
+
+    @Override
     public Optional<Employee> findOneBy(Long idssff) {
         Optional<Employee> employee = this.employeeRepository
                 .findOneByIdssff(idssff)

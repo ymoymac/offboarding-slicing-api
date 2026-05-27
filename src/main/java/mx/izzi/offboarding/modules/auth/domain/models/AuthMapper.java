@@ -9,7 +9,7 @@ public class AuthMapper {
 
     public static AuthUserDto from(AuthUser authUser) {
         return AuthUserDto.builder()
-                .user(UserMapper.from(authUser.getUser()))
+                .user(UserMapper.fromToDto(authUser.getUser()))
                 .token(authUser.getToken())
                 .build();
     }

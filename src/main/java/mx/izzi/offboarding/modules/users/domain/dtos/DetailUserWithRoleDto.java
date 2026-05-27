@@ -2,6 +2,7 @@ package mx.izzi.offboarding.modules.users.domain.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import mx.izzi.offboarding.modules.workcenter.domain.dtos.WorkCenterDto;
 
 @Data
 @Builder
@@ -33,4 +34,7 @@ public class DetailUserWithRoleDto {
 
     @JsonProperty
     private DetailRoleDto role;
+
+    @JsonProperty
+    private WorkCenterDto  workCenter;
 }

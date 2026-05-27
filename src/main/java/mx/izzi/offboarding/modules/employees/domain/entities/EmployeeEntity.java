@@ -8,7 +8,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.*;
@@ -25,17 +27,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "t_offboarding_employees", schema = "offboarding")
+@Table(name = "t_ob_employees", schema = "offboarding")
 public class EmployeeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id", unique = true, nullable = false)
     private Long employeeId;
 
-    @Column(name = "employee_idssff", nullable = false)
+    @Column(name = "employee_idssff", unique = true, nullable = false)
     private Long idssff;
 
-    @Column(name = "emp_no_number", nullable = false)
+    @Column(name = "emp_no_number", unique = true, nullable = false)
     private Long number;
 
     @Column(name = "emp_tx_name", nullable = false, length = 100)
@@ -44,28 +46,28 @@ public class EmployeeEntity {
     @Column(name = "emp_tx_first_surname", nullable = false, length = 100)
     private String firstSurname;
 
-    @Column(name = "emp_tx_second_surname", nullable = false, length = 100)
+    @Column(name = "emp_tx_second_surname", length = 100)
     private String secondSurname;
 
-    @Column(name = "emp_tx_email", nullable = false, length = 100)
+    @Column(name = "emp_tx_email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "emp_tx_status", nullable = false, length = 80)
+    @Column(name = "emp_tx_status", nullable = false, length = 30)
     private String status;
 
-    @Column(name = "emp_tx_job_position_id", nullable = false, length = 80)
+    @Column(name = "emp_tx_job_position_id", length = 80)
     private String jobPositionId;
 
-    @Column(name = "emp_tx_job_position", nullable = false, length = 80)
+    @Column(name = "emp_tx_job_position", length = 80)
     private String jobPosition;
 
-    @Column(name = "emp_tx_position_id", nullable = false, length = 80)
+    @Column(name = "emp_tx_position_id", length = 80)
     private String positionId;
 
-    @Column(name = "emp_tx_position", nullable = false, length = 100)
+    @Column(name = "emp_tx_position", length = 100)
     private String position;
 
-    @Column(name = "emp_st_is_active", nullable = false)
+    @Column(name = "emp_st_is_active")
     private Boolean isActive;
 
     @Column(name = "emp_dt_created_at", nullable = false)
@@ -74,29 +76,38 @@ public class EmployeeEntity {
     @Column(name = "emp_dt_updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "emp_tx_created_by", nullable = false, length = 80)
+    @Column(name = "emp_tx_created_by", length = 80)
     private String createdBy;
 
-    @Column(name = "emp_tx_updated_by", nullable = false, length = 80)
+    @Column(name = "emp_tx_updated_by", length = 80)
     private String updatedBy;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false,
+            cascade = CascadeType.MERGE
+    )
     @JoinColumn(
             name = "emp_fk_immediate_boss",
             referencedColumnName = "user_id",
-            nullable = false
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_employees_to_users")
     )
     private UserEntity immediateBoss;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false,
+            cascade = CascadeType.MERGE
+    )
     @JoinColumn(
             name = "emp_fk_work_center_id",
             referencedColumnName = "id",
-            nullable = false
+            foreignKey = @ForeignKey(name = "fk_employees_to_work_centers")
     )
     private WorkCenterEntity workCenter;
 

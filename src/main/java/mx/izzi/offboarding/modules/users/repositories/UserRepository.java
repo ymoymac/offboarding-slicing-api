@@ -11,10 +11,27 @@ import org.springframework.lang.NonNull;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    @Query("SELECT u FROM UserEntity u JOIN FETCH u.role JOIN FETCH u.workCenter WHERE u.idssff = :idssff")
+    @Query("""
+        SELECT DISTINCT u
+        FROM UserEntity u
+        JOIN FETCH u.roles r
+            JOIN FETCH r.role
+        JOIN FETCH u.workCenter
+        WHERE u.idssff = :idssff
+    """)
     Optional<UserEntity> findOneByIdssff(@Param("idssff") Long idssff);
-    @Query("SELECT u FROM UserEntity u JOIN FETCH u.role JOIN FETCH u.workCenter WHERE u.isActive = true")
+
+    @Query("""
+        SELECT DISTINCT u
+        FROM UserEntity u
+        JOIN FETCH u.roles r
+            JOIN FETCH r.role
+        JOIN FETCH u.workCenter
+        WHERE u.isActive = true
+    """
+    )
     Page<UserEntity> findAllActiveUsersBy(Pageable pageable);
+
     boolean existsById(@NonNull Long idssff);
     boolean existsByEmail(String email);
     boolean existsByUsername(String username);

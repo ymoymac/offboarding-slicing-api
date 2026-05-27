@@ -31,60 +31,60 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "t_offboarding_work_centers", schema = "offboarding")
+@Table(name = "t_ob_work_centers", schema = "offboarding")
 public class WorkCenterEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
-    private String id;
+    private Long id;
 
-    @Column(name = "wce_tx_region_id", nullable = false)
+    @Column(name = "wce_tx_region_id", length = 80)
     private String regionId;
 
-    @Column(name = "wce_tx_region", nullable = false)
+    @Column(name = "wce_tx_region", length = 80)
     private String region;
 
-    @Column(name = "wce_tx_locality_id", nullable = false)
+    @Column(name = "wce_tx_locality_id", length = 80)
     private String localityId;
 
-    @Column(name = "wce_tx_locality", nullable = false)
+    @Column(name = "wce_tx_locality", length = 80)
     private String locality;
 
-    @Column(name = "wce_tx_business_id", nullable = false)
+    @Column(name = "wce_tx_business_id", length = 80)
     private String businessId;
 
-    @Column(name = "wce_tx_business", nullable = false)
+    @Column(name = "wce_tx_business", length = 80)
     private String business;
 
-    @Column(name = "wce_tx_division_id", nullable = false)
+    @Column(name = "wce_tx_division_id", length = 80)
     private String divisionId;
 
-    @Column(name = "wce_tx_division", nullable = false)
+    @Column(name = "wce_tx_division", length = 80)
     private String division;
 
-    @Column(name = "wce_tx_company_id", nullable = false)
+    @Column(name = "wce_tx_company_id", length = 80)
     private String companyId;
 
-    @Column(name = "wce_tx_company", nullable = false)
+    @Column(name = "wce_tx_company", length = 80)
     private String company;
 
-    @Column(name = "wce_tx_work_center_id", nullable = false)
+    @Column(name = "wce_tx_work_center_id", length = 80)
     private String workCenterId;
 
-    @Column(name = "wce_tx_work_center", nullable = false)
+    @Column(name = "wce_tx_work_center", length = 80)
     private String workCenter;
 
-    @Column(name = "wce_tx_department_id", nullable = false)
+    @Column(name = "wce_tx_department_id", length = 80)
     private String departmentId;
 
-    @Column(name = "wce_tx_department", nullable = false)
+    @Column(name = "wce_tx_department", length = 80)
     private String department;
 
-    @Column(name = "wce_no_dependents", nullable = false)
+    @Column(name = "wce_no_dependents")
     private Integer dependents;
 
-    @Column(name = "wce_st_is_active", nullable = false)
+    @Column(name = "wce_st_is_active")
     private Boolean isActive;
 
     @Column(name = "wce_dt_created_at", nullable = false)
@@ -93,10 +93,10 @@ public class WorkCenterEntity {
     @Column(name = "wce_dt_updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "wce_tx_created_by", nullable = false)
+    @Column(name = "wce_tx_created_by", length = 80)
     private String createdBy;
 
-    @Column(name = "wce_tx_updated_by", nullable = false)
+    @Column(name = "wce_tx_updated_by",  length = 80)
     private String updatedBy;
 
     @ToString.Exclude

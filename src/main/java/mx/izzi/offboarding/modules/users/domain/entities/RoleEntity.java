@@ -1,6 +1,5 @@
 package mx.izzi.offboarding.modules.users.domain.entities;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
@@ -8,12 +7,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Index;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -30,8 +30,15 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "t_offboarding_roles", schema = "offboarding")
+@Table(
+        name = "t_ob_roles",
+        schema = "offboarding",
+        indexes = {
+                @Index(name = "i_role_name", columnList = "role_tx_name", unique = true)
+        }
+)
 public class RoleEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id", unique = true, nullable = false)
@@ -52,20 +59,19 @@ public class RoleEntity {
     @Column(name = "role_dt_updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "role_tx_created_by", nullable = false, length = 80)
+    @Column(name = "role_tx_created_by", length = 80)
     private String createdBy;
 
-    @Column(name = "role_tx_updated_by", nullable = false, length = 80)
+    @Column(name = "role_tx_updated_by", length = 80)
     private String updatedBy;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     @OneToMany(
             mappedBy = "role",
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            orphanRemoval = false
+            orphanRemoval = true
     )
-    private Set<UserEntity> userEntities;
+    private Set<UserRoleUnionEntity> users;
 
     @PrePersist
     private void prePersist() {

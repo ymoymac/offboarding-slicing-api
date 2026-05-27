@@ -23,7 +23,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @GetMapping(value = "/{idssff}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS", "RRHH"})
+    @RolesAllowed({"IMMEDIATE_BOSS", "RRHH"})
     public ResponseEntity<OBResponse<DetailEmployeeDto>> getById(@PathVariable String idssff) {
         return this.employeeService.findOneBy(Long.parseLong(idssff))
                 .map(EmployeeMapper::from)
@@ -33,7 +33,7 @@ public class EmployeeController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({"ADMIN", "RRHH"})
+    @RolesAllowed({"RRHH"})
     public ResponseEntity<OBResponse<Page<DetailEmployeeDto>>> getAllEmployees(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size

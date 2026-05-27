@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import mx.izzi.offboarding.modules.workcenter.domain.dtos.WorkCenterDto;
+import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenter;
 
 @Data
 @Builder
@@ -27,11 +29,14 @@ public class DetailUserDto {
     private String secondSurname;
 
     @JsonProperty
-    private String nickname;
+    private String username;
 
     @JsonProperty
     private String email;
 
     @JsonProperty
     private Boolean isActive;
+
+    @JsonProperty
+    private WorkCenterDto workCenter;
 }

@@ -19,7 +19,7 @@ public class DetailTerminationTypeDto {
     private Long terminationTypeId;
 
     @JsonProperty
-    private String terminationType;
+    private String type;
 
     @JsonProperty
     private String description;
