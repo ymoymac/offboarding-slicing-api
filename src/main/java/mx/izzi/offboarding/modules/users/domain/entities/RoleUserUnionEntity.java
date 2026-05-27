@@ -38,7 +38,7 @@ import java.time.LocalDateTime;
                 @Index(name = "i_union_user_id", columnList = "ruu_fk_user_id")
         }
 )
-public class UserRoleUnionEntity {
+public class RoleUserUnionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
