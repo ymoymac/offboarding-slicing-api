@@ -19,8 +19,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
@@ -28,7 +29,6 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(
         name = "t_ob_roles_users_union",
@@ -38,7 +38,10 @@ import java.time.LocalDateTime;
                 @Index(name = "i_union_user_id", columnList = "ruu_fk_user_id")
         }
 )
-public class RoleUserUnionEntity {
+public class RoleUserUnionEntity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

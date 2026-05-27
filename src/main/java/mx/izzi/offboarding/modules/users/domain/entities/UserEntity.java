@@ -17,14 +17,17 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.workcenter.domain.entities.WorkCenterEntity;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -33,7 +36,6 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(
         name = "t_ob_users",
@@ -43,7 +45,10 @@ import java.util.Set;
                 @Index(name = "i_user_email", columnList = "usr_tx_email", unique = true)
         }
 )
-public class UserEntity {
+public class UserEntity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -92,10 +97,8 @@ public class UserEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private Set<UserRoleUnionEntity> roles;
+    private Set<RoleUserUnionEntity> roles;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     @ManyToOne(
             fetch = FetchType.LAZY,
             optional = false,
@@ -139,4 +142,70 @@ public class UserEntity {
                 .build();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof UserEntity that)) return false;
+
+        return new EqualsBuilder()
+                .append(userId, that.userId)
+                .append(idssff, that.idssff)
+                .append(name, that.name)
+                .append(firstSurname, that.firstSurname)
+                .append(secondSurname, that.secondSurname)
+                .append(username, that.username)
+                .append(email, that.email)
+                .append(password, that.password)
+                .append(isActive, that.isActive)
+                .append(createdAt, that.createdAt)
+                .append(updatedAt, that.updatedAt)
+                .append(createdBy, that.createdBy)
+                .append(updatedBy, that.updatedBy)
+                .append(roles, that.roles)
+                .append(workCenter, that.workCenter)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(userId)
+                .append(idssff)
+                .append(name)
+                .append(firstSurname)
+                .append(secondSurname)
+                .append(username)
+                .append(email)
+                .append(password)
+                .append(isActive)
+                .append(createdAt)
+                .append(updatedAt)
+                .append(createdBy)
+                .append(updatedBy)
+                .append(roles)
+                .append(workCenter)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("userId", userId)
+                .append("idssff", idssff)
+                .append("name", name)
+                .append("firstSurname", firstSurname)
+                .append("secondSurname", secondSurname)
+                .append("username", username)
+                .append("email", email)
+                .append("password", password)
+                .append("isActive", isActive)
+                .append("createdAt", createdAt)
+                .append("updatedAt", updatedAt)
+                .append("createdBy", createdBy)
+                .append("updatedBy", updatedBy)
+                .append("roles", roles)
+                .append("workCenter", workCenter)
+                .toString();
+    }
 }

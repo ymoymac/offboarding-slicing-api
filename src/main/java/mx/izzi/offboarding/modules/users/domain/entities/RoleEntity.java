@@ -17,9 +17,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import mx.izzi.offboarding.modules.users.domain.models.Role;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -28,7 +32,6 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(
         name = "t_ob_roles",
@@ -37,7 +40,10 @@ import java.util.Set;
                 @Index(name = "i_role_name", columnList = "role_tx_name", unique = true)
         }
 )
-public class RoleEntity {
+public class RoleEntity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,7 +77,7 @@ public class RoleEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private Set<UserRoleUnionEntity> users;
+    private Set<RoleUserUnionEntity> users;
 
     @PrePersist
     private void prePersist() {
@@ -96,5 +102,54 @@ public class RoleEntity {
                 .createdBy(this.createdBy)
                 .updatedBy(this.updatedBy)
                 .build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof RoleEntity that)) return false;
+
+        return new EqualsBuilder()
+                .append(roleId, that.roleId)
+                .append(name, that.name)
+                .append(description, that.description)
+                .append(isActive, that.isActive)
+                .append(createdAt, that.createdAt)
+                .append(updatedAt, that.updatedAt)
+                .append(createdBy, that.createdBy)
+                .append(updatedBy, that.updatedBy)
+                .append(users, that.users)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(roleId)
+                .append(name)
+                .append(description)
+                .append(isActive)
+                .append(createdAt)
+                .append(updatedAt)
+                .append(createdBy)
+                .append(updatedBy)
+                .append(users)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("roleId", roleId)
+                .append("name", name)
+                .append("description", description)
+                .append("isActive", isActive)
+                .append("createdAt", createdAt)
+                .append("updatedAt", updatedAt)
+                .append("createdBy", createdBy)
+                .append("updatedBy", updatedBy)
+                .append("users", users)
+                .toString();
     }
 }
