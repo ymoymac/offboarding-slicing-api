@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.report.services;
+package mx.izzi.offboarding.modules.reports.services;
 
 import java.io.IOException;
 

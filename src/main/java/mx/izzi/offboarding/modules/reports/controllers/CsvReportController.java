@@ -1,7 +1,7 @@
-package mx.izzi.offboarding.modules.report.controllers;
+package mx.izzi.offboarding.modules.reports.controllers;
 
 import lombok.RequiredArgsConstructor;
-import mx.izzi.offboarding.modules.report.services.CsvReportService;
+import mx.izzi.offboarding.modules.reports.services.CsvReportService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

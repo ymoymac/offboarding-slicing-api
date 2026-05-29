@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1")
-@RequiredArgsConstructor
 @RolesAllowed("ADMIN")
+@RequiredArgsConstructor
 public class AdminController {
 
     private final UserService userService;

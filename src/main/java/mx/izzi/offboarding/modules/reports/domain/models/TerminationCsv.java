@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.report.domain.models;
+package mx.izzi.offboarding.modules.reports.domain.models;
 
 import com.opencsv.bean.CsvBindByPosition;
 import lombok.Builder;

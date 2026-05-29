@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.unit.services;
+package mx.izzi.offboarding.modules.users.services;
 
 import mx.izzi.offboarding.Factory;
 import mx.izzi.offboarding.modules.auth.domain.models.AuthUtils;
@@ -30,7 +30,7 @@ import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserServiceTest {
+public class FindOneByTest {
 
     @Mock
     UserRepository userRepository;
@@ -107,54 +107,5 @@ public class UserServiceTest {
         assertThatThrownBy(() -> this.userService.findOneBy(Mockito.anyLong()))
                 .isInstanceOf(ResourceNotAvailableException.class)
                 .hasMessageContaining("/api/v1/users/0");
-    }
-
-    @Test
-    @Order(4)
-    @DisplayName("It should return the information of the user who logged in.")
-    void findOneProfileBy() {
-        RoleEntity roleEntity = RoleMapper.toEntity(Factory.immediateRole());
-        UserEntity userEntity = UserMapper.toEntity(Factory.user(Factory.immediateRole()));
-        RoleUserUnionEntity roleUserUnionEntity = RoleUserUnionMapper.toEntity(
-                Factory.roleUserUnion(Factory.immediateRole()),
-                roleEntity,
-                userEntity
-        );
-
-        userEntity.setRoleUserUnion(Set.of(roleUserUnionEntity));
-
-        Mockito.when(this.userRepository.findOneByIdssff(Mockito.anyLong()))
-                .thenReturn(Optional.of(userEntity));
-
-        Optional<User> user = this.userService.findOneProfileBy(Mockito.anyLong());
-
-        assertThat(user.isPresent()).isTrue();
-        assertThat(user.get().getUserId()).isEqualTo(userEntity.getUserId());
-        assertThat(AuthUtils.isAdmin(user.get())).isEqualTo(false);
-    }
-
-    @Test
-    @Order(5)
-    @DisplayName("It should throw an exception because the logged-in user is requesting another user's information.")
-    void findOneProfileBy_throwAccessDenied() {
-
-        RoleEntity roleEntity = RoleMapper.toEntity(Factory.immediateRole());
-        UserEntity userEntity = UserMapper.toEntity(Factory.user(Factory.immediateRole()));
-        RoleUserUnionEntity roleUserUnionEntity = RoleUserUnionMapper.toEntity(
-                Factory.roleUserUnion(Factory.immediateRole()),
-                roleEntity,
-                userEntity
-        );
-
-        userEntity.setIdssff(9999888L);
-        userEntity.setEmail("email@test.com");
-        userEntity.setRoleUserUnion(Set.of(roleUserUnionEntity));
-
-        Mockito.when(this.userRepository.findOneByIdssff(Mockito.anyLong()))
-                .thenReturn(Optional.of(userEntity));
-
-        assertThatThrownBy(() -> this.userService.findOneProfileBy(99L))
-                .isInstanceOf(ResourceAccessDeniedException.class)
-                .hasMessageContaining("/api/v1/users/profile/99");
     }
 }

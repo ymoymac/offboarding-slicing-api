@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.report.services.implementations;
+package mx.izzi.offboarding.modules.reports.services.implementations;
 
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
@@ -6,9 +6,9 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import lombok.RequiredArgsConstructor;
-import mx.izzi.offboarding.modules.report.domain.mappers.TerminationCsvMapper;
-import mx.izzi.offboarding.modules.report.domain.models.TerminationCsv;
-import mx.izzi.offboarding.modules.report.services.CsvReportService;
+import mx.izzi.offboarding.modules.reports.domain.mappers.TerminationCsvMapper;
+import mx.izzi.offboarding.modules.reports.domain.models.TerminationCsv;
+import mx.izzi.offboarding.modules.reports.services.CsvReportService;
 import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockRequest;
 import mx.izzi.offboarding.modules.terminations.services.TerminationService;
 import mx.izzi.offboarding.shared.exceptions.ServerException;

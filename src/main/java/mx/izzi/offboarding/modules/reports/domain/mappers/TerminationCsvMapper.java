@@ -1,7 +1,7 @@
-package mx.izzi.offboarding.modules.report.domain.mappers;
+package mx.izzi.offboarding.modules.reports.domain.mappers;
 
 import mx.izzi.offboarding.modules.employees.domain.models.Employee;
-import mx.izzi.offboarding.modules.report.domain.models.TerminationCsv;
+import mx.izzi.offboarding.modules.reports.domain.models.TerminationCsv;
 import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockRequest;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 
