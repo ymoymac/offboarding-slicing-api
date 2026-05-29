@@ -52,4 +52,7 @@ public class SignUpDto {
     @JsonProperty
     private Long workCenterId;
 
+    @JsonProperty
+    private Long roleId;
+
 }

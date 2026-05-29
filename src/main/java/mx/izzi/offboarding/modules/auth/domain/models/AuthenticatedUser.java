@@ -30,7 +30,7 @@ public record AuthenticatedUser(User user) implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.user.getIdssff().toString();
+        return this.user.getEmail();
     }
 
     @Override

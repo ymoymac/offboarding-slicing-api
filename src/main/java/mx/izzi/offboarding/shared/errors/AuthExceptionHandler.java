@@ -20,6 +20,22 @@ import java.util.Map;
 @RestControllerAdvice
 public class AuthExceptionHandler {
 
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<OBErrorResponse> handleAuthorizationDeniedExceptionSpringBoot(AuthorizationDeniedException e) {
+
+        List<Map<String, Object>> errors = new ArrayList<>();
+
+        Map<String, Object> err = new HashMap<>();
+        err.put("code", OBErrorCodes.ACCESS_DENIED.getCode());
+        err.put("display", OBErrorCodes.ACCESS_DENIED.getDisplay());
+        errors.add(err);
+
+        return new ResponseEntity<>(
+                new OBErrorResponse(OBErrorCodes.ACCESS_DENIED, e.getMessage(), errors),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
     @ExceptionHandler(InternalAuthenticationServiceException.class)
     public ResponseEntity<OBErrorResponse> handleInternalAuthenticationService(InternalAuthenticationServiceException e) {
 
@@ -47,7 +63,7 @@ public class AuthExceptionHandler {
         );
     }
 
-    @ExceptionHandler({ResourceAccessDeniedException.class, AuthorizationDeniedException.class})
+    @ExceptionHandler(ResourceAccessDeniedException.class)
     public ResponseEntity<OBErrorResponse> handleAccessDenied(ResourceAccessDeniedException e) {
 
         List<Map<String, Object>> errors = new ArrayList<>();

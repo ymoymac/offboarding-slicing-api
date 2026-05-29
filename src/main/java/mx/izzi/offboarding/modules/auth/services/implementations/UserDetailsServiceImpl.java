@@ -24,15 +24,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String idssff) {
+    public UserDetails loadUserByUsername(String email) {
 
-        LOG.info("[INFO]: Executing UserDetailsService for user '{}'", idssff);
+        LOG.info("[INFO]: Executing UserDetailsService for user '{}'", email);
 
         Optional<User> user = this.userRepository
-                .findOneByIdssff(Long.parseLong(idssff))
+                .findOneByEmail(email)
                 .map(UserEntity::toDomain);
 
-        LOG.info("[INFO]: User '{}' found", idssff);
+        LOG.info("[INFO]: User '{}' found", user);
 
         if  (user.isEmpty()) {
             throw new BadCredentialsException("/api/v1/auth/login");
@@ -42,7 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return org.springframework.security.core.userdetails.User
                 .builder()
-                .username(authenticatedUser.user().getIdssff().toString())
+                .username(authenticatedUser.user().getEmail())
                 .password(authenticatedUser.user().getPassword())
                 .authorities(
                         authenticatedUser.user().getRoles()

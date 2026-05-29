@@ -14,10 +14,12 @@ import mx.izzi.offboarding.modules.terminations.repositories.AccessBlockingReque
 import mx.izzi.offboarding.modules.terminations.services.TerminationReasonService;
 import mx.izzi.offboarding.modules.terminations.services.TerminationService;
 import mx.izzi.offboarding.modules.terminations.services.TerminationTypeService;
+import mx.izzi.offboarding.modules.users.domain.models.Role;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
 import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.shared.enums.EmployeeStatus;
+import mx.izzi.offboarding.shared.enums.Roles;
 import mx.izzi.offboarding.shared.exceptions.*;
 import mx.izzi.offboarding.shared.utils.DynFolio;
 import org.hibernate.service.spi.ServiceException;
@@ -31,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -64,7 +67,7 @@ public class TerminationServiceImp implements TerminationService {
                 .getAuthentication()
                 .getPrincipal();
 
-        boolean isSameUser = userDetails.getUsername().equals(request.get().getUser().getIdssff().toString());
+        boolean isSameUser = userDetails.getUsername().equals(request.get().getUser().getEmail());
 
         if  (!isSameUser) {
             throw new ResourceAccessDeniedException(PATH + "/" + folio);
@@ -86,7 +89,7 @@ public class TerminationServiceImp implements TerminationService {
                 .getAuthentication()
                 .getPrincipal();
 
-        boolean isSameUser = userDetails.getUsername().equals(userIdssff.toString());
+        boolean isSameUser = userDetails.getUsername().equals(user.get().getEmail());
 
         if  (!isSameUser) {
             throw new ResourceAccessDeniedException("/api/v1/users" + "/" + userIdssff + "/employees");
@@ -107,13 +110,18 @@ public class TerminationServiceImp implements TerminationService {
     @Override
     public Optional<AccessBlockRequest> create(CreateAccessBlockRequestDto dto) {
 
-        Optional<User> user = this.userService.findOneBy(Long.parseLong(dto.getUserIdssff()));
+        Optional<User> user = this.userService.findOneBy(dto.getUserIdssff());
+        Optional<User> immediateBoss = Optional.empty();
+
+        if (dto.getImmediateBossIdssff() != null && !Objects.equals(dto.getUserIdssff(), dto.getImmediateBossIdssff())) {
+            immediateBoss = this.userService.findOneBy(dto.getImmediateBossIdssff());
+        }
 
         if (user.isEmpty()) {
             throw new ServiceException(PATH);
         }
 
-        Optional<Employee> employee = this.employeeService.findOneBy(Long.parseLong(dto.getEmployeeIdssff()));
+        Optional<Employee> employee = this.employeeService.findOneBy(dto.getEmployeeIdssff());
 
         if (employee.isEmpty()) {
             throw new ServiceException(PATH);
@@ -123,8 +131,18 @@ public class TerminationServiceImp implements TerminationService {
             throw new ResourceAlreadyTerminatedException(PATH);
         }
 
-        if (!employee.get().getImmediateBoos().getIdssff().equals(user.get().getIdssff())) {
-            throw new ResourceAccessDeniedException(PATH);
+        List<String> roleNames = user.get().getRoles().stream().map(Role::getName).toList();
+
+        if (roleNames.contains(Roles.ADMIN.getName())) {
+            if (!employee.get().getImmediateBoos().getIdssff().equals(user.get().getIdssff())) {
+                throw new ResourceAccessDeniedException(PATH);
+            }
+        }
+
+        if (roleNames.contains(Roles.RRHH.getName())) {
+            if (!employee.get().getImmediateBoos().getIdssff().equals(dto.getImmediateBossIdssff())) {
+                throw new ResourceAccessDeniedException(PATH);
+            }
         }
 
         Optional<TerminationType> type = this.terminationTypeService.findOneBy(dto.getTerminationTypeId());
@@ -155,6 +173,7 @@ public class TerminationServiceImp implements TerminationService {
                 .createdBy(userDetails.getUsername())
                 .updatedBy(userDetails.getUsername())
                 .user(user.get())
+                .immediateBoss(immediateBoss.orElseGet(user::get))
                 .employee(employee.get())
                 .terminationType(type.get())
                 .terminationReason(reason.get())

@@ -23,6 +23,7 @@ public class AuthMapper {
                 .password(signUpDto.getPassword())
                 .email(signUpDto.getEmail())
                 .workCenterId(signUpDto.getWorkCenterId())
+                .roleId(signUpDto.getRoleId())
                 .build();
     }
 }

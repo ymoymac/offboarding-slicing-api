@@ -2,10 +2,15 @@ package mx.izzi.offboarding.modules.users.domain.mappers;
 
 import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserWithRoleDto;
+import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
+import mx.izzi.offboarding.modules.users.domain.entities.RoleUserUnionEntity;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
 import mx.izzi.offboarding.modules.users.domain.models.RoleUserUnion;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenterMapper;
+
+import java.time.LocalDateTime;
+import java.util.Set;
 
 public class UserMapper {
     public static DetailUserDto from(User user) {

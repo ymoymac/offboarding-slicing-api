@@ -15,8 +15,12 @@ import lombok.ToString;
 @ToString
 public class LoginDto {
 
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Email
     @JsonProperty
-    private Long idssff;
+    private String email;
 
     @NotNull
     @NotBlank

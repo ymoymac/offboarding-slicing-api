@@ -22,13 +22,13 @@ public class CreateAccessBlockRequestDto {
     private Date endDate;
 
     @JsonProperty
-    private String laboraId;
+    private Long userIdssff;
 
     @JsonProperty
-    private String userIdssff;
+    private Long immediateBossIdssff;
 
     @JsonProperty
-    private String employeeIdssff;
+    private Long employeeIdssff;
 
     @JsonProperty
     private Long terminationTypeId;

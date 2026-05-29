@@ -24,7 +24,7 @@ public class TerminationController {
     private final TerminationService terminationService;
 
     @GetMapping(value = "/{folio}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS", "RRHH"})
+    @RolesAllowed({"IMMEDIATE_BOSS", "RRHH"})
     public ResponseEntity<OBResponse<DetailAccessBlockRequestDto>> getByFolio(@PathVariable String folio) {
         return this.terminationService.findOneBy(folio)
                 .map(TerminationMapper::from)
@@ -34,7 +34,7 @@ public class TerminationController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS", "RRHH"})
+    @RolesAllowed({"IMMEDIATE_BOSS", "RRHH"})
     public ResponseEntity<OBResponse<DetailAccessBlockRequestDto>> create(@RequestBody @Valid CreateAccessBlockRequestDto createAccessBlockRequestDto) {
         return this.terminationService.create(createAccessBlockRequestDto)
                 .map(TerminationMapper::from)

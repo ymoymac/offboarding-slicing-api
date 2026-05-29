@@ -23,7 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UserRepository userJpaRepository;
+    private final UserRepository userRepository;
     private final UserService userService;
 
     @Override
@@ -43,15 +42,15 @@ public class AuthServiceImpl implements AuthService {
         LOG.info("[INFO]: Login {}", loginDto);
 
         Authentication authentication = this.authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDto.getIdssff(), loginDto.getPassword())
+                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
         );
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         String token = this.jwtService.generateToken(userDetails);
 
-        User user = this.userJpaRepository
-                .findOneByIdssff(loginDto.getIdssff())
+        User user = this.userRepository
+                .findOneByEmail(loginDto.getEmail())
                 .map(UserEntity::toDomain)
                 .orElse(null);
 

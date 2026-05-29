@@ -24,13 +24,23 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("""
         SELECT DISTINCT u
         FROM UserEntity u
+        JOIN FETCH u.roleUserUnion ruu
+            JOIN FETCH ruu.role
+        JOIN FETCH u.workCenter
+        WHERE u.email = :email
+    """)
+    Optional<UserEntity> findOneByEmail(@Param("email") String email);
+
+    @Query("""
+        SELECT DISTINCT u
+        FROM UserEntity u
         JOIN FETCH u.roleUserUnion r
             JOIN FETCH r.role
         JOIN FETCH u.workCenter
         WHERE u.isActive = true
     """
     )
-    Page<UserEntity> findAllActiveUsersBy(Pageable pageable);
+    Page<UserEntity> findAllUsers(Pageable pageable);
 
     boolean existsById(@NonNull Long idssff);
     boolean existsByEmail(String email);

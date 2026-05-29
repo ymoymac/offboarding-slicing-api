@@ -1,0 +1,160 @@
+package mx.izzi.offboarding.unit.services;
+
+import mx.izzi.offboarding.Factory;
+import mx.izzi.offboarding.modules.auth.domain.models.AuthUtils;
+import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
+import mx.izzi.offboarding.modules.users.domain.entities.RoleUserUnionEntity;
+import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
+import mx.izzi.offboarding.modules.users.domain.mappers.RoleMapper;
+import mx.izzi.offboarding.modules.users.domain.mappers.RoleUserUnionMapper;
+import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
+import mx.izzi.offboarding.modules.users.domain.models.User;
+import mx.izzi.offboarding.modules.users.repositories.UserRepository;
+import mx.izzi.offboarding.modules.users.services.implementations.UserServiceImpl;
+import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
+import mx.izzi.offboarding.shared.exceptions.ResourceNotAvailableException;
+import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.Optional;
+import java.util.Set;
+
+@ExtendWith(MockitoExtension.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class UserServiceTest {
+
+    @Mock
+    UserRepository userRepository;
+
+    @InjectMocks
+    UserServiceImpl userService;
+
+    @BeforeEach
+    void setUp() {
+        Factory.mockSecurityContext(Factory.userDetails(Factory.user(Factory.immediateRole())));
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("It should return one user by id")
+    void findOneBy() {
+        RoleEntity roleEntity = RoleMapper.toEntity(Factory.immediateRole());
+        UserEntity userEntity = UserMapper.toEntity(Factory.user(Factory.immediateRole()));
+        RoleUserUnionEntity roleUserUnionEntity = RoleUserUnionMapper.toEntity(
+                Factory.roleUserUnion(Factory.immediateRole()),
+                roleEntity,
+                userEntity
+        );
+
+        userEntity.setRoleUserUnion(Set.of(roleUserUnionEntity));
+
+        Mockito.when(this.userRepository.findOneByIdssff(Mockito.anyLong()))
+                .thenReturn(Optional.of(userEntity));
+
+        Optional<User> user = this.userService.findOneBy(Mockito.anyLong());
+
+        assertThat(user.isPresent()).isTrue();
+        assertThat(user.get().getUserId()).isEqualTo(userEntity.getUserId());
+        assertThat(AuthUtils.isAdmin(user.get())).isEqualTo(false);
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("It should throw a ResourceNotFoundException because the user does not exist")
+    void findOneBy_throwNotFound() {
+
+        Mockito.when(this.userRepository.findOneByIdssff(Mockito.anyLong()))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> this.userService.findOneBy(Mockito.anyLong()))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("/api/v1/users/0");
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("It should throw a ResourceNotAvailableException because the user exists but is not active")
+    void findOneBy_throwNotAvailable() {
+
+        RoleEntity roleEntity = RoleMapper.toEntity(Factory.immediateRole());
+        UserEntity userEntity = UserMapper.toEntity(Factory.user(Factory.immediateRole()));
+        RoleUserUnionEntity roleUserUnionEntity = RoleUserUnionMapper.toEntity(
+                Factory.roleUserUnion(Factory.immediateRole()),
+                roleEntity,
+                userEntity
+        );
+
+        userEntity.setRoleUserUnion(Set.of(roleUserUnionEntity));
+        userEntity.setIsActive(false);
+
+        Mockito.when(this.userRepository.findOneByIdssff(Mockito.anyLong()))
+                .thenReturn(Optional.of(userEntity));
+
+        assertThatThrownBy(() -> this.userService.findOneBy(Mockito.anyLong()))
+                .isInstanceOf(ResourceNotAvailableException.class)
+                .hasMessageContaining("/api/v1/users/0");
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("It should return the information of the user who logged in.")
+    void findOneProfileBy() {
+        RoleEntity roleEntity = RoleMapper.toEntity(Factory.immediateRole());
+        UserEntity userEntity = UserMapper.toEntity(Factory.user(Factory.immediateRole()));
+        RoleUserUnionEntity roleUserUnionEntity = RoleUserUnionMapper.toEntity(
+                Factory.roleUserUnion(Factory.immediateRole()),
+                roleEntity,
+                userEntity
+        );
+
+        userEntity.setRoleUserUnion(Set.of(roleUserUnionEntity));
+
+        Mockito.when(this.userRepository.findOneByIdssff(Mockito.anyLong()))
+                .thenReturn(Optional.of(userEntity));
+
+        Optional<User> user = this.userService.findOneProfileBy(Mockito.anyLong());
+
+        assertThat(user.isPresent()).isTrue();
+        assertThat(user.get().getUserId()).isEqualTo(userEntity.getUserId());
+        assertThat(AuthUtils.isAdmin(user.get())).isEqualTo(false);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("It should throw an exception because the logged-in user is requesting another user's information.")
+    void findOneProfileBy_throwAccessDenied() {
+
+        RoleEntity roleEntity = RoleMapper.toEntity(Factory.immediateRole());
+        UserEntity userEntity = UserMapper.toEntity(Factory.user(Factory.immediateRole()));
+        RoleUserUnionEntity roleUserUnionEntity = RoleUserUnionMapper.toEntity(
+                Factory.roleUserUnion(Factory.immediateRole()),
+                roleEntity,
+                userEntity
+        );
+
+        userEntity.setIdssff(9999888L);
+        userEntity.setEmail("email@test.com");
+        userEntity.setRoleUserUnion(Set.of(roleUserUnionEntity));
+
+        Mockito.when(this.userRepository.findOneByIdssff(Mockito.anyLong()))
+                .thenReturn(Optional.of(userEntity));
+
+        assertThatThrownBy(() -> this.userService.findOneProfileBy(99L))
+                .isInstanceOf(ResourceAccessDeniedException.class)
+                .hasMessageContaining("/api/v1/users/profile/99");
+    }
+}

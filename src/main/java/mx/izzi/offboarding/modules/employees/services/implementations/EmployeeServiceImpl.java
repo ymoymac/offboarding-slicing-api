@@ -49,7 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .getAuthentication()
                 .getPrincipal();
 
-        boolean isSameUser = userDetails.getUsername().equals(immediateBossIdssff.toString());
+        boolean isSameUser = userDetails.getUsername().equals(immediateBoss.get().getEmail());
 
         if  (!isSameUser) {
             throw new ResourceAccessDeniedException("/api/v1/users" + "/" + immediateBossIdssff + "/employees");
@@ -74,7 +74,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .getAuthentication()
                 .getPrincipal();
 
-        boolean isSameUser = userDetails.getUsername().equals(immediateBossIdssff.toString());
+        boolean isSameUser = userDetails.getUsername().equals(immediateBoss.get().getEmail());
 
         if  (!isSameUser) {
             throw new ResourceAccessDeniedException("/api/v1/users" + "/" + immediateBossIdssff + "/employee/" + idssff);

@@ -3,7 +3,7 @@ package mx.izzi.offboarding.modules.users.services.implementations;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
-import mx.izzi.offboarding.modules.auth.domain.models.AuthenticatedUser;
+import mx.izzi.offboarding.modules.auth.domain.models.AuthUtils;
 import mx.izzi.offboarding.modules.users.domain.dtos.CreateUserDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.UpdateUserDto;
 import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
@@ -19,14 +19,11 @@ import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenter;
 import mx.izzi.offboarding.modules.workcenter.services.WorkCenterService;
 import mx.izzi.offboarding.shared.exceptions.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,9 +36,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class.getName());
-
-    private final String PATH = "/api/v1/users";
+    private static final String PATH = "/api/v1/users";
 
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
@@ -54,6 +49,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findOneBy(Long idssff) {
+
         Optional<User> user = this.userRepository
                 .findOneByIdssff(idssff)
                 .map(UserEntity::toDomain);
@@ -71,26 +67,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findOneProfileBy(Long idssff) {
-        Optional<User> user = this.userRepository.findOneByIdssff(idssff)
+
+        Optional<User> user = this.userRepository
+                .findOneByIdssff(idssff)
                 .map(UserEntity::toDomain);
 
         if (user.isEmpty()) {
-            throw new ResourceNotFoundException(PATH + "/" +idssff);
+            throw new ResourceNotFoundException(PATH + "/profile/" + idssff);
         }
 
-        UserDetails userDetails = (UserDetails) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
+        if (user.get().getIsActive().equals(false)) {
+            throw new ResourceNotAvailableException(PATH + "/profile/" + idssff);
+        }
 
-        AuthenticatedUser authenticatedUser = new AuthenticatedUser(user.get());
-
-        boolean isAdmin = authenticatedUser.isAdmin();
-
-        boolean isSameUser = userDetails.getUsername().equals(idssff.toString());
-
-        if  (!isAdmin && !isSameUser) {
-            throw new ResourceAccessDeniedException(PATH + "/profile/" +idssff);
+        if  (!AuthUtils.isSameUser(user.get())) {
+            throw new ResourceAccessDeniedException(PATH + "/profile/" + idssff);
         }
 
         return user;
@@ -99,7 +90,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public Optional<User> create(CreateUserDto createUserDto) {
-        Optional<UserEntity> userFound = this.userRepository.findOneByIdssff(createUserDto.getIdssff());
+        Optional<User> userFound = this.userRepository
+                .findOneByIdssff(createUserDto.getIdssff())
+                .map(UserEntity::toDomain);
 
         if (userFound.isPresent()) {
             throw new ResourceAlreadyExistsException(PATH);
@@ -113,8 +106,11 @@ public class UserServiceImpl implements UserService {
             throw new ResourceAlreadyExistsException(PATH);
         }
 
+        //Llamada a SAP
+        //Validar que el usuario proveniente de SAP tenga subordinados, sino no insertar
+
         Optional<Role> role = this.roleRepository
-                .findById(2L)
+                .findById(createUserDto.getRoleId())
                 .map(RoleEntity::toDomain);
 
         if (role.isEmpty() || role.get().getIsActive().equals(false)) {
@@ -133,13 +129,10 @@ public class UserServiceImpl implements UserService {
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
-        String createdBy;
 
-        if  (principal instanceof UserDetails userDetails) {
-            createdBy = userDetails.getUsername();
-        } else {
-            createdBy = "System";
-        }
+        String createdBy = principal instanceof UserDetails userDetails
+                ? userDetails.getUsername()
+                : "System";
 
         User user = User.builder()
                 .idssff(createUserDto.getIdssff())
@@ -168,6 +161,7 @@ public class UserServiceImpl implements UserService {
 
         RoleUserUnion union = RoleUserUnion.builder()
                 .role(role.get())
+                .user(saved.get())
                 .assignmentDate(now)
                 .assignedBy(createdBy)
                 .isActive(true)
@@ -176,9 +170,13 @@ public class UserServiceImpl implements UserService {
                 .createdBy(createdBy)
                 .build();
 
-        union.setUser(saved.get());
-
-        this.roleUserUnionRepository.saveAndFlush(RoleUserUnionMapper.toEntity(union, RoleMapper.toEntity(role.get()), UserMapper.toEntity(saved.get())));
+        this.roleUserUnionRepository.saveAndFlush(
+                RoleUserUnionMapper.toEntity(
+                        union,
+                        RoleMapper.toEntity(role.get()),
+                        UserMapper.toEntity(saved.get())
+                )
+        );
 
         this.entityManager.clear();
 
@@ -195,7 +193,7 @@ public class UserServiceImpl implements UserService {
 
         Pageable pageable = PageRequest.of(page, size);
         return this.userRepository
-                .findAllActiveUsersBy(pageable)
+                .findAllUsers(pageable)
                 .map(UserEntity::toDomain);
     }
 

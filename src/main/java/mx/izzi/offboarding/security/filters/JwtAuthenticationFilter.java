@@ -66,11 +66,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             JWTClaimsSet claims = jwtService.validateToken(token);
 
-            String idssff = claims.getSubject();
+            String email = claims.getSubject();
 
-            LOG.info("[INFO]: Claim idssff '{}'", idssff);
+            LOG.info("[INFO]: Claim email '{}'", email);
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(idssff);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
