@@ -13,8 +13,6 @@ import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.security.services.JwtService;
 import mx.izzi.offboarding.shared.exceptions.ServerException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,8 +26,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    private static final Logger LOG = LoggerFactory.getLogger(AuthServiceImpl.class);
-
     private final String PATH = "/api/v1/auth";
 
     private final AuthenticationManager authenticationManager;
@@ -39,8 +35,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Optional<AuthUser> login(LoginDto loginDto) {
-        LOG.info("[INFO]: Login {}", loginDto);
-
         Authentication authentication = this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
         );
@@ -64,11 +58,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Optional<AuthUser> signUp(SignUpDto signUpDto) {
-        LOG.info("[INFO]: SignUp {}", signUpDto);
-
         Optional<User> user = this.userService.create(AuthMapper.from(signUpDto));
-
-        LOG.info("[INFO]: User created {}", user);
 
         if (user.isEmpty()) {
             throw new ServerException(PATH + "/" + "signup");
@@ -87,11 +77,7 @@ public class AuthServiceImpl implements AuthService {
                 .disabled(!user.get().getIsActive())
                 .build();
 
-        LOG.info("[INFO]: User {}", userDetails);
-
         String token = this.jwtService.generateToken(userDetails);
-
-        LOG.info("[INFO]: Token {}", token);
 
         return Optional.of(
                 AuthUser.builder()

@@ -3,18 +3,18 @@ package mx.izzi.offboarding.modules.users.services.implementations;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mx.izzi.offboarding.modules.auth.domain.models.AuthUtils;
 import mx.izzi.offboarding.modules.users.domain.dtos.CreateUserDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.UpdateUserDto;
-import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
 import mx.izzi.offboarding.modules.users.domain.mappers.RoleMapper;
 import mx.izzi.offboarding.modules.users.domain.mappers.RoleUserUnionMapper;
 import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
 import mx.izzi.offboarding.modules.users.domain.models.*;
-import mx.izzi.offboarding.modules.users.repositories.RoleRepository;
 import mx.izzi.offboarding.modules.users.repositories.RoleUserUnionRepository;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
+import mx.izzi.offboarding.modules.users.services.RoleService;
 import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenter;
 import mx.izzi.offboarding.modules.workcenter.services.WorkCenterService;
@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -39,8 +40,8 @@ public class UserServiceImpl implements UserService {
     private static final String PATH = "/api/v1/users";
 
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
+    private final RoleService roleService;
     private final WorkCenterService workCenterService;
     private final RoleUserUnionRepository roleUserUnionRepository;
 
@@ -99,28 +100,23 @@ public class UserServiceImpl implements UserService {
         }
 
         if (this.userRepository.existsByEmail(createUserDto.getEmail())) {
-            throw new ResourceAlreadyExistsException(PATH);
+            throw new EmailAlreadyExistsException(PATH);
         }
 
         if (this.userRepository.existsByUsername(createUserDto.getEmail().split("@")[0])) {
             throw new ResourceAlreadyExistsException(PATH);
         }
 
-        //Llamada a SAP
-        //Validar que el usuario proveniente de SAP tenga subordinados, sino no insertar
+        Optional<Role> role = this.roleService.findOneBy(createUserDto.getRoleId());
 
-        Optional<Role> role = this.roleRepository
-                .findById(createUserDto.getRoleId())
-                .map(RoleEntity::toDomain);
-
-        if (role.isEmpty() || role.get().getIsActive().equals(false)) {
-            throw new ResourceNotFoundException(PATH);
+        if  (role.isEmpty()) {
+            throw new ServerException(PATH);
         }
 
         Optional<WorkCenter> workCenter = this.workCenterService.findOneBy(createUserDto.getWorkCenterId());
 
-        if (workCenter.isEmpty() || workCenter.get().getIsActive().equals(false)) {
-            throw new ResourceNotFoundException(PATH);
+        if (workCenter.isEmpty()) {
+            throw new ServerException(PATH);
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -151,17 +147,11 @@ public class UserServiceImpl implements UserService {
                 .workCenter(workCenter.get())
                 .build();
 
-        Optional<User> saved = Optional.ofNullable(
-                this.userRepository.saveAndFlush(UserMapper.toEntity(user)).toDomain()
-        );
-
-        if (saved.isEmpty()) {
-            throw new ServerException(PATH);
-        }
+        User saved = this.userRepository.saveAndFlush(UserMapper.toEntity(user)).toDomain();
 
         RoleUserUnion union = RoleUserUnion.builder()
                 .role(role.get())
-                .user(saved.get())
+                .user(saved)
                 .assignmentDate(now)
                 .assignedBy(createdBy)
                 .isActive(true)
@@ -174,14 +164,14 @@ public class UserServiceImpl implements UserService {
                 RoleUserUnionMapper.toEntity(
                         union,
                         RoleMapper.toEntity(role.get()),
-                        UserMapper.toEntity(saved.get())
+                        UserMapper.toEntity(saved)
                 )
         );
 
         this.entityManager.clear();
 
         return this.userRepository
-                .findOneByIdssff(saved.get().getIdssff())
+                .findById(saved.getUserId())
                 .map(UserEntity::toDomain);
     }
 

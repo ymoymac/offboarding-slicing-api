@@ -22,6 +22,8 @@ public enum OBErrorCodes {
     INVALID_BODY_PARAMS("PB-ERR004", 400, "Bad request", "Invalid params", "Parámetros inválidos"),
     NOT_AVAILABLE("PB-ERR005", 400, "Bad Request", "Resource not available", "Recurso no disponible"),
     EMPLOYEE_TERMINATED("PB-ERR006", 400, "Bad Request", "This employee has already been fired", "Esté empleado ya paso por un proceso de bloqueo. No esta activo"),
+    EMAIL_ALREADY_EXISTS("PB-ERR007", 409, "Conflict", "Insertion error. This user already exists with this email address", "Es usuario ya existe con este email"),
+    DB_ERROR_CONNECTION("PB-ERR008", 500, "Internal server error", "Oops... Something went wrong", "Algo salio mal. No hay conexión con la BD"),
 
     // ============================================
     // AUTH ERROR CODES

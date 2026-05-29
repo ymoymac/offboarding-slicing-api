@@ -1,8 +1,11 @@
 package mx.izzi.offboarding.shared.errors;
 
+import lombok.extern.slf4j.Slf4j;
 import mx.izzi.offboarding.shared.enums.OBErrorCodes;
 import mx.izzi.offboarding.shared.exceptions.*;
 import mx.izzi.offboarding.shared.models.OBErrorResponse;
+import mx.izzi.offboarding.shared.utils.ErrorMapper;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,100 +19,59 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ServerException.class)
     public ResponseEntity<OBErrorResponse> handleServerException(ServerException e) {
-
-        List<Map<String, Object>> errors = new ArrayList<>();
-
-        Map<String, Object> err = new HashMap<>();
-        err.put("code", OBErrorCodes.INTERNAL_SERVER_ERROR.getCode());
-        err.put("display", OBErrorCodes.INTERNAL_SERVER_ERROR.getDisplay());
-        errors.add(err);
-
         return new ResponseEntity<>(
-                new OBErrorResponse(OBErrorCodes.INTERNAL_SERVER_ERROR, e.getMessage(), errors),
+                new OBErrorResponse(
+                        OBErrorCodes.INTERNAL_SERVER_ERROR,
+                        e.getMessage(),
+                        ErrorMapper.errors(OBErrorCodes.INTERNAL_SERVER_ERROR)
+                ),
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
     @ExceptionHandler(NumberFormatException.class)
     public ResponseEntity<OBErrorResponse> handleNumberFormat(NumberFormatException e) {
-
-        List<Map<String, Object>> errors = new ArrayList<>();
-
-        Map<String, Object> err = new HashMap<>();
-        err.put("code", OBErrorCodes.NAN.getCode());
-        err.put("display", OBErrorCodes.NAN.getDisplay());
-        errors.add(err);
-
         return new ResponseEntity<>(
-                new OBErrorResponse(OBErrorCodes.NAN, errors),
+                new OBErrorResponse(OBErrorCodes.NAN, ErrorMapper.errors(OBErrorCodes.NAN)),
                 HttpStatus.BAD_REQUEST
         );
     }
 
     @ExceptionHandler(ValueNotValidException.class)
     public ResponseEntity<OBErrorResponse> handleValueNotValid(ValueNotValidException e) {
-
-        List<Map<String, Object>> errors = new ArrayList<>();
-
-        Map<String, Object> err = new HashMap<>();
-        err.put("code", OBErrorCodes.VALUE_NOT_VALID.getCode());
-        err.put("display", OBErrorCodes.VALUE_NOT_VALID.getDisplay());
-        errors.add(err);
-
         return new ResponseEntity<>(
-                new OBErrorResponse(OBErrorCodes.VALUE_NOT_VALID, e.getMessage(), errors),
+                new OBErrorResponse(
+                        OBErrorCodes.VALUE_NOT_VALID,
+                        e.getMessage(),
+                        ErrorMapper.errors(OBErrorCodes.VALUE_NOT_VALID)
+                ),
                 HttpStatus.BAD_REQUEST
         );
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<OBErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex) {
-
-        if (ex.getCause() instanceof org.hibernate.exception.ConstraintViolationException cve) {
-            String constraint = cve.getConstraintName();
-
-            if (constraint != null) {
-                String column = constraint.contains(".")
-                        ? constraint.split("\\.")[1]
-                        : constraint.toLowerCase();
-
-                List<Map<String, String>> errors = new ArrayList<>();
-                Map<String, String> err = new HashMap<>();
-                String message = switch (column) {
-                    case ""  -> "This email is already registered";
-                    case "t_offboarding_employees.employee_idssff" -> "This SuccessFactor ID is already registered.";
-                    default -> "Integrity restriction violated: " + constraint;
-                };
-                err.put("code", OBErrorCodes.UNIQUENESS_RULE.getCode());
-                err.put("message", message);
-                errors.add(err);
-
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body(new OBErrorResponse(OBErrorCodes.UNIQUENESS_RULE, errors));
-            }
-        }
-
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new OBErrorResponse(OBErrorCodes.UNIQUENESS_RULE));
+                return new ResponseEntity<>(
+                new OBErrorResponse(OBErrorCodes.UNIQUENESS_RULE, ErrorMapper.errors(OBErrorCodes.UNIQUENESS_RULE)),
+                HttpStatus.CONFLICT
+        );
     }
 
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<OBErrorResponse> handleDataIntegrity(ResourceNotFoundException e) {
-        List<Map<String, Object>> errors = new ArrayList<>();
-
-        Map<String, Object> err = new HashMap<>();
-        err.put("code", OBErrorCodes.NOT_FOUND.getCode());
-        err.put("display", OBErrorCodes.NOT_FOUND.getDisplay());
-        errors.add(err);
-
         return new ResponseEntity<>(
-                new OBErrorResponse(OBErrorCodes.NOT_FOUND, e.getMessage(), errors),
+                new OBErrorResponse(
+                        OBErrorCodes.NOT_FOUND,
+                        e.getMessage(),
+                        ErrorMapper.errors(OBErrorCodes.NOT_FOUND)
+                ),
                 HttpStatus.NOT_FOUND
         );
     }
@@ -140,33 +102,37 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
-    public ResponseEntity<OBErrorResponse> handleAlreadyExists(ResourceAlreadyExistsException ex) {
-
-        List<Map<String, Object>> errors = new ArrayList<>();
-
-        Map<String, Object> err = new HashMap<>();
-        err.put("code", OBErrorCodes.UNIQUENESS_RULE.getCode());
-        err.put("display", OBErrorCodes.UNIQUENESS_RULE.getDisplay());
-        errors.add(err);
-
+    public ResponseEntity<OBErrorResponse> handleAlreadyExists(ResourceAlreadyExistsException e) {
         return new ResponseEntity<>(
-                new OBErrorResponse(OBErrorCodes.UNIQUENESS_RULE, errors),
-                HttpStatus.BAD_REQUEST
+                new OBErrorResponse(
+                        OBErrorCodes.UNIQUENESS_RULE,
+                        e.getMessage(),
+                        ErrorMapper.errors(OBErrorCodes.UNIQUENESS_RULE)
+                ),
+                HttpStatus.CONFLICT
+        );
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<OBErrorResponse> handleEmailAlreadyExists(EmailAlreadyExistsException e) {
+        return new ResponseEntity<>(
+                new OBErrorResponse(
+                        OBErrorCodes.EMAIL_ALREADY_EXISTS,
+                        e.getMessage(),
+                        ErrorMapper.errors(OBErrorCodes.EMAIL_ALREADY_EXISTS)
+                ),
+                HttpStatus.CONFLICT
         );
     }
 
     @ExceptionHandler(ResourceNotAvailableException.class)
     public ResponseEntity<OBErrorResponse> handleResourceNotAvailable(ResourceNotAvailableException e) {
-
-        List<Map<String, Object>> errors = new ArrayList<>();
-
-        Map<String, Object> err = new HashMap<>();
-        err.put("code", OBErrorCodes.NOT_AVAILABLE.getCode());
-        err.put("display", OBErrorCodes.NOT_AVAILABLE.getDisplay());
-        errors.add(err);
-
         return new ResponseEntity<>(
-                new OBErrorResponse(OBErrorCodes.NOT_AVAILABLE, e.getMessage(), errors),
+                new OBErrorResponse(
+                        OBErrorCodes.NOT_AVAILABLE,
+                        e.getMessage(),
+                        ErrorMapper.errors(OBErrorCodes.NOT_AVAILABLE)
+                ),
                 HttpStatus.BAD_REQUEST
         );
     }
@@ -174,19 +140,26 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceAlreadyTerminatedException.class)
     public ResponseEntity<OBErrorResponse> handleResourceAlreadyTerminated(ResourceAlreadyTerminatedException e) {
-
-        List<Map<String, Object>> errors = new ArrayList<>();
-
-        Map<String, Object> err = new HashMap<>();
-        err.put("code", OBErrorCodes.EMPLOYEE_TERMINATED.getCode());
-        err.put("display", OBErrorCodes.EMPLOYEE_TERMINATED.getDisplay());
-        errors.add(err);
-
         return new ResponseEntity<>(
-                new OBErrorResponse(OBErrorCodes.EMPLOYEE_TERMINATED, e.getMessage(), errors),
+                new OBErrorResponse(
+                        OBErrorCodes.EMPLOYEE_TERMINATED,
+                        e.getMessage(),
+                        ErrorMapper.errors(OBErrorCodes.EMPLOYEE_TERMINATED)
+                ),
                 HttpStatus.BAD_REQUEST
         );
     }
 
+    @ExceptionHandler(DataAccessResourceFailureException.class)
+    public ResponseEntity<OBErrorResponse> handleDataAccessResourceFailure(DataAccessResourceFailureException e) {
+        return new ResponseEntity<>(
+                new OBErrorResponse(
+                        OBErrorCodes.DB_ERROR_CONNECTION,
+                        e.getMessage(),
+                        ErrorMapper.errors(OBErrorCodes.DB_ERROR_CONNECTION)
+                ),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
 
 }

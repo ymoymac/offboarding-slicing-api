@@ -5,13 +5,10 @@ import mx.izzi.offboarding.modules.auth.domain.models.AuthUtils;
 import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
 import mx.izzi.offboarding.modules.users.domain.entities.RoleUserUnionEntity;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
-import mx.izzi.offboarding.modules.users.domain.mappers.RoleMapper;
-import mx.izzi.offboarding.modules.users.domain.mappers.RoleUserUnionMapper;
-import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.modules.users.services.implementations.UserServiceImpl;
-import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
+import mx.izzi.offboarding.shared.enums.Roles;
 import mx.izzi.offboarding.shared.exceptions.ResourceNotAvailableException;
 import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.*;
@@ -30,7 +27,7 @@ import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class FindOneByTest {
+public class FindOneUserByTest {
 
     @Mock
     UserRepository userRepository;
@@ -40,7 +37,7 @@ public class FindOneByTest {
 
     @BeforeEach
     void setUp() {
-        Factory.mockSecurityContext(Factory.userDetails(Factory.user(Factory.immediateRole())));
+        Factory.mockSecurityContext(Factory.userDetails(Factory.user(Roles.ADMIN)));
     }
 
     @AfterEach
@@ -52,10 +49,10 @@ public class FindOneByTest {
     @Order(1)
     @DisplayName("It should return one user by id")
     void findOneBy() {
-        RoleEntity roleEntity = RoleMapper.toEntity(Factory.immediateRole());
-        UserEntity userEntity = UserMapper.toEntity(Factory.user(Factory.immediateRole()));
-        RoleUserUnionEntity roleUserUnionEntity = RoleUserUnionMapper.toEntity(
-                Factory.roleUserUnion(Factory.immediateRole()),
+        RoleEntity roleEntity = Factory.roleEntity(Factory.immediateRole());
+        UserEntity userEntity = Factory.userEntity(Factory.user(Roles.IMMEDIATE_BOSS));
+        RoleUserUnionEntity roleUserUnionEntity = Factory.roleUserUnionEntity(
+                Factory.roleUserUnion(Factory.immediateRole(), userEntity.toDomain()),
                 roleEntity,
                 userEntity
         );
@@ -90,10 +87,10 @@ public class FindOneByTest {
     @DisplayName("It should throw a ResourceNotAvailableException because the user exists but is not active")
     void findOneBy_throwNotAvailable() {
 
-        RoleEntity roleEntity = RoleMapper.toEntity(Factory.immediateRole());
-        UserEntity userEntity = UserMapper.toEntity(Factory.user(Factory.immediateRole()));
-        RoleUserUnionEntity roleUserUnionEntity = RoleUserUnionMapper.toEntity(
-                Factory.roleUserUnion(Factory.immediateRole()),
+        RoleEntity roleEntity = Factory.roleEntity(Factory.immediateRole());
+        UserEntity userEntity = Factory.userEntity(Factory.user(Roles.IMMEDIATE_BOSS));
+        RoleUserUnionEntity roleUserUnionEntity = Factory.roleUserUnionEntity(
+                Factory.roleUserUnion(Factory.immediateRole(), userEntity.toDomain()),
                 roleEntity,
                 userEntity
         );

@@ -5,12 +5,10 @@ import mx.izzi.offboarding.modules.auth.domain.models.AuthUtils;
 import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
 import mx.izzi.offboarding.modules.users.domain.entities.RoleUserUnionEntity;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
-import mx.izzi.offboarding.modules.users.domain.mappers.RoleMapper;
-import mx.izzi.offboarding.modules.users.domain.mappers.RoleUserUnionMapper;
-import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.modules.users.services.implementations.UserServiceImpl;
+import mx.izzi.offboarding.shared.enums.Roles;
 import mx.izzi.offboarding.shared.exceptions.ResourceAccessDeniedException;
 import mx.izzi.offboarding.shared.exceptions.ResourceNotAvailableException;
 import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
@@ -40,7 +38,7 @@ public class FindOneProfileByTest {
 
     @BeforeEach
     void setUp() {
-        Factory.mockSecurityContext(Factory.userDetails(Factory.user(Factory.immediateRole())));
+        Factory.mockSecurityContext(Factory.userDetails(Factory.user(Roles.IMMEDIATE_BOSS)));
     }
 
     @AfterEach
@@ -52,10 +50,10 @@ public class FindOneProfileByTest {
     @Order(1)
     @DisplayName("It should return the information of the user who logged in.")
     void findOneProfileBy() {
-        RoleEntity roleEntity = RoleMapper.toEntity(Factory.immediateRole());
-        UserEntity userEntity = UserMapper.toEntity(Factory.user(Factory.immediateRole()));
-        RoleUserUnionEntity roleUserUnionEntity = RoleUserUnionMapper.toEntity(
-                Factory.roleUserUnion(Factory.immediateRole()),
+        RoleEntity roleEntity = Factory.roleEntity(Factory.immediateRole());
+        UserEntity userEntity = Factory.userEntity(Factory.user(Roles.IMMEDIATE_BOSS));
+        RoleUserUnionEntity roleUserUnionEntity = Factory.roleUserUnionEntity(
+                Factory.roleUserUnion(Factory.immediateRole(), userEntity.toDomain()),
                 roleEntity,
                 userEntity
         );
@@ -77,17 +75,19 @@ public class FindOneProfileByTest {
     @DisplayName("It should throw an exception because the logged-in user is requesting another user's information.")
     void findOneProfileBy_throwAccessDenied() {
 
-        RoleEntity roleEntity = RoleMapper.toEntity(Factory.immediateRole());
-        UserEntity userEntity = UserMapper.toEntity(Factory.user(Factory.immediateRole()));
-        RoleUserUnionEntity roleUserUnionEntity = RoleUserUnionMapper.toEntity(
-                Factory.roleUserUnion(Factory.immediateRole()),
+        RoleEntity roleEntity = Factory.roleEntity(Factory.immediateRole());
+        UserEntity userEntity = Factory.userEntity(Factory.user(Roles.IMMEDIATE_BOSS));
+        RoleUserUnionEntity roleUserUnionEntity = Factory.roleUserUnionEntity(
+                Factory.roleUserUnion(Factory.immediateRole(), userEntity.toDomain()),
                 roleEntity,
                 userEntity
         );
 
-        userEntity.setIdssff(9999888L);
-        userEntity.setEmail("email@test.com");
         userEntity.setRoleUserUnion(Set.of(roleUserUnionEntity));
+
+        User rrhhUser = Factory.user(Roles.RRHH);
+        SecurityContextHolder.clearContext();
+        Factory.mockSecurityContext(Factory.userDetails(rrhhUser));
 
         Mockito.when(this.userRepository.findOneByIdssff(Mockito.anyLong()))
                 .thenReturn(Optional.of(userEntity));
@@ -115,10 +115,10 @@ public class FindOneProfileByTest {
     @DisplayName("It should throw a ResourceNotAvailableException because the user exists but is not active")
     void findOneProfileBy_throwNotAvailable() {
 
-        RoleEntity roleEntity = RoleMapper.toEntity(Factory.immediateRole());
-        UserEntity userEntity = UserMapper.toEntity(Factory.user(Factory.immediateRole()));
-        RoleUserUnionEntity roleUserUnionEntity = RoleUserUnionMapper.toEntity(
-                Factory.roleUserUnion(Factory.immediateRole()),
+        RoleEntity roleEntity = Factory.roleEntity(Factory.immediateRole());
+        UserEntity userEntity = Factory.userEntity(Factory.user(Roles.IMMEDIATE_BOSS));
+        RoleUserUnionEntity roleUserUnionEntity = Factory.roleUserUnionEntity(
+                Factory.roleUserUnion(Factory.immediateRole(), userEntity.toDomain()),
                 roleEntity,
                 userEntity
         );
