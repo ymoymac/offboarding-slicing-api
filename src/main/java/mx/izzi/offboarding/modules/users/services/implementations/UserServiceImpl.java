@@ -164,11 +164,10 @@ public class UserServiceImpl implements UserService {
                 .workCenter(workCenter.get())
                 .build();
 
-        User saved = this.userRepository.saveAndFlush(UserMapper.toEntity(user)).toDomain();
+        UserEntity saved = this.userRepository.saveAndFlush(UserMapper.toEntity(user));
 
         RoleUserUnion union = RoleUserUnion.builder()
                 .role(role.get())
-                .user(saved)
                 .assignmentDate(now)
                 .assignedBy(createdBy)
                 .isActive(true)
@@ -181,7 +180,7 @@ public class UserServiceImpl implements UserService {
                 RoleUserUnionMapper.toEntity(
                         union,
                         RoleMapper.toEntity(role.get()),
-                        UserMapper.toEntity(saved)
+                        saved
                 )
         );
 
@@ -204,6 +203,7 @@ public class UserServiceImpl implements UserService {
                 .map(UserEntity::toDomain);
     }
 
+    @Transactional
     @Override
     public Optional<User> update(Long idssff, UpdateUserDto updateUserDto) {
 
@@ -254,6 +254,7 @@ public class UserServiceImpl implements UserService {
         return Optional.of(this.userRepository.saveAndFlush(UserMapper.toEntity(user)).toDomain());
     }
 
+    @Transactional
     @Override
     public Optional<User> delete(Long idssff) {
         Optional<User> userFound = this.findOneBy(idssff);

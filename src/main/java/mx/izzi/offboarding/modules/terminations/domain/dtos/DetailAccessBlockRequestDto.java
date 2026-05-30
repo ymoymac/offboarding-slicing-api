@@ -32,9 +32,6 @@ public class DetailAccessBlockRequestDto {
     private LocalDateTime applicationDate;
 
     @JsonProperty
-    private String laboraId;
-
-    @JsonProperty
     private DetailUserDto user;
 
     @JsonProperty

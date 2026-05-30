@@ -5,7 +5,7 @@ import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
 import mx.izzi.offboarding.modules.users.domain.models.Role;
 
 public class RoleMapper {
-    public static DetailRoleDto from(Role role) {
+    public static DetailRoleDto fromToDto(Role role) {
         return DetailRoleDto.builder()
                 .name(role.getName())
                 .description(role.getDescription())

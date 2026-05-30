@@ -15,9 +15,11 @@ import mx.izzi.offboarding.modules.terminations.repositories.AccessBlockRequestR
 import mx.izzi.offboarding.modules.terminations.services.TerminationReasonService;
 import mx.izzi.offboarding.modules.terminations.services.TerminationService;
 import mx.izzi.offboarding.modules.terminations.services.TerminationTypeService;
+import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
 import mx.izzi.offboarding.modules.users.domain.models.Role;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
+import mx.izzi.offboarding.modules.users.repositories.UserRepository;
 import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.shared.enums.EmployeeStatus;
 import mx.izzi.offboarding.shared.enums.Roles;
@@ -44,6 +46,7 @@ public class TerminationServiceImp implements TerminationService {
     private final String PATH = "/api/v1/terminations";
 
     private final AccessBlockRequestRepository accessBlockRequestRepository;
+    private final UserRepository userRepository;
     private final UserService userService;
     private final EmployeeService employeeService;
     private final TerminationTypeService terminationTypeService;
@@ -97,11 +100,6 @@ public class TerminationServiceImp implements TerminationService {
             throw new ServiceException(PATH);
         }
 
-        Optional<User> immediateBoss = Optional.empty();
-        if (dto.getImmediateBossIdssff() != null && !Objects.equals(user.get().getIdssff(), dto.getImmediateBossIdssff())) {
-            immediateBoss = this.userService.findOneBy(dto.getImmediateBossIdssff());
-        }
-
         Optional<Employee> employee = this.employeeService.findOneBy(dto.getEmployeeIdssff());
 
         if (employee.isEmpty()) {
@@ -147,14 +145,12 @@ public class TerminationServiceImp implements TerminationService {
                 .updatedAt(now)
                 .createdBy(userDetails.getUsername())
                 .updatedBy(userDetails.getUsername())
-                .user(user.get())
-                .immediateBoss(immediateBoss.orElseGet(user::get))
                 .employee(employee.get())
                 .terminationType(type.get())
                 .terminationReason(reason.get())
                 .build();
 
-        employee.get().setStatus("TERMINATED");
+        employee.get().setStatus(EmployeeStatus.TERMINATED.getName());
 
         Optional<Employee> employeeToUpdate = this.employeeService
                 .update(employee.get().getIdssff(), EmployeeMapper.toUpdateDto(employee.get()));
@@ -163,9 +159,22 @@ public class TerminationServiceImp implements TerminationService {
             throw new ServiceException(PATH);
         }
 
+        Optional<UserEntity> userEntity = this.userRepository.findById(user.get().getUserId());
+
+        if (userEntity.isEmpty()) {
+            throw new ResourceNotFoundException(PATH);
+        }
+
+        Optional<UserEntity> immediateBoss = Optional.empty();
+        if (dto.getImmediateBossIdssff() != null && !Objects.equals(user.get().getIdssff(), dto.getImmediateBossIdssff())) {
+            immediateBoss = this.userRepository.findOneByIdssff(dto.getImmediateBossIdssff());
+        }
+
+        AccessBlockRequestEntity requestEntity = TerminationMapper.toEntity(accessBlockRequest, userEntity.get(), immediateBoss.orElseGet(userEntity::get));
+
         return Optional.of(
                 this.accessBlockRequestRepository
-                        .saveAndFlush(TerminationMapper.toEntity(accessBlockRequest))
+                        .saveAndFlush(requestEntity)
                         .toDomain()
         );
     }

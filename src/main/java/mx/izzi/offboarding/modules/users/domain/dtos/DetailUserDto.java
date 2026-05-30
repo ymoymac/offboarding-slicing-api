@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import mx.izzi.offboarding.modules.workcenter.domain.dtos.WorkCenterDto;
-import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenter;
 
 @Data
 @Builder

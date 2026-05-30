@@ -42,9 +42,5 @@ public class AuthController {
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
-    @GetMapping("/debug")
-    public String debug(HttpServletRequest request) {
-        return request.getHeader("Authorization");
-    }
 }
 

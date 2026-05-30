@@ -7,8 +7,13 @@ import mx.izzi.offboarding.modules.users.repositories.RoleRepository;
 import mx.izzi.offboarding.modules.users.services.RoleService;
 import mx.izzi.offboarding.shared.exceptions.ResourceNotAvailableException;
 import mx.izzi.offboarding.shared.exceptions.ResourceNotFoundException;
+import mx.izzi.offboarding.shared.exceptions.ValueNotValidException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,5 +37,16 @@ public class RoleServiceImpl implements RoleService {
         }
 
         return role;
+    }
+
+    @Override
+    public Page<Role> findAll(int page, int size) {
+        if (!List.of(5, 10, 20).contains(size)) {
+            throw new ValueNotValidException(PATH + "?page=" + page + "&size=" + size);
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        return roleRepository.findAll(pageable)
+                .map(RoleEntity::toDomain);
     }
 }

@@ -11,6 +11,7 @@ import mx.izzi.offboarding.shared.mappers.ResponseMapper;
 import mx.izzi.offboarding.shared.models.OBResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,17 +22,17 @@ public class TerminationTypeController {
 
     private final TerminationTypeService terminationTypeService;
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS", "RRHH"})
     public ResponseEntity<OBResponse<DetailTerminationTypeDto>> getById(@PathVariable long id) {
         return this.terminationTypeService.findOneBy(id)
                 .map(TerminationMapper::from)
-                .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_RESOURCE, userDto, HttpStatus.OK))
+                .map(dto -> ResponseMapper.map(OBResponseCodes.GET_RESOURCE, dto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS", "RRHH"})
     public ResponseEntity<OBResponse<Page<DetailTerminationTypeDto>>> getAllTypes(
             @RequestParam(defaultValue = "0") int page,

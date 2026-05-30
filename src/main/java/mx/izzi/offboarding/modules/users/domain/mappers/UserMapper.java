@@ -2,15 +2,11 @@ package mx.izzi.offboarding.modules.users.domain.mappers;
 
 import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserWithRoleDto;
-import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
-import mx.izzi.offboarding.modules.users.domain.entities.RoleUserUnionEntity;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
-import mx.izzi.offboarding.modules.users.domain.models.RoleUserUnion;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 import mx.izzi.offboarding.modules.workcenter.domain.models.WorkCenterMapper;
 
-import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.Collections;
 
 public class UserMapper {
     public static DetailUserDto from(User user) {
@@ -35,7 +31,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .nickname(user.getUsername())
                 .isActive(user.getIsActive())
-                .roles(user.getRoles().stream().map(RoleMapper::from).toList())
+                .roles(user.getRoles().stream().map(RoleMapper::fromToDto).toList())
                 .workCenter(WorkCenterMapper.from(user.getWorkCenter()))
                 .build();
     }
@@ -55,6 +51,7 @@ public class UserMapper {
                 .updatedAt(user.getUpdatedAt())
                 .createdBy(user.getCreatedBy())
                 .updatedBy(user.getUpdatedBy())
+                .roleUserUnion(Collections.emptySet())
                 .workCenter(WorkCenterMapper.toEntity(user.getWorkCenter()))
                 .build();
     }

@@ -11,6 +11,7 @@ import mx.izzi.offboarding.shared.mappers.ResponseMapper;
 import mx.izzi.offboarding.shared.models.OBResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,17 +21,17 @@ import org.springframework.web.bind.annotation.*;
 public class TerminationReasonController {
     private final TerminationReasonService terminationReasonService;
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS", "RRHH"})
     public ResponseEntity<OBResponse<DetailTerminationReasonDto>> getById(@PathVariable long id) {
         return this.terminationReasonService.findOneBy(id)
                 .map(TerminationMapper::from)
-                .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_RESOURCE, userDto, HttpStatus.OK))
+                .map(dto -> ResponseMapper.map(OBResponseCodes.GET_RESOURCE, dto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"ADMIN", "IMMEDIATE_BOSS", "RRHH"})
     public ResponseEntity<OBResponse<Page<DetailTerminationReasonDto>>> getAllReasons(
             @RequestParam(defaultValue = "0") int page,

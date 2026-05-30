@@ -28,7 +28,7 @@ public class TerminationController {
     public ResponseEntity<OBResponse<DetailAccessBlockRequestDto>> getByFolio(@PathVariable String folio) {
         return this.terminationService.findOneBy(folio)
                 .map(TerminationMapper::from)
-                .map(userDto -> ResponseMapper.map(OBResponseCodes.CREATED, userDto, HttpStatus.OK))
+                .map(dto -> ResponseMapper.map(OBResponseCodes.GET_RESOURCE, dto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
     }
@@ -38,7 +38,7 @@ public class TerminationController {
     public ResponseEntity<OBResponse<DetailAccessBlockRequestDto>> create(@RequestBody @Valid CreateAccessBlockRequestDto createAccessBlockRequestDto) {
         return this.terminationService.create(createAccessBlockRequestDto)
                 .map(TerminationMapper::from)
-                .map(userDto -> ResponseMapper.map(OBResponseCodes.CREATED, userDto, HttpStatus.OK))
+                .map(dto -> ResponseMapper.map(OBResponseCodes.CREATED, dto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
     }

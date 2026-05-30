@@ -7,6 +7,7 @@ import mx.izzi.offboarding.modules.terminations.domain.dtos.DetailTerminationTyp
 import mx.izzi.offboarding.modules.terminations.domain.entities.AccessBlockRequestEntity;
 import mx.izzi.offboarding.modules.terminations.domain.entities.TerminationReasonEntity;
 import mx.izzi.offboarding.modules.terminations.domain.entities.TerminationTypeEntity;
+import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
 import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
 
 public class TerminationMapper {
@@ -41,14 +42,14 @@ public class TerminationMapper {
                 .build();
     }
 
-    public static AccessBlockRequestEntity toEntity(AccessBlockRequest accessBlockRequest) {
+    public static AccessBlockRequestEntity toEntity(AccessBlockRequest accessBlockRequest, UserEntity userEntity, UserEntity immediateBossEntity) {
         return AccessBlockRequestEntity.builder()
                 .requestId(accessBlockRequest.getRequestId())
                 .folio(accessBlockRequest.getFolio())
                 .endDate(accessBlockRequest.getEndDate())
                 .applicationDate(accessBlockRequest.getApplicationDate())
-                .user(UserMapper.toEntity(accessBlockRequest.getUser()))
-                .immediateBoss(UserMapper.toEntity(accessBlockRequest.getImmediateBoss()))
+                .user(userEntity)
+                .immediateBoss(immediateBossEntity)
                 .employee(EmployeeMapper.toEntity(accessBlockRequest.getEmployee()))
                 .terminationType(TerminationMapper.toEntity(accessBlockRequest.getTerminationType()))
                 .terminationReason(TerminationMapper.toEntity(accessBlockRequest.getTerminationReason()))
