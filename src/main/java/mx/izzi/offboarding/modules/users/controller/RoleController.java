@@ -2,8 +2,11 @@ package mx.izzi.offboarding.modules.users.controller;
 
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
+import mx.izzi.offboarding.modules.users.domain.dtos.AssignRoleDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.DetailRoleDto;
+import mx.izzi.offboarding.modules.users.domain.dtos.DetailRoleUserUnionDto;
 import mx.izzi.offboarding.modules.users.domain.mappers.RoleMapper;
+import mx.izzi.offboarding.modules.users.domain.mappers.RoleUserUnionMapper;
 import mx.izzi.offboarding.modules.users.services.RoleService;
 import mx.izzi.offboarding.shared.enums.OBErrorCodes;
 import mx.izzi.offboarding.shared.enums.OBResponseCodes;
@@ -41,6 +44,15 @@ public class RoleController {
                 .map(RoleMapper::fromToDto);
 
         return ResponseMapper.map(OBResponseCodes.LIST_ACTIVE_RESOURCES, users, HttpStatus.OK);
+
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<OBResponse<DetailRoleUserUnionDto>> assignRole(@RequestBody AssignRoleDto assignRoleDto) {
+        return this.roleService.assignRole(assignRoleDto)
+                .map(RoleUserUnionMapper::fromToDto)
+                .map(dto -> ResponseMapper.map(OBResponseCodes.ROLE_ASSIGNED, dto, HttpStatus.CREATED))
+                .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
     }
 }

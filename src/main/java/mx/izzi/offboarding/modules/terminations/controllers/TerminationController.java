@@ -38,7 +38,7 @@ public class TerminationController {
     public ResponseEntity<OBResponse<DetailAccessBlockRequestDto>> create(@RequestBody @Valid CreateAccessBlockRequestDto createAccessBlockRequestDto) {
         return this.terminationService.create(createAccessBlockRequestDto)
                 .map(TerminationMapper::from)
-                .map(dto -> ResponseMapper.map(OBResponseCodes.CREATED, dto, HttpStatus.OK))
+                .map(dto -> ResponseMapper.map(OBResponseCodes.CREATED, dto, HttpStatus.CREATED))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
     }

@@ -39,14 +39,14 @@ public class UserServiceImpl implements UserService {
 
     private static final String PATH = "/api/v1/users";
 
+    @PersistenceContext
+    private final EntityManager entityManager;
+
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final WorkCenterService workCenterService;
     private final RoleUserUnionRepository roleUserUnionRepository;
-
-    @PersistenceContext
-    private final EntityManager entityManager;
 
     @Override
     public Optional<User> findOneBy(Long idssff) {

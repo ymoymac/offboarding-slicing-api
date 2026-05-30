@@ -1,5 +1,6 @@
 package mx.izzi.offboarding.modules.users.domain.mappers;
 
+import mx.izzi.offboarding.modules.users.domain.dtos.DetailRoleUserUnionDto;
 import mx.izzi.offboarding.modules.users.domain.entities.RoleEntity;
 import mx.izzi.offboarding.modules.users.domain.entities.RoleUserUnionEntity;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
@@ -17,6 +18,15 @@ public class RoleUserUnionMapper {
                 .updatedAt(roleUserUnion.getUpdatedAt())
                 .createdBy(roleUserUnion.getCreatedBy())
                 .updatedBy(roleUserUnion.getUpdatedBy())
+                .build();
+    }
+
+    public static DetailRoleUserUnionDto fromToDto(RoleUserUnion roleUserUnion) {
+        return DetailRoleUserUnionDto.builder()
+                .role(RoleMapper.fromToDto(roleUserUnion.getRole()))
+                .user(UserMapper.fromToDto(roleUserUnion.getUser()))
+                .assignmentDate(roleUserUnion.getAssignmentDate())
+                .assignedBy(roleUserUnion.getAssignedBy())
                 .build();
     }
 }

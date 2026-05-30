@@ -24,6 +24,7 @@ public enum OBErrorCodes {
     EMPLOYEE_TERMINATED("PB-ERR006", 400, "Bad Request", "This employee has already been fired", "Esté empleado ya paso por un proceso de bloqueo. No esta activo"),
     EMAIL_ALREADY_EXISTS("PB-ERR007", 409, "Conflict", "Insertion error. This user already exists with this email address", "Es usuario ya existe con este email"),
     DB_ERROR_CONNECTION("PB-ERR008", 500, "Internal server error", "Oops... Something went wrong", "Algo salio mal. No hay conexión con la BD"),
+    ROLE_RELATION_ALREADY_EXISTS("PB-ERR009", 400, "Bad request", "Oops... Something went wrong. The user already has the permissions for this role", "El usuario ya cuenta con los permisos de este rol"),
 
     // ============================================
     // AUTH ERROR CODES

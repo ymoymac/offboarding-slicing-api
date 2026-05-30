@@ -1,12 +1,13 @@
 package mx.izzi.offboarding.modules.users.domain.dtos;
 
+import mx.izzi.offboarding.modules.workcenter.domain.dtos.WorkCenterDto;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import mx.izzi.offboarding.modules.workcenter.domain.dtos.WorkCenterDto;
 
 @Data
 @Builder

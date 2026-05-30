@@ -162,4 +162,16 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ResourceRoleAlreadyAssignedException.class)
+    public ResponseEntity<OBErrorResponse> handleResourceRoleAlreadyAssigned(ResourceRoleAlreadyAssignedException e) {
+        return new ResponseEntity<>(
+                new OBErrorResponse(
+                        OBErrorCodes.ROLE_RELATION_ALREADY_EXISTS,
+                        e.getMessage(),
+                        ErrorMapper.errors(OBErrorCodes.ROLE_RELATION_ALREADY_EXISTS)
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
 }

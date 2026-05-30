@@ -115,4 +115,18 @@ public class RoleUserUnionEntity implements Serializable {
                 .updatedBy(this.updatedBy)
                 .build();
     }
+
+    public RoleUserUnion allToDomain() {
+        return RoleUserUnion.builder()
+                .id(this.id)
+                .role(this.role.toDomain())
+                .user(this.user.toDomain())
+                .assignmentDate(this.assignmentDate)
+                .assignedBy(this.assignedBy)
+                .isActive(this.isActive)
+                .updatedAt(this.updatedAt)
+                .createdBy(this.createdBy)
+                .updatedBy(this.updatedBy)
+                .build();
+    }
 }
