@@ -69,11 +69,11 @@ public class AccessBlockRequestEntity {
     @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
-            name = "req_fk_user_id",
+            name = "req_fk_applicant_user_id",
             referencedColumnName = "user_id",
             nullable = false
     )
-    private UserEntity user;
+    private UserEntity applicantUser;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -132,7 +132,7 @@ public class AccessBlockRequestEntity {
                 .updatedAt(this.updatedAt)
                 .createdBy(this.createdBy)
                 .updatedBy(this.updatedBy)
-                .user(this.user.toDomain())
+                .user(this.applicantUser.toDomain())
                 .immediateBoss(this.immediateBoss.toDomain())
                 .employee(this.employee.toDomain())
                 .terminationType(this.terminationType.toDomain())

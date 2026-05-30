@@ -14,12 +14,12 @@ public interface AccessBlockRequestRepository extends JpaRepository<AccessBlockR
 
     @Query("""
         SELECT t FROM AccessBlockRequestEntity t
-        JOIN FETCH t.user
+        JOIN FETCH t.applicantUser
         JOIN FETCH t.immediateBoss
         JOIN FETCH t.employee
         JOIN FETCH t.terminationType
         JOIN FETCH t.terminationReason
-        WHERE t.user = :user
+        WHERE t.applicantUser = :user
     """)
     Page<AccessBlockRequestEntity> findByUser(Pageable pageable, UserEntity user);
 }

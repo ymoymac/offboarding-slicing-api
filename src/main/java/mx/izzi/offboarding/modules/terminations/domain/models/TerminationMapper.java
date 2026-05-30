@@ -48,7 +48,7 @@ public class TerminationMapper {
                 .folio(accessBlockRequest.getFolio())
                 .endDate(accessBlockRequest.getEndDate())
                 .applicationDate(accessBlockRequest.getApplicationDate())
-                .user(userEntity)
+                .applicantUser(userEntity)
                 .immediateBoss(immediateBossEntity)
                 .employee(EmployeeMapper.toEntity(accessBlockRequest.getEmployee()))
                 .terminationType(TerminationMapper.toEntity(accessBlockRequest.getTerminationType()))
