@@ -14,7 +14,7 @@ public class AuthUtils {
 
     private AuthUtils() {}
 
-    private static UserDetails getCurrentUser() {
+    public static UserDetails getCurrentUser() {
         Authentication authentication = SecurityContextHolder
                 .getContext()
                 .getAuthentication();

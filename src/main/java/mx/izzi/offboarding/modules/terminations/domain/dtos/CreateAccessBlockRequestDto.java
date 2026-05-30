@@ -22,9 +22,6 @@ public class CreateAccessBlockRequestDto {
     private Date endDate;
 
     @JsonProperty
-    private Long userIdssff;
-
-    @JsonProperty
     private Long immediateBossIdssff;
 
     @JsonProperty

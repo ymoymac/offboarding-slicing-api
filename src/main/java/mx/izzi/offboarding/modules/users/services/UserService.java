@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface UserService {
     Optional<User> findOneBy(Long idssff);
+    Optional<User> findOneByEmail(String email);
     Optional<User> findOneProfileBy(Long idssff);
     Optional<User> create(CreateUserDto user);
     Page<User> findAll(int page, int size);

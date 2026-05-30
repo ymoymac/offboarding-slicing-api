@@ -9,12 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface AccessBlockingRequestRepository extends JpaRepository<AccessBlockRequestEntity, Long> {
+public interface AccessBlockRequestRepository extends JpaRepository<AccessBlockRequestEntity, Long> {
     Optional<AccessBlockRequestEntity> findByFolio(String folio);
 
     @Query("""
         SELECT t FROM AccessBlockRequestEntity t
         JOIN FETCH t.user
+        JOIN FETCH t.immediateBoss
         JOIN FETCH t.employee
         JOIN FETCH t.terminationType
         JOIN FETCH t.terminationReason

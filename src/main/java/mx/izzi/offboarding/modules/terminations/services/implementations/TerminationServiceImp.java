@@ -1,6 +1,7 @@
 package mx.izzi.offboarding.modules.terminations.services.implementations;
 
 import lombok.RequiredArgsConstructor;
+import mx.izzi.offboarding.modules.auth.domain.models.AuthUtils;
 import mx.izzi.offboarding.modules.employees.domain.models.Employee;
 import mx.izzi.offboarding.modules.employees.domain.models.EmployeeMapper;
 import mx.izzi.offboarding.modules.employees.services.EmployeeService;
@@ -10,7 +11,7 @@ import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockRequest
 import mx.izzi.offboarding.modules.terminations.domain.models.TerminationMapper;
 import mx.izzi.offboarding.modules.terminations.domain.models.TerminationReason;
 import mx.izzi.offboarding.modules.terminations.domain.models.TerminationType;
-import mx.izzi.offboarding.modules.terminations.repositories.AccessBlockingRequestRepository;
+import mx.izzi.offboarding.modules.terminations.repositories.AccessBlockRequestRepository;
 import mx.izzi.offboarding.modules.terminations.services.TerminationReasonService;
 import mx.izzi.offboarding.modules.terminations.services.TerminationService;
 import mx.izzi.offboarding.modules.terminations.services.TerminationTypeService;
@@ -42,7 +43,7 @@ public class TerminationServiceImp implements TerminationService {
 
     private final String PATH = "/api/v1/terminations";
 
-    private final AccessBlockingRequestRepository accessBlockingRequestRepository;
+    private final AccessBlockRequestRepository accessBlockRequestRepository;
     private final UserService userService;
     private final EmployeeService employeeService;
     private final TerminationTypeService terminationTypeService;
@@ -50,7 +51,7 @@ public class TerminationServiceImp implements TerminationService {
 
     @Override
     public Optional<AccessBlockRequest> findOneBy(String folio) {
-        Optional<AccessBlockRequest> request = this.accessBlockingRequestRepository
+        Optional<AccessBlockRequest> request = this.accessBlockRequestRepository
                 .findByFolio(folio)
                 .map(AccessBlockRequestEntity::toDomain);
 
@@ -62,37 +63,15 @@ public class TerminationServiceImp implements TerminationService {
             throw new ResourceNotFoundException(PATH + "/" + folio);
         }
 
-        UserDetails userDetails = (UserDetails) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-
-        boolean isSameUser = userDetails.getUsername().equals(request.get().getUser().getEmail());
-
-        if  (!isSameUser) {
-            throw new ResourceAccessDeniedException(PATH + "/" + folio);
-        }
-
         return request;
     }
 
     @Override
-    public Page<AccessBlockRequest> findAllTerminationsByUserId(Long userIdssff, int page, int size) {
-        Optional<User> user = this.userService.findOneBy(userIdssff);
+    public Page<AccessBlockRequest> findAllTerminationsByImmediateBoss(Long immediateBossIdssff, int page, int size) {
+        Optional<User> user = this.userService.findOneBy(immediateBossIdssff);
 
         if (user.isEmpty()) {
-            throw new ServerException("/api/v1/users" + "/" + userIdssff + "/terminations");
-        }
-
-        UserDetails userDetails = (UserDetails) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-
-        boolean isSameUser = userDetails.getUsername().equals(user.get().getEmail());
-
-        if  (!isSameUser) {
-            throw new ResourceAccessDeniedException("/api/v1/users" + "/" + userIdssff + "/employees");
+            throw new ServerException("/api/v1/users" + "/" + immediateBossIdssff + "/terminations");
         }
 
         if (!List.of(5, 10, 20).contains(size)) {
@@ -101,7 +80,7 @@ public class TerminationServiceImp implements TerminationService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return this.accessBlockingRequestRepository
+        return this.accessBlockRequestRepository
                 .findByUser(pageable, UserMapper.toEntity(user.get()))
                 .map(AccessBlockRequestEntity::toDomain);
     }
@@ -110,15 +89,17 @@ public class TerminationServiceImp implements TerminationService {
     @Override
     public Optional<AccessBlockRequest> create(CreateAccessBlockRequestDto dto) {
 
-        Optional<User> user = this.userService.findOneBy(dto.getUserIdssff());
-        Optional<User> immediateBoss = Optional.empty();
+        UserDetails currentUser = AuthUtils.getCurrentUser();
 
-        if (dto.getImmediateBossIdssff() != null && !Objects.equals(dto.getUserIdssff(), dto.getImmediateBossIdssff())) {
-            immediateBoss = this.userService.findOneBy(dto.getImmediateBossIdssff());
-        }
+        Optional<User> user = this.userService.findOneByEmail(currentUser.getUsername());
 
         if (user.isEmpty()) {
             throw new ServiceException(PATH);
+        }
+
+        Optional<User> immediateBoss = Optional.empty();
+        if (dto.getImmediateBossIdssff() != null && !Objects.equals(user.get().getIdssff(), dto.getImmediateBossIdssff())) {
+            immediateBoss = this.userService.findOneBy(dto.getImmediateBossIdssff());
         }
 
         Optional<Employee> employee = this.employeeService.findOneBy(dto.getEmployeeIdssff());
@@ -132,12 +113,6 @@ public class TerminationServiceImp implements TerminationService {
         }
 
         List<String> roleNames = user.get().getRoles().stream().map(Role::getName).toList();
-
-        if (roleNames.contains(Roles.ADMIN.getName())) {
-            if (!employee.get().getImmediateBoos().getIdssff().equals(user.get().getIdssff())) {
-                throw new ResourceAccessDeniedException(PATH);
-            }
-        }
 
         if (roleNames.contains(Roles.RRHH.getName())) {
             if (!employee.get().getImmediateBoos().getIdssff().equals(dto.getImmediateBossIdssff())) {
@@ -182,14 +157,14 @@ public class TerminationServiceImp implements TerminationService {
         employee.get().setStatus("TERMINATED");
 
         Optional<Employee> employeeToUpdate = this.employeeService
-                .update(employee.get().getIdssff(), EmployeeMapper.toDto(employee.get()));
+                .update(employee.get().getIdssff(), EmployeeMapper.toUpdateDto(employee.get()));
 
         if (employeeToUpdate.isEmpty()) {
             throw new ServiceException(PATH);
         }
 
         return Optional.of(
-                this.accessBlockingRequestRepository
+                this.accessBlockRequestRepository
                         .saveAndFlush(TerminationMapper.toEntity(accessBlockRequest))
                         .toDomain()
         );

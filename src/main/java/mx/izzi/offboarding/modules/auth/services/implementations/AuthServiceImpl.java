@@ -30,7 +30,6 @@ public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UserRepository userRepository;
     private final UserService userService;
 
     @Override
@@ -43,9 +42,8 @@ public class AuthServiceImpl implements AuthService {
 
         String token = this.jwtService.generateToken(userDetails);
 
-        User user = this.userRepository
+        User user = this.userService
                 .findOneByEmail(loginDto.getEmail())
-                .map(UserEntity::toDomain)
                 .orElse(null);
 
         return Optional.of(

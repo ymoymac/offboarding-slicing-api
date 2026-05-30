@@ -67,6 +67,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findOneByEmail(String email) {
+        Optional<User> user = this.userRepository
+                .findOneByEmail(email)
+                .map(UserEntity::toDomain);
+
+        if (user.isEmpty()) {
+            throw new ResourceNotFoundException(PATH);
+        }
+
+        if (user.get().getIsActive().equals(false)) {
+            throw new ResourceNotAvailableException(PATH);
+        }
+
+        return user;
+    }
+
+    @Override
     public Optional<User> findOneProfileBy(Long idssff) {
 
         Optional<User> user = this.userRepository

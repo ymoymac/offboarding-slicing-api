@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface TerminationService {
     Optional<AccessBlockRequest> findOneBy(String folio);
-    Page<AccessBlockRequest> findAllTerminationsByUserId(Long userIdssff, int page, int size);
+    Page<AccessBlockRequest> findAllTerminationsByImmediateBoss(Long immediateBossIdssff, int page, int size);
     Optional<AccessBlockRequest> create(CreateAccessBlockRequestDto dto);
 }

@@ -32,7 +32,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -97,8 +96,7 @@ public class UserEntity implements Serializable {
     @OneToMany(
             mappedBy = "user",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            cascade = { CascadeType.PERSIST, CascadeType.MERGE }
     )
     private Set<RoleUserUnionEntity> roleUserUnion;
 

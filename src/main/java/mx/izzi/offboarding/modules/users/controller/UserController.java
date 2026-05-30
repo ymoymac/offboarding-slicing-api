@@ -77,7 +77,8 @@ public class UserController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<DetailAccessBlockRequestDto> terminations = this.terminationService.findAllTerminationsByUserId(idssff, page, size)
+        Page<DetailAccessBlockRequestDto> terminations = this.terminationService
+                .findAllTerminationsByImmediateBoss(idssff, page, size)
                 .map(TerminationMapper::from);
 
         return ResponseMapper.map(OBResponseCodes.LIST_ACTIVE_RESOURCES, terminations, HttpStatus.OK);

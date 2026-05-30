@@ -25,7 +25,7 @@ public class EmployeeMapper {
                 .build();
     }
 
-    public static UpdateEmployeeDto toDto(Employee employee) {
+    public static UpdateEmployeeDto toUpdateDto(Employee employee) {
         return UpdateEmployeeDto.builder()
                 .number(employee.getNumber())
                 .email(employee.getEmail())
