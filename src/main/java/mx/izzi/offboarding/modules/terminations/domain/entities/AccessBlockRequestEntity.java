@@ -23,8 +23,8 @@ import mx.izzi.offboarding.modules.employees.domain.entities.EmployeeEntity;
 import mx.izzi.offboarding.modules.terminations.domain.models.AccessBlockRequest;
 import mx.izzi.offboarding.modules.users.domain.entities.UserEntity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -45,7 +45,7 @@ public class AccessBlockRequestEntity {
     private String folio;
 
     @Column(name = "req_dt_end_date", nullable = false)
-    private Date endDate;
+    private LocalDate endDate;
 
     @Column(name = "req_dt_application_date", nullable = false)
     private LocalDateTime applicationDate;

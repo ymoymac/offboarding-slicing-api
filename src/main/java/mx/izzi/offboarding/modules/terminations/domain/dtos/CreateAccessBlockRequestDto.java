@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -19,7 +19,7 @@ public class CreateAccessBlockRequestDto {
 
     @FutureOrPresent(message = "The end date must be from today onwards")
     @JsonProperty
-    private Date endDate;
+    private LocalDate endDate;
 
     @JsonProperty
     private Long immediateBossIdssff;

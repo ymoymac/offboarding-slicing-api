@@ -9,10 +9,7 @@ import mx.izzi.offboarding.modules.employees.services.EmployeeService;
 import mx.izzi.offboarding.modules.terminations.domain.dtos.DetailAccessBlockRequestDto;
 import mx.izzi.offboarding.modules.terminations.domain.models.TerminationMapper;
 import mx.izzi.offboarding.modules.terminations.services.TerminationService;
-import mx.izzi.offboarding.modules.users.domain.dtos.CreateUserDto;
-import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserDto;
-import mx.izzi.offboarding.modules.users.domain.dtos.DetailUserWithRoleDto;
-import mx.izzi.offboarding.modules.users.domain.dtos.UpdateUserDto;
+import mx.izzi.offboarding.modules.users.domain.dtos.*;
 import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
 import mx.izzi.offboarding.modules.users.services.UserService;
 import mx.izzi.offboarding.shared.enums.OBErrorCodes;
@@ -38,8 +35,18 @@ public class UserController {
 
     @GetMapping(value = "/profile/{idssff}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({"IMMEDIATE_BOSS", "RRHH"})
-    public ResponseEntity<OBResponse<DetailUserWithRoleDto>> getUserProfileById(@PathVariable String idssff) {
-        return this.userService.findOneProfileBy(Long.parseLong(idssff))
+    public ResponseEntity<OBResponse<DetailUserWithRoleDto>> getProfileById(@PathVariable Long idssff) {
+        return this.userService.findOneProfileBy(idssff)
+                .map(UserMapper::fromToDto)
+                .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_RESOURCE, userDto, HttpStatus.OK))
+                .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
+
+    }
+
+    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed({"IMMEDIATE_BOSS", "RRHH"})
+    public ResponseEntity<OBResponse<DetailUserWithRoleDto>> getByIdEmail(@RequestBody @Valid SearchByDto dto) {
+        return this.userService.findOneByEmail(dto.getEmail())
                 .map(UserMapper::fromToDto)
                 .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_RESOURCE, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
@@ -48,8 +55,8 @@ public class UserController {
 
     @GetMapping("/{idssff}/employees")
     @RolesAllowed({"IMMEDIATE_BOSS"})
-    public ResponseEntity<OBResponse<List<DetailEmployeeDto>>> getAllEmployees(@PathVariable String idssff) {
-        List<DetailEmployeeDto> employees = this.employeeService.findAllEmployeesByImmediateBoss(Long.parseLong(idssff))
+    public ResponseEntity<OBResponse<List<DetailEmployeeDto>>> getAllEmployees(@PathVariable Long idssff) {
+        List<DetailEmployeeDto> employees = this.employeeService.findAllEmployeesByImmediateBoss(idssff)
                 .stream()
                 .map(EmployeeMapper::from)
                 .toList();

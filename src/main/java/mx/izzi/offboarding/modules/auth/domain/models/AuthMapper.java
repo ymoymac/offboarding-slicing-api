@@ -3,13 +3,15 @@ package mx.izzi.offboarding.modules.auth.domain.models;
 import mx.izzi.offboarding.modules.auth.domain.dtos.AuthUserDto;
 import mx.izzi.offboarding.modules.auth.domain.dtos.SignUpDto;
 import mx.izzi.offboarding.modules.users.domain.dtos.CreateUserDto;
-import mx.izzi.offboarding.modules.users.domain.mappers.UserMapper;
+import mx.izzi.offboarding.modules.users.domain.models.Role;
 
 public class AuthMapper {
 
     public static AuthUserDto from(AuthUser authUser) {
         return AuthUserDto.builder()
-                .user(UserMapper.fromToDto(authUser.getUser()))
+                .idssff(authUser.getUser().getIdssff())
+                .email(authUser.getUser().getEmail())
+                .roles(authUser.getUser().getRoles().stream().map(Role::getName).toList())
                 .token(authUser.getToken())
                 .build();
     }

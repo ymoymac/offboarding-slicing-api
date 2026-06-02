@@ -64,6 +64,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             final String token = authHeader.substring(7);
 
+            LOG.info("[INFO]: JWT Token: {}", token);
+
             JWTClaimsSet claims = jwtService.validateToken(token);
 
             String email = claims.getSubject();

@@ -174,4 +174,16 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ResourceOutsideOfStructureException.class)
+    public ResponseEntity<OBErrorResponse> handleResourceOutsideOfStructure(ResourceOutsideOfStructureException e) {
+        return new ResponseEntity<>(
+                new OBErrorResponse(
+                        OBErrorCodes.OUTSIDE_OF_STRUCTURE,
+                        e.getMessage(),
+                        ErrorMapper.errors(OBErrorCodes.OUTSIDE_OF_STRUCTURE)
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
 }

@@ -4,8 +4,8 @@ import com.opencsv.bean.CsvBindByPosition;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Builder
 @Data
@@ -15,7 +15,7 @@ public class TerminationCsv {
     private String folio;
 
     @CsvBindByPosition(position = 1)
-    private Date endDate;
+    private LocalDate endDate;
 
     @CsvBindByPosition(position = 2)
     private LocalDateTime applicationDate;

@@ -45,7 +45,7 @@ public class SignUpDto {
     @NotBlank(message = "Password is mandatory")
     @NotEmpty(message = "Password can not be empty")
     @NotNull(message = "Password cannot be null")
-    @Size(min = 5, message = "Password must be at least 7 characters long")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     @JsonProperty
     private String password;
 

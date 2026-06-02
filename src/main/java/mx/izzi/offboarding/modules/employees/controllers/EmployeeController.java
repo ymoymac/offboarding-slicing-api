@@ -23,9 +23,9 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @GetMapping(value = "/{idssff}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({"IMMEDIATE_BOSS", "RRHH"})
-    public ResponseEntity<OBResponse<DetailEmployeeDto>> getById(@PathVariable String idssff) {
-        return this.employeeService.findOneBy(Long.parseLong(idssff))
+    @RolesAllowed("RRHH")
+    public ResponseEntity<OBResponse<DetailEmployeeDto>> getById(@PathVariable Long idssff) {
+        return this.employeeService.findOneBy(idssff)
                 .map(EmployeeMapper::from)
                 .map(userDto -> ResponseMapper.map(OBResponseCodes.GET_RESOURCE, userDto, HttpStatus.OK))
                 .orElseGet(() -> ResponseMapper.toError(OBErrorCodes.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
@@ -33,7 +33,7 @@ public class EmployeeController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({"RRHH"})
+    @RolesAllowed("RRHH")
     public ResponseEntity<OBResponse<Page<DetailEmployeeDto>>> getAllEmployees(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size

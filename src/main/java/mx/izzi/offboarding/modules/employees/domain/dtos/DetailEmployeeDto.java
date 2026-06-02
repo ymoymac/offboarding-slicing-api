@@ -51,5 +51,8 @@ public class DetailEmployeeDto {
     private String position;
 
     @JsonProperty
+    private Long immediateBossId;
+
+    @JsonProperty
     private WorkCenterDto workCenter;
 }

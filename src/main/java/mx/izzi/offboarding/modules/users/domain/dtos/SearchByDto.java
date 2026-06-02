@@ -1,4 +1,4 @@
-package mx.izzi.offboarding.modules.auth.domain.dtos;
+package mx.izzi.offboarding.modules.users.domain.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -7,25 +7,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class AuthUserDto {
-
-    @JsonProperty
-    private Long idssff;
+public class SearchByDto {
 
     @JsonProperty
     private String email;
 
     @JsonProperty
-    private String token;
+    private String name;
 
     @JsonProperty
-    private List<String> roles;
+    private String firstSurname;
 
+    @JsonProperty
+    private String secondSurname;
 }

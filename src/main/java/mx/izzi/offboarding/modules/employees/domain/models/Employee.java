@@ -36,6 +36,6 @@ public class Employee {
     private String createdBy;
     private String updatedBy;
     private User immediateBoos;
-    private WorkCenter  workCenter;
+    private WorkCenter workCenter;
 }
 

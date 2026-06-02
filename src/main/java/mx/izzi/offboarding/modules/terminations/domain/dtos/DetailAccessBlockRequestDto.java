@@ -1,7 +1,7 @@
 package mx.izzi.offboarding.modules.terminations.domain.dtos;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ public class DetailAccessBlockRequestDto {
     private String folio;
 
     @JsonProperty
-    private Date endDate;
+    private LocalDate endDate;
 
     @JsonProperty
     private LocalDateTime applicationDate;

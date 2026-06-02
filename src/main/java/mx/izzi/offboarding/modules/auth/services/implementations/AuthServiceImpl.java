@@ -64,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
 
         UserDetails userDetails = org.springframework.security.core.userdetails.User
                 .builder()
-                .username(user.get().getIdssff().toString())
+                .username(user.get().getEmail())
                 .password(user.get().getPassword())
                 .authorities(
                         user.get().getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).toList()

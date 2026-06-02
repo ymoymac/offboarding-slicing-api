@@ -17,26 +17,5 @@ import lombok.ToString;
 public class UpdateEmployeeDto {
 
     @JsonProperty
-    private Long number;
-
-    @JsonProperty
-    private String email;
-
-    @JsonProperty
     private String status;
-
-    @JsonProperty
-    private String jobPositionId;
-
-    @JsonProperty
-    private String jobPosition;
-
-    @JsonProperty
-    private String positionId;
-
-    @JsonProperty
-    private String position;
-
-    @JsonProperty
-    private Long workCenterId;
 }

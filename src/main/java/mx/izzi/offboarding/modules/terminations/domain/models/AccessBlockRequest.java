@@ -8,8 +8,8 @@ import lombok.ToString;
 import mx.izzi.offboarding.modules.employees.domain.models.Employee;
 import mx.izzi.offboarding.modules.users.domain.models.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Builder
@@ -19,7 +19,7 @@ import java.util.Date;
 public class AccessBlockRequest {
     private Long requestId;
     private String folio;
-    private Date endDate;
+    private LocalDate endDate;
     private LocalDateTime applicationDate;
     private Boolean isActive;
     private LocalDateTime createdAt;

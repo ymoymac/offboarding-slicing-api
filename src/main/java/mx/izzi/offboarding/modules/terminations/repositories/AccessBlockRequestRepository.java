@@ -19,7 +19,18 @@ public interface AccessBlockRequestRepository extends JpaRepository<AccessBlockR
         JOIN FETCH t.employee
         JOIN FETCH t.terminationType
         JOIN FETCH t.terminationReason
-        WHERE t.applicantUser = :user
+        WHERE t.immediateBoss = :user
     """)
-    Page<AccessBlockRequestEntity> findByUser(Pageable pageable, UserEntity user);
+    Page<AccessBlockRequestEntity> findByImmediateBoss(Pageable pageable, UserEntity user);
+
+    @Query("""
+        SELECT t FROM AccessBlockRequestEntity t
+        JOIN FETCH t.applicantUser
+        JOIN FETCH t.immediateBoss
+        JOIN FETCH t.employee
+        JOIN FETCH t.terminationType
+        JOIN FETCH t.terminationReason
+        WHERE t.applicantUser.idssff = :id
+    """)
+    Page<AccessBlockRequestEntity> findByUser(Pageable pageable, Long id);
 }

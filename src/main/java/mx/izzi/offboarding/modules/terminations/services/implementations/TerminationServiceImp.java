@@ -1,6 +1,7 @@
 package mx.izzi.offboarding.modules.terminations.services.implementations;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mx.izzi.offboarding.modules.auth.domain.models.AuthUtils;
 import mx.izzi.offboarding.modules.employees.domain.models.Employee;
 import mx.izzi.offboarding.modules.employees.domain.models.EmployeeMapper;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TerminationServiceImp implements TerminationService {
@@ -74,7 +76,7 @@ public class TerminationServiceImp implements TerminationService {
         Optional<User> user = this.userService.findOneBy(immediateBossIdssff);
 
         if (user.isEmpty()) {
-            throw new ServerException("/api/v1/users" + "/" + immediateBossIdssff + "/terminations");
+            throw new ServerException("/api/v1/users" + "/" + user + "/terminations");
         }
 
         if (!List.of(5, 10, 20).contains(size)) {
@@ -83,34 +85,44 @@ public class TerminationServiceImp implements TerminationService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return this.accessBlockRequestRepository
-                .findByUser(pageable, UserMapper.toEntity(user.get()))
+        Page<AccessBlockRequest> terminations= this.accessBlockRequestRepository
+                .findByImmediateBoss(pageable, UserMapper.toEntity(user.get()))
                 .map(AccessBlockRequestEntity::toDomain);
+        if (terminations.isEmpty()) {
+            terminations = this.accessBlockRequestRepository
+                    .findByUser(pageable, user.get().getIdssff())
+                    .map(AccessBlockRequestEntity::toDomain);
+        }
+
+        return terminations;
     }
 
     @Transactional
     @Override
     public Optional<AccessBlockRequest> create(CreateAccessBlockRequestDto dto) {
 
+        log.info("[INFO] Creating access block request: {}", dto);
+
         UserDetails currentUser = AuthUtils.getCurrentUser();
 
         Optional<User> user = this.userService.findOneByEmail(currentUser.getUsername());
-
         if (user.isEmpty()) {
             throw new ServiceException(PATH);
         }
+        log.info("[INFO] User: {}", user);
 
         Optional<Employee> employee = this.employeeService.findOneBy(dto.getEmployeeIdssff());
-
         if (employee.isEmpty()) {
             throw new ServiceException(PATH);
         }
+        log.info("[INFO] Employee: {}", employee);
 
         if (employee.get().getStatus().equals(EmployeeStatus.TERMINATED.getName())) {
             throw new ResourceAlreadyTerminatedException(PATH);
         }
 
         List<String> roleNames = user.get().getRoles().stream().map(Role::getName).toList();
+        log.info("[INFO] Roles: {}", roleNames);
 
         if (roleNames.contains(Roles.RRHH.getName())) {
             if (!employee.get().getImmediateBoos().getIdssff().equals(dto.getImmediateBossIdssff())) {
@@ -149,6 +161,7 @@ public class TerminationServiceImp implements TerminationService {
                 .terminationType(type.get())
                 .terminationReason(reason.get())
                 .build();
+        log.info("[INFO] Access block request: {}", accessBlockRequest);
 
         employee.get().setStatus(EmployeeStatus.TERMINATED.getName());
 
@@ -160,15 +173,16 @@ public class TerminationServiceImp implements TerminationService {
         }
 
         Optional<UserEntity> userEntity = this.userRepository.findById(user.get().getUserId());
-
         if (userEntity.isEmpty()) {
             throw new ResourceNotFoundException(PATH);
         }
+        log.info("[INFO] Applicant User: {}", userEntity.get());
 
         Optional<UserEntity> immediateBoss = Optional.empty();
         if (dto.getImmediateBossIdssff() != null && !Objects.equals(user.get().getIdssff(), dto.getImmediateBossIdssff())) {
             immediateBoss = this.userRepository.findOneByIdssff(dto.getImmediateBossIdssff());
         }
+        log.info("[INFO] Immediate Boss: {}", immediateBoss);
 
         AccessBlockRequestEntity requestEntity = TerminationMapper.toEntity(accessBlockRequest, userEntity.get(), immediateBoss.orElseGet(userEntity::get));
 

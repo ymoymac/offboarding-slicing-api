@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface EmployeeService {
     List<Employee> findAllEmployeesByImmediateBoss(Long idssff);
-    Optional<Employee> findOneEmployeeByImmediateBoss(Long idssff, Long immediateBossIdssff);
+    Optional<Employee> findOneEmployeeByImmediateBoss(Long immediateBossIdssff, Long idssff);
     Optional<Employee> findOneBy(Long idssff);
     Page<Employee> findAll(int page, int size);
     Optional<Employee> update(Long idssff, UpdateEmployeeDto updateEmployeeDto);

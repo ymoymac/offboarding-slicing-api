@@ -25,6 +25,7 @@ public enum OBErrorCodes {
     EMAIL_ALREADY_EXISTS("PB-ERR007", 409, "Conflict", "Insertion error. This user already exists with this email address", "Es usuario ya existe con este email"),
     DB_ERROR_CONNECTION("PB-ERR008", 500, "Internal server error", "Oops... Something went wrong", "Algo salio mal. No hay conexión con la BD"),
     ROLE_RELATION_ALREADY_EXISTS("PB-ERR009", 400, "Bad request", "Oops... Something went wrong. The user already has the permissions for this role", "El usuario ya cuenta con los permisos de este rol"),
+    OUTSIDE_OF_STRUCTURE("PB-ERR010", 400, "Bad request", "Oops... Something went wrong. This employee does not belong to your structure.", "Acción rechazada: El empleado indicado no pertenece a la estructura del usuario solicitante, por lo que no es posible procesar la baja"),
 
     // ============================================
     // AUTH ERROR CODES
